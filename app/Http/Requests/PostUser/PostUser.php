@@ -24,8 +24,11 @@ class PostUser extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email|max:100',
-            'celular' => 'required|numeric|regex:/^[0-9]{9}$/',
-            'password' => 'required|string|min:8|max:255',
+            'celular' => 'required|string|regex:/^[0-9]{9}$/',
+            'seccion' => 'required|string',
+            'fecha' => 'date',
+            'cat_id' => 'required|integer|exists:categorias,cat_id',
+            'password' => 'required|string|min:8|max:255'
         ];
     }
 }

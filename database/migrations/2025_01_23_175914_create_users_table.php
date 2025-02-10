@@ -13,8 +13,12 @@ return new class extends Migration
             $table->string('name', 100); 
             $table->string('email', 100)->unique(); 
             $table->string('celular',9);
+            $table->string('seccion',40);
+            $table->timestamp('fecha')->useCurrent();
+            $table->unsignedInteger('cat_id');
             $table->string('password'); 
 
+            $table->foreign('cat_id')->references('cat_id')->on('categorias')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

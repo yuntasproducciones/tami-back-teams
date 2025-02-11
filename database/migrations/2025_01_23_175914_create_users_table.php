@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('seccion',40);
             $table->timestamp('fecha')->useCurrent();
             $table->unsignedInteger('cat_id');
+            $table->unsignedInteger('sec_id');
             $table->string('password'); 
 
             $table->foreign('cat_id')->references('cat_id')->on('categorias')->onDelete('cascade');
+            $table->foreign('sec_id')->references('sec_id')->on('seccion')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

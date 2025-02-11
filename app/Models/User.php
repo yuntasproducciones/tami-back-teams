@@ -22,6 +22,7 @@ class User extends Authenticatable
         'seccion',
         'fecha',
         'cat_id',
+        'sec_id',
         'password'
     ];
 
@@ -32,4 +33,8 @@ class User extends Authenticatable
         return $this->hasMany(Categorias::class,  'cat_id', 'cat_id');
     }
     
+    public function secciones(): HasMany
+    {
+        return $this->hasMany(Seccion::class, 'sec_id', 'sec_id');
+    }
 }

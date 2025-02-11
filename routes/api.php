@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Category\CategoriasController;
-use App\Http\Controllers\Contact\ContactoController;
 use App\Http\Controllers\ProductsDetails\Detalles_ProductosController;
 use App\Http\Controllers\Products\ProductosController;
 use App\Http\Controllers\User\UserController;
@@ -15,15 +14,6 @@ Route::controller(AuthController::class)->prefix('auth')->group(function(){
 
 Route::controller(CategoriasController::class)->prefix('category')->group(function(){
 
-});
-
-Route::controller(ContactoController::class)->prefix('contact')->group(function () {
-    Route::group(['middleware' => ['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR']], function () {
-        Route::get('/show', 'showAll');
-        Route::post('/create', 'createContact');
-        Route::put('/update/{contacto}', 'updateContact');
-        Route::delete('/delete/{contacto}', 'destroyContact');
-    });
 });
 
 Route::controller(Detalles_ProductosController::class)->prefix('details')->group(function(){

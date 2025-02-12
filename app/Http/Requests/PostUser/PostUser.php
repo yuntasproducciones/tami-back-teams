@@ -25,7 +25,6 @@ class PostUser extends FormRequest
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email|max:100',
             'celular' => 'required|string|regex:/^[0-9]{9}$/',
-            'seccion' => 'required|string',
             'fecha' => 'date',
             'sec_id' => 'required|integer|exists:seccion.sec_id',
             'password' => 'required|string|min:8|max:255'

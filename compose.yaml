@@ -20,7 +20,7 @@ services:
     command: ["sh", "-c", "composer install && npm install && sleep infinity"]
   db:
     image: mysql:latest
-    container_name: tami-db
+    container_name: tami-db 
     ports:
     # DB en puerto 3307 para que no haya conflicto con el MySQL local, cámbialo si es necesario ejm. 3308:3306
       - "3307:3306"

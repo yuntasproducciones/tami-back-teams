@@ -21,17 +21,11 @@ class User extends Authenticatable
         'celular',
         'seccion',
         'fecha',
-        'cat_id',
         'sec_id',
         'password'
     ];
 
     public $timestamps = false;
-
-    public function categorias(): HasMany
-    {
-        return $this->hasMany(Categorias::class,  'cat_id', 'cat_id');
-    }
     
     public function secciones(): HasMany
     {

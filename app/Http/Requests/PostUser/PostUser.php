@@ -27,7 +27,6 @@ class PostUser extends FormRequest
             'celular' => 'required|string|regex:/^[0-9]{9}$/',
             'seccion' => 'required|string',
             'fecha' => 'date',
-            'cat_id' => 'required|integer|exists:categorias,cat_id',
             'sec_id' => 'required|integer|exists:seccion.sec_id',
             'password' => 'required|string|min:8|max:255'
         ];

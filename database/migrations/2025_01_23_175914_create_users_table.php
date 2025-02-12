@@ -15,11 +15,9 @@ return new class extends Migration
             $table->string('celular',9);
             $table->string('seccion',40);
             $table->timestamp('fecha')->useCurrent();
-            $table->unsignedInteger('cat_id');
             $table->unsignedInteger('sec_id');
             $table->string('password'); 
 
-            $table->foreign('cat_id')->references('cat_id')->on('categorias')->onDelete('cascade');
             $table->foreign('sec_id')->references('sec_id')->on('seccion')->onDelete('cascade');
         });
 

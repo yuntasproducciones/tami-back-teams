@@ -1,17 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Products;
+namespace App\Http\Controllers\Api\V1\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PostCategory\PostCategorias;
 use App\Models\Productos;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostProducts\PostProductos;
 use App\Http\Requests\PostProductsDetails\PostDetalles_Productos;
-use App\Models\Categorias;
 use App\Models\Detalles_Productos;
-use App\Models\Productos_Categorias;
-use App\Traits\HttpResponseHelper;
 
 class ProductosController extends Controller
 {
@@ -40,15 +36,15 @@ class ProductosController extends Controller
         //     'cat_id' => $categoria_id
         // ]);
 
-        return HttpResponseHelper::make()
-            ->successfulResponse('Producto y detalles creados correctamente')
-            ->send();
+        // return HttpResponseHelper::make()
+        //     ->successfulResponse('Producto y detalles creados correctamente')
+        //     ->send();
 
         }catch(\Exception $e){
-            return HttpResponseHelper::make()
-                ->internalErrorResponse('Ocurrio un problema al procesar la solicitud.'.
-                 $e->getMessage())
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->internalErrorResponse('Ocurrio un problema al procesar la solicitud.'.
+            //      $e->getMessage())
+            //     ->send();
         }
     }
 
@@ -58,9 +54,9 @@ class ProductosController extends Controller
             $productos = Productos::with('productos_categorias')->get();
             
             if ($productos->isEmpty()) {
-                return HttpResponseHelper::make()
-                    ->successfulResponse('No se encontraron productos.')
-                    ->send();
+                // return HttpResponseHelper::make()
+                //     ->successfulResponse('No se encontraron productos.')
+                //     ->send();
             }
 
             // Respuesta filtrada
@@ -73,15 +69,15 @@ class ProductosController extends Controller
                 ];
             });
 
-            return HttpResponseHelper::make()
-                ->successfulResponse('Productos obtenidos correctamente.')
-                ->setData($productosTransformados)
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->successfulResponse('Productos obtenidos correctamente.')
+            //     ->setData($productosTransformados)
+            //     ->send();
 
         } catch (\Exception $e) {
-            return HttpResponseHelper::make()
-                ->internalErrorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage())
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->internalErrorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage())
+            //     ->send();
         }
     }
 
@@ -115,14 +111,14 @@ class ProductosController extends Controller
         //         ->send();
         // }
 
-        return HttpResponseHelper::make()
-            ->successfulResponse('Producto y detalles actualizados correctamente')
-            ->send();
+        // return HttpResponseHelper::make()
+        //     ->successfulResponse('Producto y detalles actualizados correctamente')
+        //     ->send();
     
         } catch (\Exception $e) {
-            return HttpResponseHelper::make()
-                ->internalErrorResponse('Ocurrió un problema al procesar la solicitud.' . $e->getMessage())
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->internalErrorResponse('Ocurrió un problema al procesar la solicitud.' . $e->getMessage())
+            //     ->send();
         }
     }
 
@@ -131,14 +127,14 @@ class ProductosController extends Controller
         try {
             $productos->delete();
     
-            return HttpResponseHelper::make()
-                ->successfulResponse('Se ha eliminado el producto correctamente')
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->successfulResponse('Se ha eliminado el producto correctamente')
+            //     ->send();
     
         } catch (\Exception $e) {
-            return HttpResponseHelper::make()
-                ->internalErrorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage())
-                ->send();
+            // return HttpResponseHelper::make()
+            //     ->internalErrorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage())
+            //     ->send();
         }
     }
 }

@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Categorias;
 use App\Models\Seccion;
 
 class UserSeeder extends Seeder
@@ -22,9 +20,8 @@ class UserSeeder extends Seeder
             'celular' => '980473810',
             'seccion' => 'Ventas',
             'fecha' => now()->format('Y-m-d'),
-            'cat_id' => Categorias::all()->random()->cat_id,
             'sec_id' => Seccion::all()->random()->sec_id,
-            'password' => Hash::make('admin'), 
+            'password' => bcrypt('admin'), 
         ]);
 
         $user->assignRole('ADMIN');

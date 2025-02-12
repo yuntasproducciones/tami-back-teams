@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PostContact;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostContacto extends FormRequest
+class PostSeccion extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class PostContacto extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'telefono' => 'required|regex:/^9\d{8}$/',
-            'email' => 'required|email|max:100',
-            'seccion' => 'required|string|max:100', 
-            'fecha_creacion' => 'date'
+            'seccion' => 'required|string|max:100',
+            'id_coment' => 'required|integer|exists:comentarios,id_coment'
         ];
     }
 }

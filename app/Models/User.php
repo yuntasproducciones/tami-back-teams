@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Permission\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -19,10 +19,16 @@ class User extends Authenticatable
         'name',
         'email',
         'celular',
-        'password',
+        'seccion',
+        'fecha',
+        'sec_id',
+        'password'
     ];
 
     public $timestamps = false;
-
     
+    public function secciones(): HasMany
+    {
+        return $this->hasMany(Seccion::class, 'sec_id', 'sec_id');
+    }
 }

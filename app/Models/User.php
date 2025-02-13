@@ -20,14 +20,9 @@ class User extends Authenticatable
         'email',
         'celular',
         'fecha',
-        'sec_id',
         'password'
     ];
 
     public $timestamps = false;
-    
-    public function secciones(): HasMany
-    {
-        return $this->hasMany(Seccion::class, 'sec_id', 'sec_id');
-    }
+
 }

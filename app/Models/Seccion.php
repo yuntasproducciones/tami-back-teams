@@ -22,9 +22,9 @@ class Seccion extends Model
 
     public $timestamps = false;
 
-    public function users(): BelongsTo
+    public function usuarios_registro(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'sec_id','sec_id');
+        return $this->belongsTo(Usuarios_Registro::class, 'sec_id','sec_id');
     }
 
     public function comentarios(): HasMany

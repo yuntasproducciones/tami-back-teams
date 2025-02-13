@@ -19,7 +19,6 @@ class UserSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'celular' => '980473810',
             'fecha' => now()->format('Y-m-d'),
-            'sec_id' => Seccion::all()->random()->sec_id,
             'password' => bcrypt('admin'), 
         ]);
 

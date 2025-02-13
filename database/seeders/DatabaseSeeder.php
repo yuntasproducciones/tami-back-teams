@@ -7,6 +7,7 @@ use App\Models\Comentarios;
 use App\Models\Productos;
 use App\Models\Detalles_Productos;
 use App\Models\Seccion;
+use App\Models\Usuarios_Registro;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use Illuminate\Database\Seeder;
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
         Categorias::factory(10)->create();
         Comentarios::factory(10)->create();
         Seccion::factory(10)->create();
+        Usuarios_Registro::factory(10)->create();
 
         $this->call([
             RoleSeeder::class,

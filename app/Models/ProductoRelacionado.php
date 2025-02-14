@@ -13,6 +13,8 @@ class ProductoRelacionado extends Model
         'id_relacionado'
     ];
 
+    public $timestamps = true;
+
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'id_producto');

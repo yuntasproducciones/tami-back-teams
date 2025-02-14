@@ -18,6 +18,8 @@ class Producto extends Model
         'seccion'
     ];
 
+    public $timestamps = true;
+
     public function especificaciones()
     {
         return $this->hasMany(Especificacion::class, 'id_producto');

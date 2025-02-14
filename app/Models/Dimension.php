@@ -12,6 +12,8 @@ class Dimension extends Model
         'valor'
     ];
 
+    public $timestamps = true;
+
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'id_producto');

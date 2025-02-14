@@ -13,6 +13,8 @@ class ImagenProducto extends Model
         'url_imagen'
     ];
 
+    public $timestamps = true;
+
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'id_producto');

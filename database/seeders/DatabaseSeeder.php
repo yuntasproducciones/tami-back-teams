@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Categorias;
 use App\Models\Comentarios;
-use App\Models\Productos;
-use App\Models\Detalles_Productos;
 use App\Models\Seccion;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -18,7 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Categorias::factory(10)->create();
         Comentarios::factory(10)->create();
         Seccion::factory(10)->create();
 
@@ -29,8 +25,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
 
-        Productos::factory(10)->create();
         
-        Detalles_Productos::factory(10)->create();
     }
 }

@@ -23,6 +23,13 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             AssignPermissionsToRolesSeeder::class,
             UserSeeder::class,
+            
+            // Productos
+            ProductoSeeder::class,
+            EspecificacionSeeder::class,
+            DimensionSeeder::class,
+            ImagenProductoSeeder::class,
+            ProductoRelacionadoSeeder::class,
         ]);
 
         

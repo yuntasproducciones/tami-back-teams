@@ -55,9 +55,28 @@ class ProductoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Producto $producto)
+    public function show($id)
     {
-        //
+        $producto = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
+
+        $formattedProducto = [
+            'id' => $producto->id,
+            'title' => $producto->titulo,
+            'subtitle' => $producto->subtitulo,
+            'tagline' => $producto->lema,
+            'description' => $producto->descripcion,
+            'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+            'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
+            'relatedProducts' => $producto->productosRelacionados->pluck('id'),
+            'images' => $producto->imagenes->pluck('url_imagen'),
+            'image' => $producto->imagen_principal,
+            'nombreProducto' => $producto->nombre,
+            'stockProducto' => $producto->stock,
+            'precioProducto' => $producto->precio,
+            'seccion' => $producto->seccion,
+        ];
+
+        return response()->json($formattedProducto);
     }
 
     /**

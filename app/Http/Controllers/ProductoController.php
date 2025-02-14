@@ -12,7 +12,28 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //
+        $productos = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->get();
+
+        $formattedProductos = $productos->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'title' => $producto->titulo,
+                'subtitle' => $producto->subtitulo,
+                'tagline' => $producto->lema,
+                'description' => $producto->descripcion,
+                'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
+                'relatedProducts' => $producto->productosRelacionados->pluck('id'),
+                'images' => $producto->imagenes->pluck('url_imagen'),
+                'image' => $producto->imagen_principal,
+                'nombreProducto' => $producto->nombre,
+                'stockProducto' => $producto->stock,
+                'precioProducto' => $producto->precio,
+                'seccion' => $producto->seccion,
+            ];
+        });
+
+        return response()->json($formattedProductos);
     }
 
     /**

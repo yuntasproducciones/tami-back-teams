@@ -17,7 +17,7 @@ class BasicController extends Controller
 
     {
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => $message,
             'data' => $data
         ], $status->value);
@@ -29,7 +29,7 @@ class BasicController extends Controller
     protected function noContentResponse(string $message = 'Operación exitosa'): JsonResponse
     {
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => $message,
             'data' => null
         ], HttpStatusCode::NO_CONTENT->value);
@@ -43,7 +43,7 @@ class BasicController extends Controller
 
     {
         return response()->json([
-            'success' => false,
+            'status' => 'error',
             'message' => $message,
             'errors' => $errors
         ], $status->value);

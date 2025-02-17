@@ -15,8 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Categorias::factory(10)->create();
         Comentarios::factory(10)->create();
         Seccion::factory(10)->create();
+        Usuarios_Registro::factory(10)->create();
 
         $this->call([
             RoleSeeder::class,

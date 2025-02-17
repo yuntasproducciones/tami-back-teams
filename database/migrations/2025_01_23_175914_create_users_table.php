@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name', 100); 
             $table->string('email', 100)->unique(); 
             $table->string('celular',9);
-            $table->string('seccion',40);
             $table->timestamp('fecha')->useCurrent();
             $table->unsignedInteger('sec_id');
             $table->string('password'); 

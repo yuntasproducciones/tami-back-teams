@@ -18,6 +18,7 @@ class BasicController extends Controller
     {
         return response()->json([
             'status' => 'success',
+            'success' => true,
             'message' => $message,
             'data' => $data
         ], $status->value);
@@ -30,6 +31,7 @@ class BasicController extends Controller
     {
         return response()->json([
             'status' => 'success',
+            'success' => true,
             'message' => $message,
             'data' => null
         ], HttpStatusCode::NO_CONTENT->value);
@@ -44,6 +46,7 @@ class BasicController extends Controller
     {
         return response()->json([
             'status' => 'error',
+            'success' => false,
             'message' => $message,
             'errors' => $errors
         ], $status->value);

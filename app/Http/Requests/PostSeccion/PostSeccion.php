@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PostUser;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostUser extends FormRequest
+class PostSeccion extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class PostUser extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email|max:100',
-            'celular' => 'required|string|regex:/^[0-9]{9}$/',
-            'fecha' => 'date',
-            'sec_id' => 'required|integer|exists:seccion.sec_id',
-            'password' => 'required|string|min:8|max:255'
+            'seccion' => 'required|string|max:100',
+            'id_coment' => 'required|integer|exists:comentarios,id_coment'
         ];
     }
 }

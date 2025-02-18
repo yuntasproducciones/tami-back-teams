@@ -11,16 +11,19 @@ services:
     environment:
       - DB_CONNECTION=mysql
       - DB_HOST=db
-      - DB_PORT=${DB_PORT}
+      - DB_PORT=3306
       - DB_DATABASE=${DB_DATABASE}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
-      - db
-    command: ["sh", "-c", "composer install && npm install && sleep infinity"]
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    command: sh -c "sleep 10 && php artisan migrate:fresh --seed && php artisan serve --host=0.0.0.0 --port=8000"
   db:
-    image: mysql:latest
+    image: mysql:8.0.41
     container_name: tami-db 
+    command: --default-authentication-plugin=mysql_native_password
     ports:
     # DB en puerto 3307 para que no haya conflicto con el MySQL local, cámbialo si es necesario ejm. 3308:3306
       - "3307:3306"
@@ -31,6 +34,12 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:
+    name: tami_db_data

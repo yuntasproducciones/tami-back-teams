@@ -23,7 +23,7 @@ class PostAuth extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|string',
+            // 'password' => 'required|string', // que no se necesite el password para cerrar sesión
         ];
     }
 }

@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable
+class Usuarios_Registro extends Model
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasFactory;
 
-    protected $primaryKey = 'user_id';
+    protected $table = 'usuarios_registro';
+
+    protected $primaryKey = 'usuRegis_id';
 
     protected $fillable = [
         'name',
@@ -21,14 +20,12 @@ class User extends Authenticatable
         'celular',
         'fecha',
         'sec_id',
-        'password'
     ];
 
     public $timestamps = false;
-    
+
     public function secciones(): HasMany
     {
         return $this->hasMany(Seccion::class, 'sec_id', 'sec_id');
     }
-
 }

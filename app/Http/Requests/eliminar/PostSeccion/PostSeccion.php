@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PostAuth;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostAuth extends FormRequest
+class PostSeccion extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class PostAuth extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            // 'password' => 'required|string', // que no se necesite el password para cerrar sesión
+            'seccion' => 'required|string|max:100',
+            'id_coment' => 'required|integer|exists:comentarios,id_coment'
         ];
     }
 }

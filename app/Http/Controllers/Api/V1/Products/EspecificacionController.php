@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Products;
 
 use App\Models\Especificacion;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class EspecificacionController extends Controller
 {

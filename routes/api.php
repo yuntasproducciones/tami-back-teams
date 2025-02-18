@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Products\ProductoController;
-
+use App\Http\Controllers\Api\V1\UsuariosRegistro\UsuariosRegistroController;
 
 Route::prefix('v1')->group(function () {
 
@@ -21,7 +21,6 @@ Route::prefix('v1')->group(function () {
         Route::put('updateUser/{user}', 'updateUser');
     });
 
-
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){
 
         Route::get('/', 'index');
@@ -33,5 +32,11 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{id}', 'destroy');
         });
     });
-    
+
+    Route::controller(UsuariosRegistroController::class)->prefix('userRegistro')->group(function () {
+        Route::post('/registroUsuarios','registroUsuarios');
+        Route::get('/showRegistroUsuarios', 'showRegistroUsuarios');
+        Route::put('/updateRegistroUser/{usuarios_Registro}','updateRegistroUser');
+        Route::delete('/destroyRegistroUser/{usuarios_Registro}','destroyRegistroUser');
+    });
 });

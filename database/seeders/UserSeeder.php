@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Seccion;
 
 class UserSeeder extends Seeder
 {
@@ -19,7 +18,6 @@ class UserSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'celular' => '980473810',
             'fecha' => now()->format('Y-m-d'),
-            'sec_id' => Seccion::all()->random()->sec_id,
             'password' => bcrypt('admin'), 
         ]);
 

@@ -14,10 +14,7 @@ return new class extends Migration
             $table->string('email', 100)->unique(); 
             $table->string('celular',9);
             $table->timestamp('fecha')->useCurrent();
-            $table->unsignedInteger('sec_id');
-            $table->string('password'); 
-
-            $table->foreign('sec_id')->references('sec_id')->on('seccion')->onDelete('cascade');
+            $table->string('password');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

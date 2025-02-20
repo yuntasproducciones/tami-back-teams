@@ -26,7 +26,6 @@ class PostUsuarios_Registro extends FormRequest
             'email' => 'required|email|unique:users,email|max:100',
             'celular' => 'required|string|regex:/^[0-9]{9}$/',
             'fecha' => 'date',
-            'sec_id' => 'required|integer|exists:seccion,sec_id'
         ];
     }
 }

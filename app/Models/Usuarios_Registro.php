@@ -19,13 +19,7 @@ class Usuarios_Registro extends Model
         'email',
         'celular',
         'fecha',
-        'sec_id',
     ];
 
     public $timestamps = false;
-
-    public function secciones(): HasMany
-    {
-        return $this->hasMany(Seccion::class, 'sec_id', 'sec_id');
-    }
 }

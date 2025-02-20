@@ -15,6 +15,13 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+
+      # - DB_CONNECTION=mysql
+      # - DB_HOST=82.197.82.125
+      # - DB_PORT=3306
+      # - DB_DATABASE=u268804017_database_tami
+      # - DB_USERNAME=u268804017_tami
+      # - DB_PASSWORD=DatabaseTami3
     depends_on:
       db:
         condition: service_healthy

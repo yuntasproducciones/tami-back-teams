@@ -12,14 +12,16 @@ class Usuarios_Registro extends Model
 
     protected $table = 'usuarios_registro';
 
-    protected $primaryKey = 'usuRegis_id';
-
     protected $fillable = [
         'name',
         'email',
         'celular',
-        'fecha',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
+
+    public function interesados(): HasMany
+    {
+        return $this->hasMany(Interesado::class, 'usuario_id', 'id');
+    }
 }

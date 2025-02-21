@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usuarios_registro', function(Blueprint $table) {
+        Schema::create('interesados', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement();
-            $table->string('name',100);
-            $table->string('email', 100)->unique();
-            $table->string('celular', 9);
+            $table->unsignedBigInteger('usuario_id');
+            $table->unsignedBigInteger('producto_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios_registro');
+            $table->foreign('producto_id')->references('id')->on('productos');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuarios_registro');
+        Schema::dropIfExists('interesados');
     }
 };

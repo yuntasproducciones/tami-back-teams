@@ -11,13 +11,13 @@ class Interesado extends Model
     use HasFactory;
 
     protected $fillable = [
-        'usuario_id',
+        'cliente_id',
         'producto_id'
     ];
 
-    public function usuario(): BelongsTo
+    public function cliente(): BelongsTo
     {
-        return $this->belongsTo(Usuarios_Registro::class, 'usuario_id', 'id');
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
     }
 
     public function producto(): BelongsTo

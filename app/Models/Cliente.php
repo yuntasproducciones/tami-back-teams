@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Usuarios_Registro extends Model
+class Cliente extends Model
 {
     use HasFactory;
-
-    protected $table = 'usuarios_registro';
 
     protected $fillable = [
         'name',
@@ -22,6 +20,6 @@ class Usuarios_Registro extends Model
 
     public function interesados(): HasMany
     {
-        return $this->hasMany(Interesado::class, 'usuario_id', 'id');
+        return $this->hasMany(Interesado::class, 'cliente_id', 'id');
     }
 }

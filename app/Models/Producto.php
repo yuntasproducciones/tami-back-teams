@@ -3,10 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-=======
 use Illuminate\Database\Eloquent\Relations\HasMany;
->>>>>>> 4c583988bce5dae4ed38a58d6804b62294dc4a1b
 
 class Producto extends Model
 {
@@ -19,12 +16,8 @@ class Producto extends Model
         'imagen_principal',
         'stock',
         'precio',
-<<<<<<< HEAD
-        'seccion'
-=======
         'seccion',
         'mensaje_correo'
->>>>>>> 4c583988bce5dae4ed38a58d6804b62294dc4a1b
     ];
 
     public $timestamps = true;
@@ -48,12 +41,9 @@ class Producto extends Model
     {
         return $this->belongsToMany(Producto::class, 'producto_relacionados', 'id_producto', 'id_relacionado');
     }
-<<<<<<< HEAD
-=======
 
     public function interesados(): HasMany
     {
         return $this->hasMany(Interesado::class, 'producto_id', 'id');
     }
->>>>>>> 4c583988bce5dae4ed38a58d6804b62294dc4a1b
 }

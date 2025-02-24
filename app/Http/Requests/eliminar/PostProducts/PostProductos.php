@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\PostProducts;
+namespace App\Http\Requests\PostInteresado;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostProductos extends FormRequest
+class StoreInteresadoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,12 +22,7 @@ class PostProductos extends FormRequest
     public function rules(): array
     {
         return [
-            'imagen_principal' => 'required|string',
-            'imagen_sec_1' => 'required|string',
-            'imagen_sec_2' => 'required|string',
-            'imagen_sec_3' => 'required|string',
-            'descripcion' => 'required|string|max:150',
-            'cat_id' => 'required|numeric|exists:categorias,cat_id'
+            //
         ];
     }
 }

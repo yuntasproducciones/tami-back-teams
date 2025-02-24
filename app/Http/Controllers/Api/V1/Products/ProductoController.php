@@ -60,7 +60,8 @@ class ProductoController extends Controller
             'especificaciones' => 'array',
             'dimensiones' => 'array',
             'imagenes' => 'array',
-            'relacionados' => 'array'
+            'relacionados' => 'array',
+            'mensaje_correo' => 'nullable|string'
         ]);
 
         DB::beginTransaction();
@@ -74,7 +75,8 @@ class ProductoController extends Controller
                 'imagen_principal' => $request->imagen_principal,
                 'stock' => $request->stock,
                 'precio' => $request->precio,
-                'seccion' => $request->seccion
+                'seccion' => $request->seccion,
+                'mensaje_correo' => $request->mensaje_correo
             ]);
 
             if ($request->has('especificaciones')) {
@@ -140,6 +142,7 @@ class ProductoController extends Controller
             'stockProducto' => $producto->stock,
             'precioProducto' => $producto->precio,
             'seccion' => $producto->seccion,
+            'mensaje_correo' => $producto->mensaje_correo
         ];
 
         return response()->json($formattedProducto);

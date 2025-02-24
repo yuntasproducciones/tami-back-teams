@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\PostInteresado;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostComentarios extends FormRequest
+class UpdateInteresadoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,7 +22,7 @@ class PostComentarios extends FormRequest
     public function rules(): array
     {
         return [
-            'comentarios' => 'required|string|max:400'
+            //
         ];
     }
 }

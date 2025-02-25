@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostUser\PostUser;
 use App\Http\Requests\PostUser\PostUserUpdate;
-use App\Traits\HttpResponseHelper;
+use App\Http\Controllers\Api\V1\BasicController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
+class UserController extends BasicController
 {
-    use HttpResponseHelper;
     public function register(PostUser $request)
-
     {
         try {
             DB::beginTransaction();
@@ -28,11 +25,11 @@ class UserController extends Controller
             
             DB::commit();
 
-            return $this->successfulResponse('Usuario creado correctamente', $user)->send();
+            return $this->successResponse($user, 'Usuario creado correctamente');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->internalErrorResponse('Error al crear usuario: ' . $e->getMessage())->send();
+            return $this->internalServerErrorResponse('Error al crear usuario: ' . $e->getMessage());
         }
     }
 
@@ -46,13 +43,11 @@ class UserController extends Controller
                 ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
                 ->get();
 
-            return $this->successfulResponse(
-                $userList->isEmpty() ? "No hay usuarios disponibles." : "Usuarios listados correctamente.",
-                $userList
-            )->send();
+            $message = $userList->isEmpty() ? "No hay usuarios disponibles." : "Usuarios listados correctamente.";
+            return $this->successResponse($userList, $message);
 
         } catch(\Exception $e) {
-            return $this->internalErrorResponse("Ocurrió un problema al listar los usuarios." . $e->getMessage())->send();
+            return $this->internalServerErrorResponse("Ocurrió un problema al listar los usuarios: " . $e->getMessage());
         }
     }
 
@@ -62,10 +57,10 @@ class UserController extends Controller
             $userId = User::findOrFail($user);
             $userId->delete();
 
-            return $this->successfulResponse('Usuario eliminado.')->send();
+            return $this->successResponse($userId, 'Usuario eliminado correctamente.');
 
         } catch(\Exception $e) {
-            return $this->internalErrorResponse("Ocurrió un problema con la eliminación del usuario." . $e->getMessage())->send();
+            return $this->internalServerErrorResponse("Ocurrió un problema con la eliminación del usuario: " . $e->getMessage());
         }
     }
 
@@ -74,14 +69,14 @@ class UserController extends Controller
         try {
             $user->update($request->validated());
 
-            return $this->successfulResponse(
-                $user->wasChanged() 
-                    ? "Usuario actualizado correctamente." 
-                    : "No hubo cambios en los datos del usuario."
-            )->send();
+            $message = $user->wasChanged() 
+                ? "Usuario actualizado correctamente." 
+                : "No hubo cambios en los datos del usuario.";
+                
+            return $this->successResponse($user, $message);
 
         } catch (\Exception $e) {
-            return $this->internalErrorResponse("Ocurrió un problema al actualizar al usuario. " . $e->getMessage())->send();
+            return $this->internalServerErrorResponse("Ocurrió un problema al actualizar al usuario: " . $e->getMessage());
         }
     }
 }

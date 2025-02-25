@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Products;
 
 use App\Models\Producto;
-use Illuminate\Http\Request;
+use App\Http\Requests\Producto\StoreProductoRequest;
+use App\Http\Requests\Producto\UpdateProductoRequest;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\BasicController;
+use App\Http\Contains\HttpStatusCode;
 
-class ProductoController extends Controller
+class ProductoController extends BasicController
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +37,7 @@ class ProductoController extends Controller
             ];
         });
 
-        return response()->json($formattedProductos);
+        return $this->successResponse($formattedProductos, 'Productos obtenidos exitosamente');
     }
 
     /**
@@ -49,21 +51,8 @@ class ProductoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductoRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
-            'imagen_principal' => 'required|string',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer',
-            'especificaciones' => 'array',
-            'dimensiones' => 'array',
-            'imagenes' => 'array',
-            'relacionados' => 'array',
-            'mensaje_correo' => 'nullable|string'
-        ]);
-
         DB::beginTransaction();
         try {
             $producto = Producto::create([
@@ -112,11 +101,11 @@ class ProductoController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Producto creado exitosamente', 'producto' => $producto], 201);
+            return $this->successResponse($producto, 'Producto creado exitosamente', HttpStatusCode::CREATED);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Error al crear el producto: ' . $e->getMessage()], 500);
+            return $this->errorResponse('Error al crear el producto: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -125,27 +114,31 @@ class ProductoController extends Controller
      */
     public function show($id)
     {
-        $producto = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
+        try {
+            $producto = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
 
-        $formattedProducto = [
-            'id' => $producto->id,
-            'title' => $producto->titulo,
-            'subtitle' => $producto->subtitulo,
-            'tagline' => $producto->lema,
-            'description' => $producto->descripcion,
-            'specs' => $producto->especificaciones->pluck('valor', 'clave'),
-            'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
-            'relatedProducts' => $producto->productosRelacionados->pluck('id'),
-            'images' => $producto->imagenes->pluck('url_imagen'),
-            'image' => $producto->imagen_principal,
-            'nombreProducto' => $producto->nombre,
-            'stockProducto' => $producto->stock,
-            'precioProducto' => $producto->precio,
-            'seccion' => $producto->seccion,
-            'mensaje_correo' => $producto->mensaje_correo
-        ];
+            $formattedProducto = [
+                'id' => $producto->id,
+                'title' => $producto->titulo,
+                'subtitle' => $producto->subtitulo,
+                'tagline' => $producto->lema,
+                'description' => $producto->descripcion,
+                'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
+                'relatedProducts' => $producto->productosRelacionados->pluck('id'),
+                'images' => $producto->imagenes->pluck('url_imagen'),
+                'image' => $producto->imagen_principal,
+                'nombreProducto' => $producto->nombre,
+                'stockProducto' => $producto->stock,
+                'precioProducto' => $producto->precio,
+                'seccion' => $producto->seccion,
+                'mensaje_correo' => $producto->mensaje_correo
+            ];
 
-        return response()->json($formattedProducto);
+            return $this->successResponse($formattedProducto, 'Producto encontrado exitosamente');
+        } catch (\Exception $e) {
+            return $this->notFoundResponse('Producto no encontrado');
+        }
     }
 
     /**
@@ -159,17 +152,13 @@ class ProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductoRequest $request, $id)
     {
-        $producto = Producto::findOrFail($id);
-
-        $request->validate([
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
-            'imagen_principal' => 'required|string',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer'
-        ]);
+        try {
+            $producto = Producto::findOrFail($id);
+        } catch (\Exception $e) {
+            return $this->notFoundResponse('Producto no encontrado');
+        }
 
         DB::beginTransaction();
         try {
@@ -219,11 +208,11 @@ class ProductoController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Producto actualizado exitosamente', 'producto' => $producto]);
+            return $this->successResponse($producto, 'Producto actualizado exitosamente');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Error al actualizar el producto: ' . $e->getMessage()], 500);
+            return $this->errorResponse('Error al actualizar el producto: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -235,9 +224,12 @@ class ProductoController extends Controller
         try {
             $producto = Producto::findOrFail($id);
             $producto->delete();
-            return response()->json(['message' => 'Producto eliminado exitosamente']);
+            return $this->successResponse(null, 'Producto eliminado exitosamente');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al eliminar el producto: ' . $e->getMessage()], 500);
+            if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return $this->notFoundResponse('Producto no encontrado');
+            }
+            return $this->errorResponse('Error al eliminar el producto: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 }

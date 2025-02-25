@@ -10,18 +10,18 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('/login', 'login');
-        Route::post('/logout', 'logout')->middleware('auth:sanctum');
+        Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
     });
 
 
     Route::controller(UserController::class)->prefix('users')->group(function(){
         
-        Route::post('/register', 'register');
+        Route::post('/', 'store');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::get('/listUsers', 'listUsers');
-            Route::delete('/deleteUser/{user}', 'deleteUser');
-            Route::put('/updateUser/{user}', 'updateUser');
+            Route::get('/', 'index');
+            Route::delete('/{id}', 'destroy');
+            Route::put('/{id}', 'update');
         });
     });
 

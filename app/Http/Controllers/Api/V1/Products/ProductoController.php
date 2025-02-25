@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Products;
 
 use App\Models\Producto;
-use Illuminate\Http\Request;
+use App\Http\Requests\Producto\StoreProductoRequest;
+use App\Http\Requests\Producto\UpdateProductoRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\BasicController;
 use App\Http\Contains\HttpStatusCode;
@@ -50,21 +51,8 @@ class ProductoController extends BasicController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductoRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
-            'imagen_principal' => 'required|string',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer',
-            'especificaciones' => 'array',
-            'dimensiones' => 'array',
-            'imagenes' => 'array',
-            'relacionados' => 'array',
-            'mensaje_correo' => 'nullable|string'
-        ]);
-
         DB::beginTransaction();
         try {
             $producto = Producto::create([
@@ -164,21 +152,13 @@ class ProductoController extends BasicController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductoRequest $request, $id)
     {
         try {
             $producto = Producto::findOrFail($id);
         } catch (\Exception $e) {
             return $this->notFoundResponse('Producto no encontrado');
         }
-
-        $request->validate([
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
-            'imagen_principal' => 'required|string',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer'
-        ]);
 
         DB::beginTransaction();
         try {

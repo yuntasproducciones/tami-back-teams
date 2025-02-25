@@ -10,7 +10,7 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('/login', 'login');
-        Route::post('/logout', 'logout')->middleware('auth:sanctum');
+        Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
     });
 
 

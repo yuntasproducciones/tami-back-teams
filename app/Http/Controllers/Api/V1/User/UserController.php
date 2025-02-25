@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends BasicController
 {
-    public function register(PostUser $request)
+    public function store(PostUser $request)
     {
         try {
             DB::beginTransaction();
@@ -33,7 +33,7 @@ class UserController extends BasicController
         }
     }
 
-    public function listUsers()
+    public function index()
     {
         try {
             $userList = User::select('users.user_id', 'users.name', 
@@ -51,22 +51,23 @@ class UserController extends BasicController
         }
     }
 
-    public function deleteUser($user)
+    public function destroy($id)
     {
         try {
-            $userId = User::findOrFail($user);
-            $userId->delete();
+            $user = User::findOrFail($id);
+            $user->delete();
 
-            return $this->successResponse($userId, 'Usuario eliminado correctamente.');
+            return $this->successResponse($user, 'Usuario eliminado correctamente.');
 
         } catch(\Exception $e) {
             return $this->internalServerErrorResponse("Ocurrió un problema con la eliminación del usuario: " . $e->getMessage());
         }
     }
 
-    public function updateUser(PostUserUpdate $request, User $user)
+    public function update(PostUserUpdate $request, $id)
     {
         try {
+            $user = User::findOrFail($id);
             $user->update($request->validated());
 
             $message = $user->wasChanged() 

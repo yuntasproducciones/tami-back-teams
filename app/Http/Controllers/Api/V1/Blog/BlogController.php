@@ -11,7 +11,6 @@ use App\Models\DetalleBlog;
 use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 class BlogController extends Controller
 {
@@ -83,18 +82,78 @@ class BlogController extends Controller
         }
     }
 
-    public function show(Blog $blog)
+    public function show(PostStoreBlog $blog)
     {
-        
+        try {
+            $blog = Blog::findOrFail($blog->id);
+
+            return $this->successResponse($blog, 'Blog obtenido exitosamente',
+            HttpStatusCode::OK);
+
+        } catch(\Exception $e) {
+            return $this->errorResponse('Error al obtener el blog: ' . $e->getMessage(),
+            HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public function update(Request $request, Blog $blog)
+    public function update(PostStoreBlog $request, Blog $blog)
     {
-        
+        try {
+            DB::beginTransaction();
+
+            $blog = Blog::findOrFail($blog->id);
+            $blog->update($request->only('titulo', 'parrafo', 'imagen_principal'));
+
+            if ($request->has('imagenes')) {
+                $blog->imagenes()->delete();
+
+                $imagenes = collect($request->imagenes)->map(fn($imagen) => [
+                    'url' => $imagen['url_imagen'],
+                    'parrafo_imagen' => $imagen['parrafo_imagen'],
+                    'id_blog' => $blog->id
+                ])->toArray();
+
+                ImagenBlog::insert($imagenes);
+            }
+
+            $detalle = DetalleBlog::where('id_blog', $blog->id)->first()->update(
+                $request->only('titulo_blog', 'subtitulo_beneficio'));
+ 
+            $video = VideoBlog::where('id_blog', $blog->id)->first()->update(
+                $request->only('url_video', 'titulo_video'));
+
+            $confirmUpdate = $blog->wasChanged() || $detalle > 0 || $video > 0;
+
+            DB::commit(); 
+
+            return $this->successResponse(
+                $confirmUpdate ? 'Blog actualizado exitosamente' : 'No se realizaron cambios:\n' . 
+                "Blog: " . $blog . 
+                "\nDetalleBlog: " .$detalle .
+                "\Video: " . $video,
+                $confirmUpdate ? HttpStatusCode::OK : HttpStatusCode::NOT_IMPLEMENTED
+            );
+            
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Error al actualizar el blog: ' . $e->getMessage(),
+            HttpStatusCode::INTERNAL_SERVER_ERROR);
+            
+        }
     }
 
     public function destroy(Blog $blog)
     {
-        
+        try {
+            $blog = Blog::findOrFail($blog->id);
+            $blog->delete();
+
+            return $this->successResponse($blog, 'Blog eliminado exitosamente',
+            HttpStatusCode::OK);
+
+        } catch(\Exception $e) {
+            return $this->errorResponse('Error al eliminar el blog: ' . $e->getMessage(),
+            HttpStatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 }

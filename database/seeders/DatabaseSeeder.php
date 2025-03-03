@@ -2,11 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comentarios;
-use App\Models\Seccion;
-//use App\Models\Usuarios_Registro;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,9 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Comentarios::factory(10)->create();
-        Seccion::factory(10)->create();
-        //Usuarios_Registro::factory(10)->create();
 
         $this->call([
             RoleSeeder::class,

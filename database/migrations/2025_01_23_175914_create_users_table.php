@@ -6,18 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('user_id'); 
-            $table->string('name', 100); 
-            $table->string('email', 100)->unique(); 
-            $table->string('celular',9);
-            $table->timestamp('fecha')->useCurrent();
-            $table->unsignedInteger('sec_id');
-            $table->string('password'); 
-
-            $table->foreign('sec_id')->references('sec_id')->on('seccion')->onDelete('cascade');
+            $table->id();
+            $table->string('name',100);
+            $table->string('email',100)->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('celular',20)->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -28,7 +30,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index(); 
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -36,6 +38,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('users');

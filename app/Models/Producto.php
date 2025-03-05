@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Producto extends Model
 {
@@ -15,7 +16,8 @@ class Producto extends Model
         'imagen_principal',
         'stock',
         'precio',
-        'seccion'
+        'seccion',
+        'mensaje_correo'
     ];
 
     public $timestamps = true;
@@ -38,5 +40,10 @@ class Producto extends Model
     public function productosRelacionados()
     {
         return $this->belongsToMany(Producto::class, 'producto_relacionados', 'id_producto', 'id_relacionado');
+    }
+
+    public function interesados(): HasMany
+    {
+        return $this->hasMany(Interesado::class, 'producto_id', 'id');
     }
 }

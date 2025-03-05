@@ -9,21 +9,16 @@ use App\Http\Contains\HttpStatusCode;
 use App\Http\Requests\Cliente\StoreClienteRequest;
 use App\Http\Requests\Cliente\UpdateClienteRequest;
 
-<<<<<<< HEAD
-=======
 /**
  * @OA\Tag(
  *     name="Clientes",
  *     description="API Endpoints para gestión de clientes"
  * )
  */
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 class ClienteController extends BasicController
 {
     /**
      * Display a listing of clientes.
-<<<<<<< HEAD
-=======
      * 
      * @OA\Get(
      *     path="/api/v1/clientes",
@@ -56,25 +51,18 @@ class ClienteController extends BasicController
      *         )
      *     )
      * )
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function index()
     {
         try {
             $clientes = Cliente::all();
 
-<<<<<<< HEAD
-            return $this->successResponse(
-                [$clientes->isEmpty() ? 'No hay usuarios para listar.' : 
-                'Usuarios listados correctamente.' => $clientes, HttpStatusCode::OK]
-=======
             $message = $clientes->isEmpty() ? 'No hay usuarios para listar.' : 'Usuarios listados correctamente.';
 
             return $this->successResponse(
             $clientes,
             $message,
             HttpStatusCode::OK
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             );
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrio un problema al listar los usuarios. ' . $e->getMessage(),
@@ -84,8 +72,6 @@ class ClienteController extends BasicController
 
     /**
      * Store a newly created cliente in storage.
-<<<<<<< HEAD
-=======
      * 
      * @OA\Post(
      *     path="/api/v1/clientes",
@@ -128,22 +114,16 @@ class ClienteController extends BasicController
      *         )
      *     )
      * )
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function store(StoreClienteRequest $request)
     {
         try {
             Cliente::create($request->all());
 
-<<<<<<< HEAD
-            return $this->successResponse(null
-            , 'Usuario registrado exitosamente.', HttpStatusCode::OK);
-=======
             return $this->successResponse(
                 $request->all(),
                 'Usuario registrado exitosamente.',
                 HttpStatusCode::OK);
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrio un problema al procesar la solicitud. '. $e->getMessage()
@@ -153,8 +133,6 @@ class ClienteController extends BasicController
 
     /**
      * Display the specified resource.
-<<<<<<< HEAD
-=======
      * 
      * @OA\Get(
      *     path="/api/v1/clientes/{id}",
@@ -202,7 +180,6 @@ class ClienteController extends BasicController
      *         )
      *     )
      * )
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function show($id)
     {
@@ -210,14 +187,9 @@ class ClienteController extends BasicController
             $cliente = Cliente::find($id);
 
             return $this->successResponse(
-<<<<<<< HEAD
-                $cliente ? 'Usuario encontrado.' : 'Usuario no encontrado.', 
-                $cliente, HttpStatusCode::OK
-=======
                 $cliente,
                 $cliente ? 'Usuario encontrado.' : 'Usuario no encontrado.', 
                 HttpStatusCode::OK
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             );
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
@@ -226,8 +198,6 @@ class ClienteController extends BasicController
 
     /**
      * Update the specified cliente in storage.
-<<<<<<< HEAD
-=======
      * 
      * @OA\Put(
      *     path="/api/v1/clientes/{id}",
@@ -292,7 +262,6 @@ class ClienteController extends BasicController
      *         )
      *     )
      * )
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function update(UpdateClienteRequest $request, $id)
     {
@@ -316,8 +285,6 @@ class ClienteController extends BasicController
 
     /**
      * Remove the specified cliente from storage.
-<<<<<<< HEAD
-=======
      * 
      * @OA\Delete(
      *     path="/api/v1/clientes/{id}",
@@ -357,7 +324,6 @@ class ClienteController extends BasicController
      *         )
      *     )
      * )
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function destroy($id)
     {

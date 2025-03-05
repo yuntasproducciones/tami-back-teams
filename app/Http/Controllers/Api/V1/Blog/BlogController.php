@@ -12,8 +12,30 @@ use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
 use Illuminate\Support\Facades\DB;
 
+/**
+     * @OA\Tag(
+     *     name="Blogs",
+     *     description="API para gestión de blogs"
+     * )
+*/
 class BlogController extends BasicController
 {
+      /**
+     * @OA\Get(
+     *     path="/api/v1/blogs",
+     *     summary="Obtener todos los blogs",
+     *     tags={"Blogs"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blogs obtenidos exitosamente",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Blog"))
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al obtener los blogs"
+     *     )
+     * )
+     */
     public function index()
     {
         try {
@@ -27,8 +49,8 @@ class BlogController extends BasicController
                     'imagenPrincipal' => $blog->imagen_principal,
                     'tituloBlog' => optional($blog->detalle)->titulo_blog, 
                     'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
-                    'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
-                    'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
+                    'imagenesBlog' => optional($blog->imagenes->pluck('url_imagen')), 
+                    'parrafoImagenesBlog' => optional($blog->imagenes->pluck('parrafo_imagen')),
                     'videoBlog' => optional($blog->video)->url_video, 
                     'tituloVideoBlog' => optional($blog->video)->titulo_video,
                 ];
@@ -43,6 +65,26 @@ class BlogController extends BasicController
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/blogs",
+     *     summary="Crear un nuevo blog",
+     *     tags={"Blogs"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PostStoreBlog")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Blog creado con éxito",
+     *         @OA\JsonContent(ref="#/components/schemas/Blog")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al crear el blog"
+     *     )
+     * )
+     */
     public function store(PostStoreBlog $request)
     {
         try {
@@ -82,6 +124,28 @@ class BlogController extends BasicController
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Obtener un blog por ID",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog obtenido exitosamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Blog")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al obtener el blog"
+     *     )
+     * )
+     */
     public function show($id)
     {
         try {
@@ -109,6 +173,32 @@ class BlogController extends BasicController
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Actualizar un blog",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PostStoreBlog")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog actualizado exitosamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Blog")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al actualizar el blog"
+     *     )
+     * )
+     */
     public function update(PostStoreBlog $request, $blog)
     {
         try {
@@ -163,6 +253,28 @@ class BlogController extends BasicController
         }
     }
 
+/**
+     * @OA\Delete(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Eliminar un blog",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog eliminado exitosamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Blog")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al eliminar el blog"
+     *     )
+     * )
+     */
     public function destroy($blog)
     {
         try {

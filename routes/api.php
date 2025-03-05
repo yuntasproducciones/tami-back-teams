@@ -5,15 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
-<<<<<<< HEAD
-use App\Http\Controllers\Api\V1\Products\ProductoController;
-use App\Http\Controllers\Api\V1\Cliente\ClienteController;
-=======
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
-
-
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 
 Route::prefix('v1')->group(function () {
 
@@ -26,14 +19,8 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(UserController::class)->prefix('users')->group(function(){
         
-<<<<<<< HEAD
-        Route::post('/', 'store');
-
-        Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-=======
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
             Route::post('/', 'store');
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             Route::get('/', 'index');
             Route::delete('/{id}', 'destroy');
             Route::put('/{id}', 'update');
@@ -63,7 +50,6 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-<<<<<<< HEAD
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
@@ -75,6 +61,4 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-=======
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 });

@@ -23,13 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'celular',
-<<<<<<< HEAD
-        'fecha',
-        'password'
-    ];
-
-    public $timestamps = false;
-=======
         'password',
     ];
 
@@ -55,5 +48,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 }

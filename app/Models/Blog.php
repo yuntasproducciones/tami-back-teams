@@ -17,7 +17,6 @@ class Blog extends Model
 
     public $timestamps = true;
 
-<<<<<<< HEAD
     public function imagenes()
     {
         return $this->hasMany(ImagenBlog::class, 'id_blog', 'id'); 
@@ -32,6 +31,4 @@ class Blog extends Model
     {
         return $this->hasOne(DetalleBlog::class, 'id_blog', 'id');
     }
-=======
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 }

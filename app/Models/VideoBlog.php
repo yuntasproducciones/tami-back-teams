@@ -11,7 +11,6 @@ class VideoBlog extends Model
 
     protected $fillable = [
         'url_video',
-<<<<<<< HEAD
         'titulo_video',
         'id_blog'
     ];
@@ -22,10 +21,4 @@ class VideoBlog extends Model
     {
         return $this->belongsTo(Blog::class, 'id_blog', 'id');
     }
-=======
-        'titulo_video'
-    ];
-
-    public $timestamps = true;
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 }

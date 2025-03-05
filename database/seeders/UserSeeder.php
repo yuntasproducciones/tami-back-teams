@@ -16,12 +16,7 @@ class UserSeeder extends Seeder
         $user = User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
-<<<<<<< HEAD
-            'celular' => '980473810',
-            'fecha' => now()->format('Y-m-d'),
-=======
             'celular' => '000111000',
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             'password' => bcrypt('admin'), 
         ]);
 

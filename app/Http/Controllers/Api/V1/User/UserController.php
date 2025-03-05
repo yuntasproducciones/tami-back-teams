@@ -10,10 +10,6 @@ use App\Http\Controllers\Api\V1\BasicController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-<<<<<<< HEAD
-class UserController extends BasicController
-{
-=======
 /**
  * @OA\Tag(
  *     name="Usuarios",
@@ -69,7 +65,6 @@ class UserController extends BasicController
      *     )
      * )
      */
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function store(PostUser $request)
     {
         try {
@@ -91,17 +86,6 @@ class UserController extends BasicController
         }
     }
 
-<<<<<<< HEAD
-    public function index()
-    {
-        try {
-            $userList = User::select('users.user_id', 'users.name', 
-                'users.email', 'users.celular', 'users.fecha', 
-                'roles.name as role')
-                ->join('model_has_roles', 'users.user_id', '=', 'model_has_roles.model_id')
-                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                ->get();
-=======
     /**
      * @OA\Get(
      *     path="/api/v1/users",
@@ -145,7 +129,6 @@ class UserController extends BasicController
     {
         try {
             $userList = User::all();
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 
             $message = $userList->isEmpty() ? "No hay usuarios disponibles." : "Usuarios listados correctamente.";
             return $this->successResponse($userList, $message);
@@ -155,8 +138,6 @@ class UserController extends BasicController
         }
     }
 
-<<<<<<< HEAD
-=======
     /**
      * @OA\Delete(
      *     path="/api/v1/users/{id}",
@@ -203,7 +184,6 @@ class UserController extends BasicController
      *     )
      * )
      */
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function destroy($id)
     {
         try {
@@ -217,8 +197,6 @@ class UserController extends BasicController
         }
     }
 
-<<<<<<< HEAD
-=======
     /**
      * @OA\Put(
      *     path="/api/v1/users/{id}",
@@ -283,7 +261,6 @@ class UserController extends BasicController
      *     )
      * )
      */
->>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function update(PostUserUpdate $request, $id)
     {
         try {

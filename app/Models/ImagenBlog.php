@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ImagenBlog extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = [
         'url_imagen',
         'parrafo_imagen',
@@ -16,4 +16,9 @@ class ImagenBlog extends Model
     ];
 
     public $timestamps = true;
+
+    public function blog()
+    {
+        return $this->belongsTo(Blog::class, 'id_blog', 'id');
+    }
 }

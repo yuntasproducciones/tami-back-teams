@@ -24,8 +24,12 @@ class DatabaseSeeder extends Seeder
             DimensionSeeder::class,
             ImagenProductoSeeder::class,
             ProductoRelacionadoSeeder::class,
-        ]);
 
-        
+            // Blog
+            BlogSeeder::class,
+            DetalleBlogSeeder::class,
+            ImagenBlogSeeder::class,
+            VideoBlogSeeder::class,
+        ]);
     }
 }

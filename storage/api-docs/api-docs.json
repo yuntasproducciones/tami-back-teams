@@ -110,6 +110,469 @@
                 ]
             }
         },
+        "/api/v1/blogs": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Muestra un listado de todos los blogs",
+                "description": "Retorna un array con todos los blogs y sus relaciones",
+                "operationId": "indexBlogs",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
+                                                    "parrafo": {
+                                                        "type": "string",
+                                                        "example": "La mejor calidad"
+                                                    },
+                                                    "imagenPrincipal": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/imagen.jpg"
+                                                    },
+                                                    "tituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del Blog"
+                                                    },
+                                                    "subTituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Subtítulo del Blog"
+                                                    },
+                                                    "imagenesBlog": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "url_imagen": {
+                                                                    "type": "string",
+                                                                    "example": "https://example.com/imagen1.jpg"
+                                                                },
+                                                                "parrafo_imagen": {
+                                                                    "type": "string",
+                                                                    "example": "Descripción de la imagen"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "parrafoImagenesBlog": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "Descripción adicional de la imagen"
+                                                        }
+                                                    },
+                                                    "videoBlog": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/video.mp4"
+                                                    },
+                                                    "tituloVideoBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del video"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blogs obtenidos exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Crear un nuevo blog",
+                "description": "Almacena un nuevo blog y retorna los datos creados",
+                "operationId": "storeBlog",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "parrafo",
+                                    "imagen_principal",
+                                    "titulo_blog",
+                                    "subtitulo_beneficio",
+                                    "url_video",
+                                    "titulo_video"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título del blog"
+                                    },
+                                    "parrafo": {
+                                        "type": "string",
+                                        "example": "Contenido del blog..."
+                                    },
+                                    "imagen_principal": {
+                                        "type": "string",
+                                        "example": "https://example.com/imagen-principal.jpg"
+                                    },
+                                    "titulo_blog": {
+                                        "type": "string",
+                                        "example": "Título del detalle del blog"
+                                    },
+                                    "subtitulo_beneficio": {
+                                        "type": "string",
+                                        "example": "Subtítulo de beneficios"
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "url_imagen": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/imagen1.jpg"
+                                                },
+                                                "parrafo_imagen": {
+                                                    "type": "string",
+                                                    "example": "Descripción de la imagen"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "url_video": {
+                                        "type": "string",
+                                        "example": "https://example.com/video.mp4"
+                                    },
+                                    "titulo_video": {
+                                        "type": "string",
+                                        "example": "Título del video"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Blog creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/blogs/{id}": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Muestra un blog específico",
+                "description": "Retorna los datos de un blog según su ID",
+                "operationId": "showBlog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Título del blog"
+                                                },
+                                                "parrafo": {
+                                                    "type": "string",
+                                                    "example": "Contenido del blog..."
+                                                },
+                                                "imagen_principal": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/imagen-principal.jpg"
+                                                },
+                                                "titulo_blog": {
+                                                    "type": "string",
+                                                    "example": "Título del detalle del blog"
+                                                },
+                                                "subtitulo_beneficio": {
+                                                    "type": "string",
+                                                    "example": "Subtítulo de beneficios"
+                                                },
+                                                "imagenes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url_imagen": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/imagen1.jpg"
+                                                            },
+                                                            "parrafo_imagen": {
+                                                                "type": "string",
+                                                                "example": "Descripción de la imagen"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "url_video": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/video.mp4"
+                                                },
+                                                "titulo_video": {
+                                                    "type": "string",
+                                                    "example": "Título del video"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog encontrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Actualiza un blog específico",
+                "description": "Actualiza los datos de un blog existente según su ID",
+                "operationId": "updateBlog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título actualizado del blog"
+                                    },
+                                    "parrafo": {
+                                        "type": "string",
+                                        "example": "Contenido actualizado del blog..."
+                                    },
+                                    "imagen_principal": {
+                                        "type": "string",
+                                        "example": "https://example.com/nueva-imagen.jpg"
+                                    },
+                                    "titulo_blog": {
+                                        "type": "string",
+                                        "example": "Título del detalle actualizado"
+                                    },
+                                    "subtitulo_beneficio": {
+                                        "type": "string",
+                                        "example": "Subtítulo de beneficios actualizado"
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "url_imagen": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/nueva-imagen1.jpg"
+                                                },
+                                                "parrafo_imagen": {
+                                                    "type": "string",
+                                                    "example": "Descripción de la imagen actualizada"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "url_video": {
+                                        "type": "string",
+                                        "example": "https://example.com/nuevo-video.mp4"
+                                    },
+                                    "titulo_video": {
+                                        "type": "string",
+                                        "example": "Título del video actualizado"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Blog actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog actualizado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Elimina un blog específico",
+                "description": "Elimina un blog existente según su ID",
+                "operationId": "destroyBlog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
         "/api/v1/clientes": {
             "get": {
                 "tags": [
@@ -1623,6 +2086,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Blogs",
+            "description": "API para gestión de blogs"
+        },
         {
             "name": "Clientes",
             "description": "API Endpoints para gestión de clientes"

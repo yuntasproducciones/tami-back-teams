@@ -3,11 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
-
-
 
 Route::prefix('v1')->group(function () {
 
@@ -45,6 +44,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', 'show');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
+
+    Route::controller(BlogController::class)->prefix('blogs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
             Route::post('/', 'store');
             Route::put('/{id}', 'update');
             Route::delete('/{id}', 'destroy');

@@ -2,47 +2,150 @@
 
 namespace App\Http\Controllers\Api\V1\Blog;
 
-use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Http\Contains\HttpStatusCode;
+use App\Http\Controllers\Api\V1\BasicController;
 use App\Http\Requests\PostBlog\PostStoreBlog;
 use App\Models\DetalleBlog;
 use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
 use Illuminate\Support\Facades\DB;
 
-class BlogController extends Controller
+/**
+     * @OA\Tag(
+     *     name="Blogs",
+     *     description="API para gestión de blogs"
+     * )
+*/
+class BlogController extends BasicController
 {
+    /**
+     * Obtener listado de blog
+     * 
+     * @OA\Get(
+     *     path="/api/v1/blogs",
+     *     summary="Muestra un listado de todos los blogs",
+     *     description="Retorna un array con todos los blogs y sus relaciones",
+     *     operationId="indexBlogs",
+     *     tags={"Blogs"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
+     *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
+     *                     @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen.jpg"),
+     *                     @OA\Property(property="tituloBlog", type="string", example="Título del Blog"),
+     *                     @OA\Property(property="subTituloBlog", type="string", example="Subtítulo del Blog"),
+     *                     @OA\Property(
+     *                         property="imagenesBlog",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="url_imagen", type="string", example="https://example.com/imagen1.jpg"),
+     *                             @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="parrafoImagenesBlog",
+     *                         type="array",
+     *                         @OA\Items(type="string", example="Descripción adicional de la imagen")
+     *                     ),
+     *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
+     *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video")
+     *                 )
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
     public function index()
     {
         try {
-            $blog = Blog::with(['imagenes','video','detalle'])->get();
+            $blog = Blog::with(['imagenes', 'video', 'detalle'])->get();
 
-            $showBlog = $blog->map(function($blog) {
+            $showBlog = $blog->map(function ($blog) {
                 return [
                     'id' => $blog->id,
                     'titulo' => $blog->titulo,
                     'parrafo' => $blog->parrafo,
                     'imagenPrincipal' => $blog->imagen_principal,
-                    'tituloBlog' => $blog->detalle->pluck('titulo_blog', 'id_blog'),
-                    'subTituloBlog' => $blog->detalle->pluck('subtitulo_beneficio', 'id_blog'),
-                    'imagenesBlog' => $blog->imagenes->pluck('url_imagen','id_blog'),
-                    'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen','id_blog'),
-                    'videoBlog' => $blog->video->pluck('url_video','id_blog'),
-                    'tituloVideoBlog' => $blog->video->pluck('titulo_video','id_blog')
+                    'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+                    'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
+                    'imagenesBlog' => optional($blog->imagenes->pluck('url_imagen')), 
+                    'parrafoImagenesBlog' => optional($blog->imagenes->pluck('parrafo_imagen')),
+                    'videoBlog' => optional($blog->video)->url_video, 
+                    'tituloVideoBlog' => optional($blog->video)->titulo_video,
                 ];
             });
 
             return $this->successResponse($showBlog, 'Blogs obtenidos exitosamente', 
             HttpStatusCode::OK);
-
-        } catch(\Exception $e) {
+        
+        } catch (\Exception $e) {
             return $this->errorResponse('Error al obtener los blogs: ' . $e->getMessage(),
-            HttpStatusCode::INTERNAL_SERVER_ERROR);
+             HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Crear un nuevo blog
+     * 
+     * @OA\Post(
+     *     path="/api/v1/blogs",
+     *     summary="Crear un nuevo blog",
+     *     description="Almacena un nuevo blog y retorna los datos creados",
+     *     operationId="storeBlog",
+     *     tags={"Blogs"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"titulo", "parrafo", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
+     *             @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
+     *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
+     *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
+     *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
+     *             @OA\Property(
+     *                 property="imagenes",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="url_imagen", type="string", example="https://example.com/imagen1.jpg"),
+     *                     @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
+     *                 )
+     *             ),
+     *             @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
+     *             @OA\Property(property="titulo_video", type="string", example="Título del video")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Blog creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Blog creado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
     public function store(PostStoreBlog $request)
     {
         try {
@@ -52,7 +155,7 @@ class BlogController extends Controller
 
             if ($request->has('imagenes')) {
                 $imagenes = collect($request->imagenes)->map(fn($imagen) => [
-                    'url' => $imagen['url_imagen'],
+                    'url_imagen' => $imagen['url_imagen'],
                     'parrafo_imagen' => $imagen['parrafo_imagen'],
                     'id_blog' => $blog->id
                 ])->toArray();
@@ -82,12 +185,75 @@ class BlogController extends Controller
         }
     }
 
-    public function show(PostStoreBlog $blog)
+    /**
+     * Mostrar un blog específico
+     * 
+     * @OA\Get(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Muestra un blog específico",
+     *     description="Retorna los datos de un blog según su ID",
+     *     operationId="showBlog",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del blog",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog encontrado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
+     *                 @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
+     *                 @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
+     *                 @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
+     *                 @OA\Property(property="imagenes", type="array", 
+     *                     @OA\Items(
+     *                         @OA\Property(property="url_imagen", type="string", example="https://example.com/imagen1.jpg"),
+     *                         @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
+     *                 @OA\Property(property="titulo_video", type="string", example="Título del video")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Blog encontrado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Blog no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
+    public function show($id)
     {
         try {
-            $blog = Blog::findOrFail($blog->id);
+            $blog = Blog::with(['imagenes', 'video', 'detalle'])->findOrFail($id);
 
-            return $this->successResponse($blog, 'Blog obtenido exitosamente',
+            $showBlog = [
+                'id' => $blog->id,
+                'titulo' => $blog->titulo,
+                'parrafo' => $blog->parrafo,
+                'imagenPrincipal' => $blog->imagen_principal,
+                'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+                'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
+                'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
+                'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
+                'videoBlog' => optional($blog->video)->url_video, 
+                'tituloVideoBlog' => optional($blog->video)->titulo_video,
+            ];
+
+            return $this->successResponse($showBlog, 'Blog obtenido exitosamente',
             HttpStatusCode::OK);
 
         } catch(\Exception $e) {
@@ -96,19 +262,76 @@ class BlogController extends Controller
         }
     }
 
-    public function update(PostStoreBlog $request, Blog $blog)
+    /**
+     * Actualizar un blog específico
+     * 
+     * @OA\Put(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Actualiza un blog específico",
+     *     description="Actualiza los datos de un blog existente según su ID",
+     *     operationId="updateBlog",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del blog a actualizar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+     *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
+     *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/nueva-imagen.jpg"),
+     *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle actualizado"),
+     *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios actualizado"),
+     *             @OA\Property(property="imagenes", type="array", 
+     *                 @OA\Items(
+     *                     @OA\Property(property="url_imagen", type="string", example="https://example.com/nueva-imagen1.jpg"),
+     *                     @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen actualizada")
+     *                 )
+     *             ),
+     *             @OA\Property(property="url_video", type="string", example="https://example.com/nuevo-video.mp4"),
+     *             @OA\Property(property="titulo_video", type="string", example="Título del video actualizado")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog actualizado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Blog actualizado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Blog no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
+    public function update(PostStoreBlog $request, $blog)
     {
         try {
             DB::beginTransaction();
 
-            $blog = Blog::findOrFail($blog->id);
+            $blog = Blog::findOrFail($blog);
             $blog->update($request->only('titulo', 'parrafo', 'imagen_principal'));
 
             if ($request->has('imagenes')) {
                 $blog->imagenes()->delete();
 
                 $imagenes = collect($request->imagenes)->map(fn($imagen) => [
-                    'url' => $imagen['url_imagen'],
+                    'url_imagen' => $imagen['url_imagen'],
                     'parrafo_imagen' => $imagen['parrafo_imagen'],
                     'id_blog' => $blog->id
                 ])->toArray();
@@ -116,22 +339,30 @@ class BlogController extends Controller
                 ImagenBlog::insert($imagenes);
             }
 
-            $detalle = DetalleBlog::where('id_blog', $blog->id)->first()->update(
-                $request->only('titulo_blog', 'subtitulo_beneficio'));
- 
-            $video = VideoBlog::where('id_blog', $blog->id)->first()->update(
-                $request->only('url_video', 'titulo_video'));
+            $detalle = DetalleBlog::where('id_blog', $blog->id)->first();
+            $detalle ? $detalle->update($request->only(
+                'titulo_blog', 'subtitulo_beneficio'))
+            : DetalleBlog::create([
+                'id_blog' => $blog->id,
+                'titulo_blog' => $request->titulo_blog,
+                'subtitulo_beneficio' => $request->subtitulo_beneficio
+            ]);
 
-            $confirmUpdate = $blog->wasChanged() || $detalle > 0 || $video > 0;
+            $video = VideoBlog::where('id_blog', $blog->id)->first();
+
+            $video ? $video->update($request->only('url_video', 'titulo_video')) 
+            : VideoBlog::create([
+                'id_blog' => $blog->id,
+                'url_video' => $request->url_video,
+                'titulo_video' => $request->titulo_video
+            ]);
 
             DB::commit(); 
 
             return $this->successResponse(
-                $confirmUpdate ? 'Blog actualizado exitosamente' : 'No se realizaron cambios:\n' . 
-                "Blog: " . $blog . 
-                "\nDetalleBlog: " .$detalle .
-                "\Video: " . $video,
-                $confirmUpdate ? HttpStatusCode::OK : HttpStatusCode::NOT_IMPLEMENTED
+                null,
+                'Blog actualizado exitosamente',
+                HttpStatusCode::OK
             );
             
         } catch(\Exception $e) {
@@ -142,10 +373,45 @@ class BlogController extends Controller
         }
     }
 
-    public function destroy(Blog $blog)
+    /**
+     * Eliminar un blog específico
+     * 
+     * @OA\Delete(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Elimina un blog específico",
+     *     description="Elimina un blog existente según su ID",
+     *     operationId="destroyBlog",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del blog a eliminar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog eliminado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="null"),
+     *             @OA\Property(property="message", type="string", example="Blog eliminado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Blog no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
+    public function destroy($blog)
     {
         try {
-            $blog = Blog::findOrFail($blog->id);
+            $blog = Blog::findOrFail($blog);
             $blog->delete();
 
             return $this->successResponse($blog, 'Blog eliminado exitosamente',

@@ -16,4 +16,9 @@ class DetalleBlog extends Model
     ];
 
     public $timestamps = true;
+
+    public function blog()
+    {
+        return $this->belongsTo(Blog::class, 'id_blog', 'id');
+    }
 }

@@ -17,4 +17,18 @@ class Blog extends Model
 
     public $timestamps = true;
 
+    public function imagenes()
+    {
+        return $this->hasMany(ImagenBlog::class, 'id_blog', 'id'); 
+    }
+
+    public function video()
+    {
+        return $this->hasOne(VideoBlog::class, 'id_blog', 'id');
+    }
+
+    public function detalle()
+    {
+        return $this->hasOne(DetalleBlog::class, 'id_blog', 'id');
+    }
 }

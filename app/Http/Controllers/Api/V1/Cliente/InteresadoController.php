@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Products;
+namespace App\Http\Controllers\Api\V1\Cliente;
 
-use App\Models\ImagenProducto;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreInteresadoRequest;
+use App\Http\Requests\UpdateInteresadoRequest;
+use App\Models\Interesado;
+use App\Http\Controllers\Api\V1\BasicController;
 
-class ImagenProductoController extends Controller
+class InteresadoController extends BasicController
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class ImagenProductoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreInteresadoRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class ImagenProductoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ImagenProducto $imagenProducto)
+    public function show(Interesado $interesado)
     {
         //
     }
@@ -43,7 +44,7 @@ class ImagenProductoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ImagenProducto $imagenProducto)
+    public function edit(Interesado $interesado)
     {
         //
     }
@@ -51,7 +52,7 @@ class ImagenProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ImagenProducto $imagenProducto)
+    public function update(UpdateInteresadoRequest $request, Interesado $interesado)
     {
         //
     }
@@ -59,7 +60,7 @@ class ImagenProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ImagenProducto $imagenProducto)
+    public function destroy(Interesado $interesado)
     {
         //
     }

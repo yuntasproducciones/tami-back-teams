@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Products;
+namespace App\Http\Controllers\Api\V1\Productos;
 
-use App\Models\Dimension;
+use App\Models\Especificacion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class DimensionController extends Controller
+class EspecificacionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class DimensionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Dimension $dimension)
+    public function show(Especificacion $especificacion)
     {
         //
     }
@@ -43,7 +43,7 @@ class DimensionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Dimension $dimension)
+    public function edit(Especificacion $especificacion)
     {
         //
     }
@@ -51,7 +51,7 @@ class DimensionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dimension $dimension)
+    public function update(Request $request, Especificacion $especificacion)
     {
         //
     }
@@ -59,7 +59,7 @@ class DimensionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dimension $dimension)
+    public function destroy(Especificacion $especificacion)
     {
         //
     }

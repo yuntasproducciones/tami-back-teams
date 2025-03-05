@@ -10,8 +10,66 @@ use App\Http\Controllers\Api\V1\BasicController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
+<<<<<<< HEAD
 class UserController extends BasicController
 {
+=======
+/**
+ * @OA\Tag(
+ *     name="Usuarios",
+ *     description="API para gestión de usuarios"
+ * )
+ */
+class UserController extends BasicController
+{
+    /**
+     * @OA\Post(
+     *     path="/api/v1/users",
+     *     summary="Crear un nuevo usuario",
+     *     description="Crea un nuevo usuario y le asigna el rol USER",
+     *     operationId="storeUser",
+     *     tags={"Usuarios"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","celular","fecha"},
+     *             @OA\Property(property="name", type="string", example="John Doe", description="Nombre del usuario"),
+     *             @OA\Property(property="email", type="string", format="email", example="johndoe@example.com", description="Correo electrónico"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123", description="Contraseña"),
+     *             @OA\Property(property="celular", type="string", example="1234567890", description="Número de celular"),
+     *             @OA\Property(property="fecha", type="string", format="date", example="1990-01-01", description="Fecha de nacimiento"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuario creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario creado correctamente"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Los datos proporcionados no son válidos"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error al crear usuario"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     )
+     * )
+     */
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function store(PostUser $request)
     {
         try {
@@ -33,6 +91,7 @@ class UserController extends BasicController
         }
     }
 
+<<<<<<< HEAD
     public function index()
     {
         try {
@@ -42,6 +101,51 @@ class UserController extends BasicController
                 ->join('model_has_roles', 'users.user_id', '=', 'model_has_roles.model_id')
                 ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
                 ->get();
+=======
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users",
+     *     summary="Listar todos los usuarios",
+     *     description="Obtiene una lista de todos los usuarios registrados con sus roles",
+     *     operationId="indexUsers",
+     *     tags={"Usuarios"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de usuarios obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuarios listados correctamente."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="user_id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="John Doe"),
+     *                     @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *                     @OA\Property(property="celular", type="string", example="1234567890"),
+     *                     @OA\Property(property="fecha", type="string", format="date", example="1990-01-01"),
+     *                     @OA\Property(property="role", type="string", example="USER")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al listar los usuarios"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     )
+     * )
+     */
+    public function index()
+    {
+        try {
+            $userList = User::all();
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 
             $message = $userList->isEmpty() ? "No hay usuarios disponibles." : "Usuarios listados correctamente.";
             return $this->successResponse($userList, $message);
@@ -51,6 +155,55 @@ class UserController extends BasicController
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/users/{id}",
+     *     summary="Eliminar usuario",
+     *     description="Elimina un usuario por su ID",
+     *     operationId="destroyUser",
+     *     tags={"Usuarios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del usuario a eliminar",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuario eliminado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario eliminado correctamente."),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema con la eliminación del usuario"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     )
+     * )
+     */
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function destroy($id)
     {
         try {
@@ -64,6 +217,73 @@ class UserController extends BasicController
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @OA\Put(
+     *     path="/api/v1/users/{id}",
+     *     summary="Actualizar usuario",
+     *     description="Actualiza los datos de un usuario existente",
+     *     operationId="updateUser",
+     *     tags={"Usuarios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del usuario a actualizar",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="John Doe Updated", description="Nombre del usuario"),
+     *             @OA\Property(property="email", type="string", format="email", example="johndoeupdated@example.com", description="Correo electrónico"),
+     *             @OA\Property(property="celular", type="string", example="0987654321", description="Número de celular"),
+     *             @OA\Property(property="fecha", type="string", format="date", example="1990-01-01", description="Fecha de nacimiento"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuario actualizado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario actualizado correctamente."),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Los datos proporcionados no son válidos"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al actualizar al usuario"),
+     *             @OA\Property(property="errors", type="null")
+     *         )
+     *     )
+     * )
+     */
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
     public function update(PostUserUpdate $request, $id)
     {
         try {

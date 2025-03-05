@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Products;
+namespace App\Http\Controllers\Api\V1\Productos;
 
-use App\Models\Especificacion;
+use App\Models\ImagenProducto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class EspecificacionController extends Controller
+class ImagenProductoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class EspecificacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Especificacion $especificacion)
+    public function show(ImagenProducto $imagenProducto)
     {
         //
     }
@@ -43,7 +43,7 @@ class EspecificacionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Especificacion $especificacion)
+    public function edit(ImagenProducto $imagenProducto)
     {
         //
     }
@@ -51,7 +51,7 @@ class EspecificacionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Especificacion $especificacion)
+    public function update(Request $request, ImagenProducto $imagenProducto)
     {
         //
     }
@@ -59,7 +59,7 @@ class EspecificacionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Especificacion $especificacion)
+    public function destroy(ImagenProducto $imagenProducto)
     {
         //
     }

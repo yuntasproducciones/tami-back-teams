@@ -9,19 +9,72 @@ use App\Http\Contains\HttpStatusCode;
 use App\Http\Requests\Cliente\StoreClienteRequest;
 use App\Http\Requests\Cliente\UpdateClienteRequest;
 
+<<<<<<< HEAD
+=======
+/**
+ * @OA\Tag(
+ *     name="Clientes",
+ *     description="API Endpoints para gestión de clientes"
+ * )
+ */
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
 class ClienteController extends BasicController
 {
     /**
      * Display a listing of clientes.
+<<<<<<< HEAD
+=======
+     * 
+     * @OA\Get(
+     *     path="/api/v1/clientes",
+     *     tags={"Clientes"},
+     *     summary="Obtener lista de todos los clientes",
+     *     description="Retorna una lista de todos los clientes registrados",
+     *     operationId="indexClientes",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de clientes obtenida correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuarios listados correctamente."),
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="celular", type="string", example="999888777"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al listar los usuarios.")
+     *         )
+     *     )
+     * )
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function index()
     {
         try {
             $clientes = Cliente::all();
 
+<<<<<<< HEAD
             return $this->successResponse(
                 [$clientes->isEmpty() ? 'No hay usuarios para listar.' : 
                 'Usuarios listados correctamente.' => $clientes, HttpStatusCode::OK]
+=======
+            $message = $clientes->isEmpty() ? 'No hay usuarios para listar.' : 'Usuarios listados correctamente.';
+
+            return $this->successResponse(
+            $clientes,
+            $message,
+            HttpStatusCode::OK
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             );
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrio un problema al listar los usuarios. ' . $e->getMessage(),
@@ -31,14 +84,66 @@ class ClienteController extends BasicController
 
     /**
      * Store a newly created cliente in storage.
+<<<<<<< HEAD
+=======
+     * 
+     * @OA\Post(
+     *     path="/api/v1/clientes",
+     *     tags={"Clientes"},
+     *     summary="Crear un nuevo cliente",
+     *     description="Crea un nuevo registro de cliente con los datos proporcionados",
+     *     operationId="storeCliente",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="celular", type="string", example="999888777")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cliente creado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario registrado exitosamente.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Datos de entrada inválidos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Los datos proporcionados no son válidos."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al procesar la solicitud.")
+     *         )
+     *     )
+     * )
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function store(StoreClienteRequest $request)
     {
         try {
             Cliente::create($request->all());
 
+<<<<<<< HEAD
             return $this->successResponse(null
             , 'Usuario registrado exitosamente.', HttpStatusCode::OK);
+=======
+            return $this->successResponse(
+                $request->all(),
+                'Usuario registrado exitosamente.',
+                HttpStatusCode::OK);
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrio un problema al procesar la solicitud. '. $e->getMessage()
@@ -48,6 +153,56 @@ class ClienteController extends BasicController
 
     /**
      * Display the specified resource.
+<<<<<<< HEAD
+=======
+     * 
+     * @OA\Get(
+     *     path="/api/v1/clientes/{id}",
+     *     tags={"Clientes"},
+     *     summary="Obtener un cliente específico",
+     *     description="Retorna los datos de un cliente según su ID",
+     *     operationId="showCliente",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del cliente a consultar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cliente encontrado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario encontrado."),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="celular", type="string", example="999888777"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Cliente no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Usuario no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al procesar la solicitud.")
+     *         )
+     *     )
+     * )
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function show($id)
     {
@@ -55,8 +210,14 @@ class ClienteController extends BasicController
             $cliente = Cliente::find($id);
 
             return $this->successResponse(
+<<<<<<< HEAD
                 $cliente ? 'Usuario encontrado.' : 'Usuario no encontrado.', 
                 $cliente, HttpStatusCode::OK
+=======
+                $cliente,
+                $cliente ? 'Usuario encontrado.' : 'Usuario no encontrado.', 
+                HttpStatusCode::OK
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
             );
         } catch (\Exception $e) {
             return $this->errorResponse('Ocurrió un problema al procesar la solicitud. ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
@@ -65,6 +226,73 @@ class ClienteController extends BasicController
 
     /**
      * Update the specified cliente in storage.
+<<<<<<< HEAD
+=======
+     * 
+     * @OA\Put(
+     *     path="/api/v1/clientes/{id}",
+     *     tags={"Clientes"},
+     *     summary="Actualizar un cliente existente",
+     *     description="Actualiza los datos de un cliente según su ID",
+     *     operationId="updateCliente",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del cliente a actualizar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="John Updated"),
+     *             @OA\Property(property="email", type="string", format="email", example="johnupdated@example.com"),
+     *             @OA\Property(property="celular", type="string", example="999888777")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cliente actualizado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Se actualizaron los campos correctamente.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="No se realizaron cambios",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="No se actualizaron los campos")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Cliente no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Usuario no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Datos de entrada inválidos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Los datos proporcionados no son válidos."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al procesar la solicitud.")
+     *         )
+     *     )
+     * )
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function update(UpdateClienteRequest $request, $id)
     {
@@ -88,6 +316,48 @@ class ClienteController extends BasicController
 
     /**
      * Remove the specified cliente from storage.
+<<<<<<< HEAD
+=======
+     * 
+     * @OA\Delete(
+     *     path="/api/v1/clientes/{id}",
+     *     tags={"Clientes"},
+     *     summary="Eliminar un cliente",
+     *     description="Elimina un cliente según su ID",
+     *     operationId="destroyCliente",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del cliente a eliminar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cliente eliminado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Se eliminó correctamente el usuario.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Cliente no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Usuario no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un problema al procesar la solicitud.")
+     *         )
+     *     )
+     * )
+>>>>>>> cb7a0679ccd3cd7e181b9be26c196fdead5f8e83
      */
     public function destroy($id)
     {

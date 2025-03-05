@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Products;
+namespace App\Http\Controllers\Api\V1\Productos;
 
 use App\Models\ProductoRelacionado;
 use Illuminate\Http\Request;

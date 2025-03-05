@@ -157,7 +157,6 @@ class BlogController extends BasicController
             
         } catch(\Exception $e) {
             DB::rollBack();
-
             return $this->errorResponse('Error al actualizar el blog: ' . $e->getMessage(),
             HttpStatusCode::INTERNAL_SERVER_ERROR);
             

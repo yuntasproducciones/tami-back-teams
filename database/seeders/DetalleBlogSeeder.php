@@ -2,20 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Seccion;
+use App\Models\DetalleBlog;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SeccionSeeder extends Seeder
+class DetalleBlogSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Seccion::create([
-            'name' => 'Mesas',
-            'id_coment' => 1,
-        ]);
+        DetalleBlog::factory(10)->create();
     }
 }

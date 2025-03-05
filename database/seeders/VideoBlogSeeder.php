@@ -2,19 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comentarios;
+use App\Models\VideoBlog;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ComentariosSeeder extends Seeder
+class VideoBlogSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Comentarios::create([
-            'comentarios' => 'bienvenido'
-        ]);
+        VideoBlog::factory(10)->create();
     }
 }

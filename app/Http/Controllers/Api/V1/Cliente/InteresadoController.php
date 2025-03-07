@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\V1\Cliente;
 use App\Http\Requests\StoreInteresadoRequest;
 use App\Http\Requests\UpdateInteresadoRequest;
 use App\Models\Interesado;
-use App\Http\Controllers\Api\V1\BasicController;
+use App\Http\Controllers\Controller;
 
-class InteresadoController extends BasicController
+class InteresadoController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -23,9 +23,7 @@ class PostUserUpdate extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
             'email' => 'required|email|max:100',
-            'usuario' => 'required|string|max:100',
         ];
     }
 }

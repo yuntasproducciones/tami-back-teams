@@ -21,7 +21,7 @@
                     "Autenticación"
                 ],
                 "summary": "Iniciar sesión y generar token de acceso",
-                "operationId": "ca101cc27d8eb518910a9ddd83cd6af8",
+                "operationId": "54c354fdb1eeb20c1510377b6a59f078",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -84,7 +84,7 @@
                     "Autenticación"
                 ],
                 "summary": "Cerrar sesión y revocar token",
-                "operationId": "9976f4f37c66098848aa99316d559dba",
+                "operationId": "b2e38a6fbb03f1c2fd4760ecc89df7c3",
                 "responses": {
                     "200": {
                         "description": "Sesión finalizada correctamente",

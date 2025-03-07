@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use App\Repositories\Auth\AuthRepository;
-use App\Repositories\Auth\AuthRepositoryInterface;
-use App\Repositories\Blog\BlogRepository;
-use App\Repositories\Blog\BlogRepositoryInterface;
-use App\Repositories\Cliente\ClienteRepository;
-use App\Repositories\Cliente\ClienteRepositoryInterface;
-use App\Repositories\Producto\ProductoRepository;
-use App\Repositories\Producto\ProductoRepositoryInterface;
-use App\Repositories\User\UserRepository;
-use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\V1\Auth\AuthRepository;
+use App\Repositories\V1\Blog\BlogRepository;
+use App\Repositories\V1\Cliente\ClienteRepository;
+use App\Repositories\V1\Contracts\AuthRepositoryInterface;
+use App\Repositories\V1\Contracts\BlogRepositoryInterface;
+use App\Repositories\V1\Contracts\ClienteRepositoryInterface;
+use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
+use App\Repositories\V1\Contracts\UserRepositoryInterface;
+use App\Repositories\V1\Producto\ProductoRepository;
+use App\Repositories\V1\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

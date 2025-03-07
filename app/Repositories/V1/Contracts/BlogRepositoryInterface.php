@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Blog;
+namespace App\Repositories\V1\Contracts;
 
 interface BlogRepositoryInterface
 {

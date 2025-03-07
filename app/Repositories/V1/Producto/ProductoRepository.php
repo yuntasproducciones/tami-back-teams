@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repositories\Producto;
+namespace App\Repositories\V1\Producto;
 
 use App\Http\Contains\HttpStatusCode;
 use App\Models\Producto;
+use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
 use App\Services\ApiResponseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repositories\User;
+namespace App\Repositories\V1\User;
 
 use App\Http\Contains\HttpStatusCode;
 use App\Models\User;
+use App\Repositories\V1\Contracts\UserRepositoryInterface;
 use App\Services\ApiResponseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;

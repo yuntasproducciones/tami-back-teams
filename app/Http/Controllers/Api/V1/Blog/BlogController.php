@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostBlog\PostStoreBlog;
-use App\Repositories\Blog\BlogRepositoryInterface;
+use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 
 class BlogController extends Controller
 {

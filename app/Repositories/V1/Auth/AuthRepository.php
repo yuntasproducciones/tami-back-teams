@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repositories\Auth;
+namespace App\Repositories\V1\Auth;
 
 use App\Http\Contains\HttpStatusCode;
 use App\Models\User;
+use App\Repositories\V1\Contracts\AuthRepositoryInterface;
 use App\Services\ApiResponseService;
 use Illuminate\Support\Facades\Auth;
 

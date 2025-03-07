@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostUser\PostUser;
 use App\Http\Requests\PostUser\PostUserUpdate;
-use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\V1\Contracts\UserRepositoryInterface;
 
 class UserController extends Controller
 {

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Repositories\Blog;
+namespace App\Repositories\V1\Blog;
 
 use App\Http\Contains\HttpStatusCode;
 use App\Models\Blog;
 use App\Models\DetalleBlog;
 use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
+use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 use App\Services\ApiResponseService;
 use Illuminate\Support\Facades\DB;;
 

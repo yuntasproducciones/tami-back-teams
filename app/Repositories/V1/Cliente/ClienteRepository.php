@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repositories\Cliente;
+namespace App\Repositories\V1\Cliente;
 
 use App\Http\Contains\HttpStatusCode;
 use App\Models\Cliente;
+use App\Repositories\V1\Contracts\ClienteRepositoryInterface;
 use App\Services\ApiResponseService;
 
 /**

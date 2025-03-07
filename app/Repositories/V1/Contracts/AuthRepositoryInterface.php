@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Repositories\Auth;
-use Illuminate\Http\Request;
+namespace App\Repositories\V1\Contracts;
 
 interface AuthRepositoryInterface
 {

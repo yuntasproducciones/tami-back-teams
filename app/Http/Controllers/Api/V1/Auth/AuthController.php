@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostAuth\PostAuth;
-use App\Http\Requests\PostAuth\PostAuthLogout;
-use App\Repositories\Auth\AuthRepositoryInterface;
+use App\Repositories\V1\Contracts\AuthRepositoryInterface;
 
 class AuthController extends Controller
 {

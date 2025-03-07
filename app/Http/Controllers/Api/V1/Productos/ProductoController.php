@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Productos;
 use App\Http\Requests\Producto\StoreProductoRequest;
 use App\Http\Requests\Producto\UpdateProductoRequest;
 use App\Http\Controllers\Controller;
-use App\Repositories\Producto\ProductoRepositoryInterface;
+use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
 
 class ProductoController extends Controller
 {

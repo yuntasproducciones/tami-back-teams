@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Cliente;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cliente\StoreClienteRequest;
 use App\Http\Requests\Cliente\UpdateClienteRequest;
-use App\Repositories\Cliente\ClienteRepositoryInterface;
+use App\Repositories\V1\Contracts\ClienteRepositoryInterface;
 
 class ClienteController extends Controller
 {

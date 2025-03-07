@@ -3,6 +3,7 @@
 ```shell
 # Documentar API con Swagger
 php artisan l5-swagger:generate
+http://localhost:8000/api/documentation#
 ```
 
 ```shell
@@ -13,6 +14,20 @@ php artisan cache:clear
 php artisan optimize:clear
 php artisan route:list
 ```
+
+````shell
+# Ejecutar las pruebas unitarias
+php artisan migrate:fresh --seed --env=testing
+php artisan migrate:fresh --env=testing
+php artisan migrate --env=testing
+php artisan test
+````
+
+````shell
+# Verificacion de la db
+php artisan tinker --env=testing
+DB::connection()->getDatabaseName();
+````
 
 ```shell
 # Crear un nuevo modelo con todos los archivos asociados: controlador, factory, migración, seeder, request

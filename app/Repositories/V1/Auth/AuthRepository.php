@@ -19,28 +19,33 @@ class AuthRepository implements AuthRepositoryInterface
     /**
      * @OA\Post(
      *     path="/api/v1/auth/login",
-     *     summary="Iniciar sesión y generar token de acceso",
+     *     summary="Iniciar sesión y establecer sesión de usuario en Sanctum",
      *     tags={"Autenticación"},
+     *     description="Este endpoint permite a los usuarios autenticarse utilizando Sanctum basado en sesiones. 
+     *                  Asegúrate de obtener el token CSRF desde `/sanctum/csrf-cookie` antes de hacer esta solicitud.
+     *                  La autenticación se maneja a través de cookies de sesión, no de tokens.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"email","password"},
      *             @OA\Property(property="email", type="string", format="email", example="admin@gmail.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="admin"),
-    *              @OA\Property(property="device_name", type="string", example="navegador", nullable=true)
+     *             @OA\Property(property="password", type="string", format="password", example="admin")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Autenticación exitosa",
+     *         description="Autenticación exitosa. La sesión se gestiona mediante cookies.",
      *         @OA\JsonContent(
-     *             @OA\Property(property="token", type="string"),
-     *             @OA\Property(property="user", type="object")
+     *             @OA\Property(property="user", type="object", description="Información del usuario autenticado")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=422,
+     *         response=401,
      *         description="Credenciales inválidas"
+     *     ),
+     *     @OA\Response(
+     *         response=419,
+     *         description="Falta el token CSRF. Asegúrate de llamar primero a `/sanctum/csrf-cookie`."
      *     )
      * )
      */
@@ -50,24 +55,13 @@ class AuthRepository implements AuthRepositoryInterface
             if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
                 return $this->apiResponse->unauthorizedResponse('Las credenciales proporcionadas no son correctas.');
             }            
-            
-            $user = User::where('email', $data['email'])->firstOrFail();
-            
-            // Definir nombre del dispositivo
-            $deviceName = request()->device_name ?? (request()->userAgent() ?? 'API Token');
-            
-            // Si se solicita sesión única, eliminar otros tokens
-            if (request()->has('single_session') && request()->single_session) {
-                $user->tokens()->delete();
-            }
-            
-            $token = $user->createToken($deviceName)->plainTextToken;
+
+            $user = Auth::user();
 
             return $this->apiResponse->successResponse([
-                'token' => $token,
                 'user' => $user,
             ], 'Inicio de sesión exitoso', HttpStatusCode::OK);
-            
+
         } catch (\Exception $e) {
             return $this->apiResponse->errorResponse(
                 'Hubo un problema al procesar la solicitud: ' . $e->getMessage(),
@@ -79,9 +73,9 @@ class AuthRepository implements AuthRepositoryInterface
     /**
      * @OA\Post(
      *     path="/api/v1/auth/logout",
-     *     summary="Cerrar sesión y revocar token",
+     *     summary="Cerrar sesión y destruir la sesión del usuario",
      *     tags={"Autenticación"},
-     *     security={{"sanctum":{}}}, 
+     *     security={{"cookieAuth":{}}}, 
      *     @OA\Response(
      *         response=200,
      *         description="Sesión finalizada correctamente",
@@ -108,10 +102,11 @@ class AuthRepository implements AuthRepositoryInterface
      *     )
      * )
      */
-    public function getLogout() {
+    public function getLogout()
+    {
         try {
             $user = Auth::user();
-    
+
             if (!$user) {
                 return $this->apiResponse->errorResponse(
                     'No tienes permiso para cerrar sesión.',
@@ -119,14 +114,19 @@ class AuthRepository implements AuthRepositoryInterface
                 );
             }
 
-            $user->currentAccessToken()->delete();
-    
+            // Cerrar sesión eliminando la sesión del usuario
+            Auth::guard('web')->logout();
+
+            // Invalidar la sesión actual
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
             return $this->apiResponse->successResponse(
                 [],
                 'Cierre de sesión exitoso',
                 HttpStatusCode::OK
             );
-    
+
         } catch (\Exception $e) {
             return $this->apiResponse->errorResponse(
                 'Error al cerrar sesión: ' . $e->getMessage(),

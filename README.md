@@ -36,6 +36,119 @@ php artisan make:model NuevoModelo --all
 # Crear un nuevo middleware
 php artisan make:middleware NuevoMiddleware
 ```
+
+## Patrón Repository
+
+El Patrón Repository se utiliza para separar la lógica de acceso a datos de la lógica de la aplicación, facilitando la mantenibilidad y pruebas del código.
+
+## Implementación
+
+* Crear una interfaz en app/Repositories/Contracts/BaseRepositoryInterface.php:
+
+namespace App\Repositories\Contracts;
+
+interface BaseRepositoryInterface {
+    public function getAll();
+    public function find($id);
+    public function create(array $data);
+    public function update(array $data, $id);
+    public function delete($id);
+}
+
+* Implementar la interfaz en un repositorio concreto en app/Repositories/BaseRepository.php:
+
+namespace App\Repositories;
+
+use App\Repositories\Contracts\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
+
+class BaseRepository implements BaseRepositoryInterface {
+    protected $model;
+    
+    public function __construct(Model $model) {
+        $this->model = $model;
+    }
+    
+    public function getAll() {
+        return $this->model->all();
+    }
+    
+    public function find($id) {
+        return $this->model->find($id);
+    }
+    
+    public function create(array $data) {
+        return $this->model->create($data);
+    }
+    
+    public function update(array $data, $id) {
+        $record = $this->model->findOrFail($id);
+        $record->update($data);
+        return $record;
+    }
+    
+    public function delete($id) {
+        return $this->model->destroy($id);
+    }
+}
+
+* Usar el repositorio en un controlador:
+
+namespace App\Http\Controllers;
+
+use App\Repositories\BaseRepository;
+use App\Models\User;
+
+class UserController extends Controller {
+    protected $userRepository;
+    
+    public function __construct(BaseRepository $userRepository) {
+        $this->userRepository = new BaseRepository(new User());
+    }
+    
+    public function index() {
+        return response()->json($this->userRepository->getAll());
+    }
+}
+
+* Agregar al Provider
+
+Para vincular la interface con el repository se tiene que agregar en el AppServiceProvider
+
+namespace App\Providers;
+
+use App\Repositories\BaseRepository;
+use App\Repositories\BaseRepositoryInterface;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        $this->app->bind(BaseRepositoryInterface::class, BaseRepository::class);
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}
+
+* Beneficios
+
+Separación de responsabilidades: Mejora la organización del código.
+
+Facilita las pruebas: Se pueden realizar pruebas unitarias sin depender directamente de Eloquent.
+
+Reutilización de código: Un repositorio puede usarse en múltiples partes de la aplicación.
+
 ## Recursos
 
 * [Documentación de Sanctum](https://laravel.com/docs/12.x/sanctum#main-content)

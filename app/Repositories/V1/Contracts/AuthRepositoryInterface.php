@@ -6,4 +6,5 @@ interface AuthRepositoryInterface
 {
     public function getLogin(array $data);
     public function getLogout();
+    public function csrfCookie();
 }

@@ -13,6 +13,11 @@ class AuthController extends Controller
     public function __construct(AuthRepositoryInterface $authRepository) {
         $this->authRepository = $authRepository;
     }
+
+    public function csrfCookie() 
+    {
+        return $this->authRepository->csrfCookie();
+    }
     
     public function login(PostAuth $request)
     {

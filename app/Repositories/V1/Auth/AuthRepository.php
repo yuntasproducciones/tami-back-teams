@@ -3,10 +3,10 @@
 namespace App\Repositories\V1\Auth;
 
 use App\Http\Contains\HttpStatusCode;
-use App\Models\User;
 use App\Repositories\V1\Contracts\AuthRepositoryInterface;
 use App\Services\ApiResponseService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthRepository implements AuthRepositoryInterface
 {
@@ -14,6 +14,48 @@ class AuthRepository implements AuthRepositoryInterface
 
     public function __construct(ApiResponseService $apiResponse) {
         $this->apiResponse = $apiResponse;
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/auth/csrf-cookie",
+     *     summary="Obtener el CSRF Token para autenticación basada en cookies",
+     *     description="Este endpoint debe ser llamado antes de iniciar sesión con Sanctum para establecer la cookie de CSRF.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="CSRF Token obtenido correctamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="CSRF Cookie Set"),
+     *             @OA\Property(property="csrf_token", type="string", example="eyJpdiI6IkpXVm...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error en el servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Hubo un problema al procesar la solicitud")
+     *         )
+     *     )
+     * )
+     */
+    public function csrfCookie()
+    {
+        try {
+            // Obtiene la cookie de la petición actual
+            $xsrfToken = Cookie::get('XSRF-TOKEN');
+            
+            return $this->apiResponse->successResponse([
+                'csrf_token' => $xsrfToken,
+            ], 'Inicio de sesión exitoso', HttpStatusCode::OK);
+
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Hubo un problema al procesar la solicitud: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -37,6 +79,11 @@ class AuthRepository implements AuthRepositoryInterface
      *         description="Autenticación exitosa. La sesión se gestiona mediante cookies.",
      *         @OA\JsonContent(
      *             @OA\Property(property="user", type="object", description="Información del usuario autenticado")
+     *         ),
+     *         @OA\Header(
+     *             header="Set-Cookie",
+     *             description="Cookies de sesión establecidas para autenticación",
+     *             @OA\Schema(type="string")
      *         )
      *     ),
      *     @OA\Response(
@@ -46,13 +93,14 @@ class AuthRepository implements AuthRepositoryInterface
      *     @OA\Response(
      *         response=419,
      *         description="Falta el token CSRF. Asegúrate de llamar primero a `/sanctum/csrf-cookie`."
-     *     )
-     * )
-     */
+     *     ),
+     *     security={{ "cookieAuth":{} }}
+    * )
+    */
     public function getLogin(array $data)
     {
         try {
-            if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+            if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']], true)) {
                 return $this->apiResponse->unauthorizedResponse('Las credenciales proporcionadas no son correctas.');
             }            
 
@@ -73,9 +121,10 @@ class AuthRepository implements AuthRepositoryInterface
     /**
      * @OA\Post(
      *     path="/api/v1/auth/logout",
-     *     summary="Cerrar sesión y destruir la sesión del usuario",
+     *     summary="Cerrar sesión del usuario",
+     *     description="Este endpoint finaliza la sesión del usuario autenticado mediante cookies y destruye la sesión activa.",
      *     tags={"Autenticación"},
-     *     security={{"cookieAuth":{}}}, 
+     *     security={{ "cookieAuth":{} }},
      *     @OA\Response(
      *         response=200,
      *         description="Sesión finalizada correctamente",
@@ -86,15 +135,23 @@ class AuthRepository implements AuthRepositoryInterface
      *     ),
      *     @OA\Response(
      *         response=401,
-     *         description="No autorizado",
+     *         description="No autorizado. El usuario no está autenticado o la sesión ha expirado.",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="No autorizado para cerrar sesión")
      *         )
      *     ),
      *     @OA\Response(
+     *         response=419,
+     *         description="Falta el token CSRF. Asegúrate de llamar primero a `/sanctum/csrf-cookie`.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Token CSRF faltante o inválido")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Error interno del servidor",
+     *         description="Error interno del servidor.",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="Error al cerrar sesión")

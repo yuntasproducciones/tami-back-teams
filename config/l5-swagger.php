@@ -50,6 +50,10 @@ return [
         ],
     ],
     'defaults' => [
+        'operations' => [
+            'withCredentials' => true,
+        ],
+        
         'routes' => [
             /*
              * Route for accessing parsed swagger annotations.
@@ -216,15 +220,22 @@ return [
                 ],
                 */
                 'sanctum' => [
-                    'type' => 'http',
+                    'type' => 'http', 
                     'description' => 'Bearer authentication with Sanctum',
                     'scheme' => 'bearer',
-                    'bearerFormat' => 'JWT',
+                    // 'bearerFormat' => 'JWT',
+                ],
+                'cookieAuth' => [
+                    'type' => 'apiKey',
+                    'description' => 'Autenticación basada en cookies con Sanctum',
+                    'in' => 'cookie',
+                    'name' => 'XSRF-TOKEN',
                 ],
             ],
             'security' => [
                 [
                     'sanctum' => [],
+                    'cookieAuth' => []
                 ],
             ],
         ],

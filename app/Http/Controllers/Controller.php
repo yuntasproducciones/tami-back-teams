@@ -20,9 +20,9 @@ use Illuminate\Routing\Controller as BaseController;
  * )
  * @OA\SecurityScheme(
  *     securityScheme="sanctum",
- *     type="http",
- *     scheme="bearer",
- *     bearerFormat="JWT"
+ *     type="apiKey",
+ *     in="cookie",
+ *     name="XSRF-TOKEN"
  * )
 */
 class Controller extends BaseController

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
+        Route::get('/csrf-cookie', 'csrfCookie');
         Route::post('/login', 'login');
         Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
     });

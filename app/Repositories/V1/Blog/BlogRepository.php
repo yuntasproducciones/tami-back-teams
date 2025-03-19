@@ -116,16 +116,10 @@ class BlogRepository implements BlogRepositoryInterface
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-<<<<<<< HEAD
-     *             required={"titulo", "parrafo", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
-     *             @OA\Property(property="titulo", type="string", example="Título del blog"),
-     *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
-=======
      *             required={"titulo", "parrafo", "descripcion", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
      *             @OA\Property(property="titulo", type="string", example="Título del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
->>>>>>> origin/joaquin
      *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
      *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
      *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),

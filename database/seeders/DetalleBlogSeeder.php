@@ -13,6 +13,14 @@ class DetalleBlogSeeder extends Seeder
      */
     public function run(): void
     {
+        // $blog = [
+        //     [
+        //         'titulo_blog',
+        //         'subtitulo_beneficio',
+        //         'id_blog'
+        //     ]
+        // ];
+
         DetalleBlog::factory(10)->create();
     }
 }

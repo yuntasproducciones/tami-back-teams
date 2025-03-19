@@ -25,6 +25,7 @@ class PostStoreBlog extends FormRequest
             //Blog
             'titulo' => 'required|string|max:120',
             'parrafo' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:255',
             'imagen_principal' => 'required|string|max:255',
 
             //Imagenes

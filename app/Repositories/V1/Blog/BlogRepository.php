@@ -44,6 +44,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
      *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
+     *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del pais."),
      *                     @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen.jpg"),
      *                     @OA\Property(property="tituloBlog", type="string", example="Título del Blog"),
      *                     @OA\Property(property="subTituloBlog", type="string", example="Subtítulo del Blog"),
@@ -83,6 +84,7 @@ class BlogRepository implements BlogRepositoryInterface
                     'id' => $blog->id,
                     'titulo' => $blog->titulo,
                     'parrafo' => $blog->parrafo,
+                    'descripcion' => $blog->descripcion,
                     'imagenPrincipal' => $blog->imagen_principal,
                     'tituloBlog' => optional($blog->detalle)->titulo_blog, 
                     'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
@@ -114,9 +116,16 @@ class BlogRepository implements BlogRepositoryInterface
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+<<<<<<< HEAD
      *             required={"titulo", "parrafo", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
      *             @OA\Property(property="titulo", type="string", example="Título del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
+=======
+     *             required={"titulo", "parrafo", "descripcion", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
+     *             @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
+     *             @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
+>>>>>>> origin/joaquin
      *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
      *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
      *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
@@ -159,6 +168,7 @@ class BlogRepository implements BlogRepositoryInterface
             $blog = Blog::create([
                 'titulo' => $data['titulo'],
                 'parrafo' => $data['parrafo'],
+                'descripcion' => $data['descripcion'],
                 'imagen_principal' => $data['imagen_principal'],
             ]);
 
@@ -222,6 +232,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
+     *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
      *                 @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
      *                 @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
      *                 @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
@@ -256,6 +267,7 @@ class BlogRepository implements BlogRepositoryInterface
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
                 'parrafo' => $blog->parrafo,
+                'descripcion' => $blog->descripcion,
                 'imagenPrincipal' => $blog->imagen_principal,
                 'tituloBlog' => optional($blog->detalle)->titulo_blog, 
                 'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
@@ -295,6 +307,7 @@ class BlogRepository implements BlogRepositoryInterface
      *         @OA\JsonContent(
      *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
+     *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
      *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/nueva-imagen.jpg"),
      *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle actualizado"),
      *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios actualizado"),
@@ -341,6 +354,7 @@ class BlogRepository implements BlogRepositoryInterface
             $blog->update([
                 'titulo' => $data['titulo'],
                 'parrafo' => $data['parrafo'],
+                'descripcion' => $data['descripcion'],
                 'imagen_principal' => $data['imagen_principal'],
             ]);
 

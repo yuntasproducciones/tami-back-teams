@@ -13,6 +13,14 @@ class VideoBlogSeeder extends Seeder
      */
     public function run(): void
     {
+        // $video = [
+        //     [
+        //         'url_video',
+        //         'titulo_video',
+        //         'id_blog'
+        //     ]
+        // ];
+
         VideoBlog::factory(10)->create();
     }
 }

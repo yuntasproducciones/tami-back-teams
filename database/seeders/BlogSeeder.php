@@ -22,20 +22,20 @@ class BlogSeeder extends Seeder
                 'imagen_principal' => 'panel-fibra-bambu.jpg'
             ],
             [
-                'titulo' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
-                'parrafo' => 'Soldadora lingba',
+                'titulo' => 'Soldadora lingba',
+                'parrafo' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
                 'descripcion' => 'Descubre cómo incorporar materiales reciclados y energías renovables',
                 'imagen_principal' => 'soldadora-lingba.jpg'
             ],
             [
-                'titulo' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
-                'parrafo' => 'Soldadora spark',
+                'titulo' => 'Soldadora spark',
+                'parrafo' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
                 'descripcion' => 'Explora las últimas tendencias en iluminación LED y sistemas de control',
                 'imagen_principal' => 'soldadora-spark.jpg'
             ],
             [
-                'titulo' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
-                'parrafo' => 'ventilador holográfico',
+                'titulo' => 'Ventilador holográfico',
+                'parrafo' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
                 'descripcion' => 'Aprende sobre materiales y técnicas de diseño para crear ambientes acústicamente agradables',
                 'imagen_principal' => 'ventilador-holografico.jpg'
             ]

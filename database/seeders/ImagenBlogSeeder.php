@@ -13,6 +13,14 @@ class ImagenBlogSeeder extends Seeder
      */
     public function run(): void
     {
+        // $image = [
+        //     [
+        //         'url_imagen',
+        //         'parrafo_imagen',
+        //         'id_blog'
+        //     ]
+        // ];
+        
         ImagenBlog::factory(10)->create();
     }
 }

@@ -66,7 +66,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-4',
                 'stock' => 20,
                 'precio' => 149.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Decoracion',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -80,7 +80,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-5',
                 'stock' => 8,
                 'precio' => 399.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Decoracion',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -94,7 +94,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-6',
                 'stock' => 12,
                 'precio' => 599.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Decoracion',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -108,7 +108,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-7',
                 'stock' => 25,
                 'precio' => 89.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Decoracion',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -122,7 +122,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-8',
                 'stock' => 10,
                 'precio' => 129.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Negocio',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -136,7 +136,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-9',
                 'stock' => 18,
                 'precio' => 79.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Negocio',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -150,7 +150,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-10',
                 'stock' => 7,
                 'precio' => 299.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Negocio',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -164,7 +164,7 @@ class ProductoSeeder extends Seeder
                 'imagen_principal' => 'https://placehold.co/100x150/orange/white?text=producto-11',
                 'stock' => 9,
                 'precio' => 249.99,
-                'seccion' => 'Trabajo',
+                'seccion' => 'Negocio',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

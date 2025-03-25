@@ -8,7 +8,11 @@
     "servers": [
         {
             "url": "http://localhost:8000",
-            "description": "API Server"
+            "description": "API Server - Development"
+        },
+        {
+            "url": "https://apitami.tami-peru.com/",
+            "description": "API Server - Production"
         },
         {
             "url": "/api"
@@ -189,6 +193,10 @@
                                                         "type": "string",
                                                         "example": "La mejor calidad"
                                                     },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Un producto elaborado por los mejores especialistas del pais."
+                                                    },
                                                     "imagenPrincipal": {
                                                         "type": "string",
                                                         "example": "https://example.com/imagen.jpg"
@@ -266,6 +274,7 @@
                                 "required": [
                                     "titulo",
                                     "parrafo",
+                                    "descripcion",
                                     "imagen_principal",
                                     "titulo_blog",
                                     "subtitulo_beneficio",
@@ -280,6 +289,10 @@
                                     "parrafo": {
                                         "type": "string",
                                         "example": "Contenido del blog..."
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripcion del blog..."
                                     },
                                     "imagen_principal": {
                                         "type": "string",
@@ -400,6 +413,10 @@
                                                     "type": "string",
                                                     "example": "Contenido del blog..."
                                                 },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Descripcion del blog..."
+                                                },
                                                 "imagen_principal": {
                                                     "type": "string",
                                                     "example": "https://example.com/imagen-principal.jpg"
@@ -488,6 +505,10 @@
                                     "parrafo": {
                                         "type": "string",
                                         "example": "Contenido actualizado del blog..."
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripcion actualizado del blog..."
                                     },
                                     "imagen_principal": {
                                         "type": "string",
@@ -1172,6 +1193,10 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Producto Premium"
@@ -1409,6 +1434,10 @@
                                                 "id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
                                                 },
                                                 "title": {
                                                     "type": "string",

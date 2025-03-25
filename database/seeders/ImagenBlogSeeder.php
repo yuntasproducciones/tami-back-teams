@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\ImagenBlog;
-use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ImagenBlogSeeder extends Seeder
 {
@@ -15,77 +13,77 @@ class ImagenBlogSeeder extends Seeder
      */
     public function run(): void
     {
-        $blog = [
+        $imagenesBlog = [
             [
-                'url_imagen' => 'data:image/jpeg;base64,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',
+                'id_blog' => 1,
+                'url_imagen' => 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhUSEhIVFRUXGBoYFhcVFxUVFRUVGBcaFxUVGBUYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLi0BCgoKDg0OGxAQFy0mHR0tLS0tLS03LS0tLS0tLS0tLS0tLS0wLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAADBAACAQUGBwj/xABKEAABAgIDCQwHBQgDAAMAAAABAAIDEQQhMRJBUWFxcrIGIiMyMzRSkbHR8BNCU4GhwtIVJENigwcUU2OSorPhF5PxFkRUg/+QAGQEBAQADAQAAAAAAAAAAAAAAAAECAwQF/8QAKREBAAEDAgYCAgIDAAAAAAAAAAECAxExQQQSEyEyYVFxQoEUwSIzUv/aAAwDAQACEQMRAD8As08B2eNYo7eel+XYUGGzgP6xusjNHH+74rFQI',
                 'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
                 Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
-                'id_blog' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
+                'id_blog' => 1,
                 'url_imagen' => 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSppkDE26380kKF7nzUswbcVkEVHKixWJtRlhr_l8YEshN9nJuR',
                 'parrafo_imagen' => 'Los paneles de fibra de bambú combinan sostenibilidad, resistencia y estética, convirtiéndose en una excelente opción para interiores y exteriores. Su acabado natural aporta calidez y se adapta a diferentes estilos decorativos, desde modernos hasta rústicos.
                 Son altamente resistentes, comparables a algunas maderas duras, pero con mayor flexibilidad y menor riesgo de fracturas. Además, su producción tiene un bajo impacto ambiental, ya que el bambú crece rápidamente y se regenera sin necesidad de replantación, reduciendo la tala de bosques.
                 Su textura elegante y sus tonos neutros permiten distintos acabados, como mate, brillante o envejecido. Requieren poco mantenimiento, siendo resistentes a la humedad y al desgaste. Gracias a estas características, los paneles de fibra de bambú son ideales para revestimientos, mobiliario y proyectos de construcción sostenible.',
-                'id_blog' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
-                'url_imagen',
-                'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
-                Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
                 'id_blog' => 2,
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-2-1.jpg',
+                'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
+                Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
-                'url_imagen',
-                'parrafo_imagen' => 'Los paneles de fibra de bambú combinan sostenibilidad, resistencia y estética, convirtiéndose en una excelente opción para interiores y exteriores. Su acabado natural aporta calidez y se adapta a diferentes estilos decorativos, desde modernos hasta rústicos.
-                Son altamente resistentes, comparables a algunas maderas duras, pero con mayor flexibilidad y menor riesgo de fracturas. Además, su producción tiene un bajo impacto ambiental, ya que el bambú crece rápidamente y se regenera sin necesidad de replantación, reduciendo la tala de bosques.
-                Su textura elegante y sus tonos neutros permiten distintos acabados, como mate, brillante o envejecido. Requieren poco mantenimiento, siendo resistentes a la humedad y al desgaste. Gracias a estas características, los paneles de fibra de bambú son ideales para revestimientos, mobiliario y proyectos de construcción sostenible.',
                 'id_blog' => 2,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'url_imagen',
-                'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
-                Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
-                'id_blog' => 3,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'url_imagen',
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-2-2.jpg',
                 'parrafo_imagen' => 'Los paneles de fibra de bambú combinan sostenibilidad, resistencia y estética, convirtiéndose en una excelente opción para interiores y exteriores. Su acabado natural aporta calidez y se adapta a diferentes estilos decorativos, desde modernos hasta rústicos.
                 Son altamente resistentes, comparables a algunas maderas duras, pero con mayor flexibilidad y menor riesgo de fracturas. Además, su producción tiene un bajo impacto ambiental, ya que el bambú crece rápidamente y se regenera sin necesidad de replantación, reduciendo la tala de bosques.
                 Su textura elegante y sus tonos neutros permiten distintos acabados, como mate, brillante o envejecido. Requieren poco mantenimiento, siendo resistentes a la humedad y al desgaste. Gracias a estas características, los paneles de fibra de bambú son ideales para revestimientos, mobiliario y proyectos de construcción sostenible.',
-                'id_blog' => 3,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
-                'url_imagen',
+                'id_blog' => 3,
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-3-1.jpg',
                 'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
                 Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
-                'id_blog' => 4,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
-                'url_imagen',
+                'id_blog' => 3,
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-3-2.jpg',
                 'parrafo_imagen' => 'Los paneles de fibra de bambú combinan sostenibilidad, resistencia y estética, convirtiéndose en una excelente opción para interiores y exteriores. Su acabado natural aporta calidez y se adapta a diferentes estilos decorativos, desde modernos hasta rústicos.
                 Son altamente resistentes, comparables a algunas maderas duras, pero con mayor flexibilidad y menor riesgo de fracturas. Además, su producción tiene un bajo impacto ambiental, ya que el bambú crece rápidamente y se regenera sin necesidad de replantación, reduciendo la tala de bosques.
                 Su textura elegante y sus tonos neutros permiten distintos acabados, como mate, brillante o envejecido. Requieren poco mantenimiento, siendo resistentes a la humedad y al desgaste. Gracias a estas características, los paneles de fibra de bambú son ideales para revestimientos, mobiliario y proyectos de construcción sostenible.',
-                'id_blog' => 4,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            [
+                'id_blog' => 4,
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-4-1.jpg',
+                'parrafo_imagen' => 'El bambú se ha convertido en uno de los materiales más revolucionarios en la industria de la construcción gracias a su rápido crecimiento, su resistencia y su impacto ambiental reducido. En comparación con la madera tradicional, el bambú es una opción altamente renovable, ya que puede crecer hasta un metro por día y regenerarse después de la cosecha sin necesidad de replantación.
+                Los paneles de fibra de bambú son el resultado de un proceso innovador que convierte esta materia prima en una superficie resistente, flexible y de gran atractivo visual. Estos paneles han demostrado ser una solución ideal para proyectos arquitectónicos que buscan equilibrar funcionalidad, estética y sostenibilidad.',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id_blog' => 4,
+                'url_imagen' => 'https://ejemplo.com/imagen-blog-4-2.jpg',
+                'parrafo_imagen' => 'Los paneles de fibra de bambú combinan sostenibilidad, resistencia y estética, convirtiéndose en una excelente opción para interiores y exteriores. Su acabado natural aporta calidez y se adapta a diferentes estilos decorativos, desde modernos hasta rústicos.
+                Son altamente resistentes, comparables a algunas maderas duras, pero con mayor flexibilidad y menor riesgo de fracturas. Además, su producción tiene un bajo impacto ambiental, ya que el bambú crece rápidamente y se regenera sin necesidad de replantación, reduciendo la tala de bosques.
+                Su textura elegante y sus tonos neutros permiten distintos acabados, como mate, brillante o envejecido. Requieren poco mantenimiento, siendo resistentes a la humedad y al desgaste. Gracias a estas características, los paneles de fibra de bambú son ideales para revestimientos, mobiliario y proyectos de construcción sostenible.',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
         ];
-        
-        DB::table('imagen_blogs')->insert($blog);
+
+        DB::table('imagen_blogs')->insert($imagenesBlog);
     }
 }

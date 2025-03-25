@@ -15,7 +15,11 @@ use Illuminate\Routing\Controller as BaseController;
  *     ),
  *     @OA\Server(
  *         url=L5_SWAGGER_CONST_HOST,
- *         description="API Server"
+ *         description="API Server - Development"
+ *     ),
+ *     @OA\Server(
+ *         url="https://apitami.tami-peru.com/",
+ *         description="API Server - Production"
  *     )
  * )
  * @OA\SecurityScheme(

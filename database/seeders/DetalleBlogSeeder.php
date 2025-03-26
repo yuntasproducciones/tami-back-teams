@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\DetalleBlog;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DetalleBlogSeeder extends Seeder
 {
@@ -13,14 +13,37 @@ class DetalleBlogSeeder extends Seeder
      */
     public function run(): void
     {
-        // $blog = [
-        //     [
-        //         'titulo_blog',
-        //         'subtitulo_beneficio',
-        //         'id_blog'
-        //     ]
-        // ];
+        $blog = [
+            [
+                'titulo_blog' => 'Panel fibra de Bambú',
+                'subtitulo_beneficio' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'id_blog' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'titulo_blog' => 'Panel fibra de Bambú',
+                'subtitulo_beneficio' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'id_blog' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'titulo_blog' => 'Panel fibra de Bambú',
+                'subtitulo_beneficio' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'id_blog' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'titulo_blog' => 'Panel fibra de Bambú',
+                'subtitulo_beneficio' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'id_blog' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+        ];
 
-        DetalleBlog::factory(10)->create();
+        DB::table('detalle_blogs')->insert($blog);
     }
 }

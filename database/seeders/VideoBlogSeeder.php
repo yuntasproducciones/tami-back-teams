@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\VideoBlog;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class VideoBlogSeeder extends Seeder
 {
@@ -13,14 +15,37 @@ class VideoBlogSeeder extends Seeder
      */
     public function run(): void
     {
-        // $video = [
-        //     [
-        //         'url_video',
-        //         'titulo_video',
-        //         'id_blog'
-        //     ]
-        // ];
+        $video = [
+            [
+                'url_video' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
+                'titulo_video' => 'COMO UTILIZAR NUESTRO PRODUCTO',
+                'id_blog' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'url_video' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
+                'titulo_video' => 'COMO UTILIZAR NUESTRO PRODUCTO',
+                'id_blog' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'url_video' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
+                'titulo_video' => 'COMO UTILIZAR NUESTRO PRODUCTO',
+                'id_blog' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'url_video' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
+                'titulo_video' => 'COMO UTILIZAR NUESTRO PRODUCTO',
+                'id_blog' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        ];
 
-        VideoBlog::factory(10)->create();
+        DB::table('video_blogs')->insert($video);
     }
 }

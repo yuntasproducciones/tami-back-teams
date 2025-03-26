@@ -2267,13 +2267,8 @@
             "sanctum": {
                 "type": "http",
                 "description": "Bearer authentication with Sanctum",
-                "scheme": "bearer"
-            },
-            "cookieAuth": {
-                "type": "apiKey",
-                "description": "Autenticación basada en cookies con Sanctum",
-                "in": "cookie",
-                "name": "XSRF-TOKEN"
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     },
@@ -2301,8 +2296,7 @@
     ],
     "security": [
         {
-            "sanctum": [],
-            "cookieAuth": []
+            "sanctum": []
         }
     ]
 }

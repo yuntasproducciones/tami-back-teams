@@ -63,6 +63,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                     ),
      *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
      *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video")
+     *                     @OA\Property(property="created_at", type="string")
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente")
@@ -92,6 +93,7 @@ class BlogRepository implements BlogRepositoryInterface
                     'parrafoImagenesBlog' => optional($blog->imagenes->pluck('parrafo_imagen')),
                     'videoBlog' => optional($blog->video)->url_video, 
                     'tituloVideoBlog' => optional($blog->video)->titulo_video,
+                    'created_at' => $blog->created_at,
                 ];
             });
 

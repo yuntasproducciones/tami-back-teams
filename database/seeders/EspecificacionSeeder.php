@@ -12,30 +12,35 @@ class EspecificacionSeeder extends Seeder
     {
         $especificaciones = [
             // Producto 1
-            ['id_producto' => 1, 'clave' => 'power', 'valor' => '220V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 1, 'clave' => 'capacity', 'valor' => 'Varía según el modelo', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 1, 'clave' => 'material', 'valor' => 'Acero inoxidable', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 1, 'clave' => 'Potencia: ', 'valor' => '220-240V/50Hz', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 1, 'clave' => 'Capacidad de llenado: ', 'valor' => '1-100g (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 1, 'clave' => 'Anchura de película de plástico: ', 'valor' => '3-20cm (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 1, 'clave' => 'Flujo de trabajo:  ', 'valor' => '10-20 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
             // Producto 2
-            ['id_producto' => 2, 'clave' => 'power', 'valor' => '110V/220V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 2, 'clave' => 'capacity', 'valor' => 'Hasta 500 unidades/hora', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 2, 'clave' => 'material', 'valor' => 'Aluminio', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 2, 'clave' => 'Potencia: ', 'valor' => '220-240V/50Hz', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 2, 'clave' => 'Capacidad de llenado: ', 'valor' => '1-100g (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 2, 'clave' => 'Anchura de película de plástico: ', 'valor' => '3-20cm (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 2, 'clave' => 'Flujo de trabajo:  ', 'valor' => '10-20 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
             // Producto 3
-            ['id_producto' => 3, 'clave' => 'power', 'valor' => '220-240V/50Hz', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 3, 'clave' => 'capacity', 'valor' => '1-100g (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 3, 'clave' => 'width', 'valor' => '3-20cm (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 3, 'clave' => 'flow', 'valor' => '10-20 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 3, 'clave' => 'Potencia: ', 'valor' => '220-240V/50Hz', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 3, 'clave' => 'Capacidad de llenado: ', 'valor' => '1-100g (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 3, 'clave' => 'Anchura de película de plástico: ', 'valor' => '3-20cm (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 3, 'clave' => 'Flujo de trabajo:  ', 'valor' => '10-20 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
             // Producto 4
-            ['id_producto' => 4, 'clave' => 'power', 'valor' => '220V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 4, 'clave' => 'capacity', 'valor' => 'Hasta 30 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 4, 'clave' => 'material', 'valor' => 'Plástico resistente', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 4, 'clave' => 'Potencia: ', 'valor' => '220-240V/50Hz', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 4, 'clave' => 'Capacidad de llenado: ', 'valor' => '1-100g (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 4, 'clave' => 'Anchura de película de plástico: ', 'valor' => '3-20cm (Según el modelo)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 4, 'clave' => 'Flujo de trabajo:  ', 'valor' => '10-20 bolsas/min', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
             // Producto 5
-            ['id_producto' => 5, 'clave' => 'power', 'valor' => '220V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 5, 'clave' => 'amperage', 'valor' => '50-200A', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_producto' => 5, 'clave' => 'material', 'valor' => 'Acero', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 5, 'clave' => 'Modelo: ', 'valor' => 'MIG-225', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 5, 'clave' => 'Potencia de soldadura/rango de tensión: ', 'valor' => '5-160A/220V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 5, 'clave' => 'Ciclo de trabajo nominal: ', 'valor' => '60%', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 5, 'clave' => 'Tipos de Soldadura: ', 'valor' => 'MIG MAG/MMA/ TIG 3 en 1', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['id_producto' => 5, 'clave' => 'Eficiencia: ', 'valor' => '85%', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
 
             // Producto 6
             ['id_producto' => 6, 'clave' => 'power', 'valor' => '24V', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],

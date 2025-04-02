@@ -9,6 +9,7 @@ use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
 use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 use App\Services\ApiResponseService;
+use App\Services\ImgurService;
 use Illuminate\Support\Facades\DB;;
 
 /**
@@ -20,9 +21,11 @@ use Illuminate\Support\Facades\DB;;
 class BlogRepository implements BlogRepositoryInterface
 {
     protected ApiResponseService $apiResponse;
+    protected $imgurService;
 
-    public function __construct(ApiResponseService $apiResponse) {
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
         $this->apiResponse = $apiResponse;
+        $this->imgurService = $imgurService;
     }
 
     /**
@@ -115,24 +118,74 @@ class BlogRepository implements BlogRepositoryInterface
      *     tags={"Blogs"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"titulo", "parrafo", "descripcion", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
-     *             @OA\Property(property="titulo", type="string", example="Título del blog"),
-     *             @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
-     *             @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
-     *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
-     *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
-     *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
-     *             @OA\Property(
-     *                 property="imagenes",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="url_imagen", type="string", example="https://example.com/imagen1.jpg"),
-     *                     @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"titulo", "parrafo", "descripcion", "imagen_principal", "titulo_blog", "subtitulo_beneficio", "url_video", "titulo_video"},
+     *                 @OA\Property(
+     *                     property="titulo",
+     *                     type="string",
+     *                     example="Título del blog"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="parrafo",
+     *                     type="string",
+     *                     example="Contenido del blog..."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="descripcion",
+     *                     type="string",
+     *                     example="Descripcion del blog..."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagen_principal",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Archivo de imagen principal del blog"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="titulo_blog",
+     *                     type="string",
+     *                     example="Título del detalle del blog"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="subtitulo_beneficio",
+     *                     type="string",
+     *                     example="Subtítulo de beneficios"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="url_video",
+     *                     type="string",
+     *                     example="https://example.com/video.mp4"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="titulo_video",
+     *                     type="string",
+     *                     example="Título del video"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagenes[0][url_imagen]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Archivo de imagen 1"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagenes[0][parrafo_imagen]",
+     *                     type="string",
+     *                     description="Descripción de la imagen 1"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagenes[1][url_imagen]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Archivo de imagen 2"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagenes[1][parrafo_imagen]",
+     *                     type="string",
+     *                     description="Descripción de la imagen 2"
      *                 )
-     *             ),
-     *             @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
-     *             @OA\Property(property="titulo_video", type="string", example="Título del video")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -157,47 +210,51 @@ class BlogRepository implements BlogRepositoryInterface
     public function create(array $data)
     {
         try {
-            DB::beginTransaction(); 
+            DB::beginTransaction();
 
+            // Subir imagen principal a Imgur
+            $imageUrl = null;
+            if (!empty($data['imagen_principal'])) {
+                $imageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+                if (!$imageUrl) {
+                    throw new \Exception("Falló la subida de imagen principal");
+                }
+            }
+
+            // Crear el blog
             $blog = Blog::create([
                 'titulo' => $data['titulo'],
                 'parrafo' => $data['parrafo'],
                 'descripcion' => $data['descripcion'],
-                'imagen_principal' => $data['imagen_principal'],
+                'imagen_principal' => $imageUrl,
             ]);
 
+            // Subir y guardar imágenes adicionales (CORREGIDO)
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                $imagenes = collect($data['imagenes'])->map(fn($imagen) => [
-                    'url_imagen' => $imagen['url_imagen'],
-                    'parrafo_imagen' => $imagen['parrafo_imagen'],
-                    'id_blog' => $blog->id,
-                ])->toArray();
+                $imagenes = collect($data['imagenes'])->map(function ($imagen) use ($blog) {
+                    $uploadedImageUrl = $this->imgurService->uploadImage($imagen); // Sin getPathname()
+                    if (!$uploadedImageUrl) {
+                        throw new \Exception("Falló la subida de imagen adicional");
+                    }
+                    return [
+                        'url_imagen' => $uploadedImageUrl,
+                        'parrafo_imagen' => $imagen->getClientOriginalName(),
+                        'id_blog' => $blog->id,
+                    ];
+                })->toArray();
 
                 ImagenBlog::insert($imagenes);
             }
 
-            DetalleBlog::create([
-                'titulo_blog' => $data['titulo_blog'],
-                'subtitulo_beneficio' => $data['subtitulo_beneficio'],
-                'id_blog' => $blog->id,
-            ]);
+            // Resto de tu lógica...
+            DB::commit();
 
-            VideoBlog::create([
-                'url_video' => $data['url_video'],
-                'titulo_video' => $data['titulo_video'],
-                'id_blog' => $blog->id,
-            ]);
-
-            DB::commit(); 
-
-            return $this->apiResponse->successResponse($blog, 'Blog creado con éxito.',
-             HttpStatusCode::CREATED);
+            return $this->apiResponse->successResponse($blog, 'Blog creado con éxito.', HttpStatusCode::CREATED);
 
         } catch (\Exception $e) {
-            DB::rollBack(); 
-
-            return $this->apiResponse->errorResponse('Error al crear el blog: ' . $e->getMessage(), 
-                HttpStatusCode::INTERNAL_SERVER_ERROR);
+            DB::rollBack();
+            return $this->apiResponse->errorResponse(
+                $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
     

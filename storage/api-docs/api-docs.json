@@ -269,7 +269,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "titulo",
@@ -295,8 +295,9 @@
                                         "example": "Descripcion del blog..."
                                     },
                                     "imagen_principal": {
+                                        "description": "Archivo de imagen principal del blog",
                                         "type": "string",
-                                        "example": "https://example.com/imagen-principal.jpg"
+                                        "format": "binary"
                                     },
                                     "titulo_blog": {
                                         "type": "string",
@@ -306,22 +307,6 @@
                                         "type": "string",
                                         "example": "Subtítulo de beneficios"
                                     },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "url_imagen": {
-                                                    "type": "string",
-                                                    "example": "https://example.com/imagen1.jpg"
-                                                },
-                                                "parrafo_imagen": {
-                                                    "type": "string",
-                                                    "example": "Descripción de la imagen"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
                                     "url_video": {
                                         "type": "string",
                                         "example": "https://example.com/video.mp4"
@@ -329,6 +314,24 @@
                                     "titulo_video": {
                                         "type": "string",
                                         "example": "Título del video"
+                                    },
+                                    "imagenes": {
+                                        "description": "Lista de imágenes adicionales",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "url_imagen": {
+                                                    "description": "Archivo de imagen",
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "parrafo_imagen": {
+                                                    "description": "Descripción de la imagen",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"

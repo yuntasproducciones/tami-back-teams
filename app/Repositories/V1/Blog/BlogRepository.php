@@ -168,10 +168,18 @@ class BlogRepository implements BlogRepositoryInterface
      *                     type="array",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="url_imagen", type="string", format="binary", description="Archivo de imagen"),
-     *                         @OA\Property(property="parrafo_imagen", type="string", description="Descripción de la imagen")
-     *                     ),
-     *                     description="Lista de imágenes adicionales"
+     *                         @OA\Property(
+     *                             property="url_imagen",
+     *                             type="string",
+     *                             format="binary",
+     *                             description="Archivo de imagen adicional"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="parrafo_imagen",
+     *                             type="string",
+     *                             description="Descripción de la imagen adicional"
+     *                         )
+     *                     )
      *                 )
      *             )
      *         )
@@ -271,7 +279,6 @@ class BlogRepository implements BlogRepositoryInterface
             );
         }
     }
-    
 
     /**
      * Mostrar un blog específico

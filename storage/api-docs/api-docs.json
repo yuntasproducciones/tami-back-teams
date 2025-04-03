@@ -315,23 +315,23 @@
                                         "type": "string",
                                         "example": "Título del video"
                                     },
-                                    "imagenes[0][url_imagen]": {
-                                        "description": "Archivo de imagen 1",
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "imagenes[0][parrafo_imagen]": {
-                                        "description": "Descripción de la imagen 1",
-                                        "type": "string"
-                                    },
-                                    "imagenes[1][url_imagen]": {
-                                        "description": "Archivo de imagen 2",
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "imagenes[1][parrafo_imagen]": {
-                                        "description": "Descripción de la imagen 2",
-                                        "type": "string"
+                                    "imagenes": {
+                                        "description": "Lista de imágenes adicionales",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "url_imagen": {
+                                                    "description": "Archivo de imagen",
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "parrafo_imagen": {
+                                                    "description": "Descripción de la imagen",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"

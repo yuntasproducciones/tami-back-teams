@@ -164,26 +164,14 @@ class BlogRepository implements BlogRepositoryInterface
      *                     example="Título del video"
      *                 ),
      *                 @OA\Property(
-     *                     property="imagenes[0][url_imagen]",
-     *                     type="string",
-     *                     format="binary",
-     *                     description="Archivo de imagen 1"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="imagenes[0][parrafo_imagen]",
-     *                     type="string",
-     *                     description="Descripción de la imagen 1"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="imagenes[1][url_imagen]",
-     *                     type="string",
-     *                     format="binary",
-     *                     description="Archivo de imagen 2"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="imagenes[1][parrafo_imagen]",
-     *                     type="string",
-     *                     description="Descripción de la imagen 2"
+     *                     property="imagenes",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="url_imagen", type="string", format="binary", description="Archivo de imagen"),
+     *                         @OA\Property(property="parrafo_imagen", type="string", description="Descripción de la imagen")
+     *                     ),
+     *                     description="Lista de imágenes adicionales"
      *                 )
      *             )
      *         )
@@ -211,16 +199,25 @@ class BlogRepository implements BlogRepositoryInterface
     {
         try {
             DB::beginTransaction();
-
+    
             // Subir imagen principal a Imgur
             $imageUrl = null;
             if (!empty($data['imagen_principal'])) {
-                $imageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+                // Validar el tipo MIME antes de intentar subir
+                $image = $data['imagen_principal'];
+                $validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    
+                if (!in_array($image->getMimeType(), $validMimeTypes)) {
+                    throw new \Exception("El archivo no es una imagen válida.");
+                }
+    
+                // Proceder con la subida de la imagen
+                $imageUrl = $this->imgurService->uploadImage($image);
                 if (!$imageUrl) {
                     throw new \Exception("Falló la subida de imagen principal");
                 }
             }
-
+    
             // Crear el blog
             $blog = Blog::create([
                 'titulo' => $data['titulo'],
@@ -228,36 +225,54 @@ class BlogRepository implements BlogRepositoryInterface
                 'descripcion' => $data['descripcion'],
                 'imagen_principal' => $imageUrl,
             ]);
-
-            // Subir y guardar imágenes adicionales (CORREGIDO)
+    
+            // Subir y guardar imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
                 $imagenes = collect($data['imagenes'])->map(function ($imagen) use ($blog) {
-                    $uploadedImageUrl = $this->imgurService->uploadImage($imagen); // Sin getPathname()
-                    if (!$uploadedImageUrl) {
-                        throw new \Exception("Falló la subida de imagen adicional");
+                    if ($imagen instanceof \Illuminate\Http\UploadedFile) {
+                        // Validar que el archivo sea una imagen
+                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                        if (!in_array($imagen->getMimeType(), $validMimeTypes)) {
+                            throw new \Exception("El archivo no es una imagen válida.");
+                        }
+    
+                        // Subir imagen a Imgur
+                        $uploadedImageUrl = $this->imgurService->uploadImage($imagen);
+                        if (!$uploadedImageUrl) {
+                            throw new \Exception("Falló la subida de imagen adicional");
+                        }
+    
+                        return [
+                            'url_imagen' => $uploadedImageUrl,
+                            'parrafo_imagen' => $imagen->getClientOriginalName(),
+                            'id_blog' => $blog->id,
+                        ];
                     }
-                    return [
-                        'url_imagen' => $uploadedImageUrl,
-                        'parrafo_imagen' => $imagen->getClientOriginalName(),
-                        'id_blog' => $blog->id,
-                    ];
+                    throw new \Exception("El archivo no es una imagen válida.");
                 })->toArray();
-
+    
+                // Insertar las imágenes en la base de datos
                 ImagenBlog::insert($imagenes);
             }
-
-            // Resto de tu lógica...
+    
+            // Confirmar la transacción
             DB::commit();
-
+    
+            // Respuesta exitosa
             return $this->apiResponse->successResponse($blog, 'Blog creado con éxito.', HttpStatusCode::CREATED);
-
+    
         } catch (\Exception $e) {
+            // Deshacer la transacción en caso de error
             DB::rollBack();
+    
+            // Retornar error con mensaje
             return $this->apiResponse->errorResponse(
-                $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
+                $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
     
+
     /**
      * Mostrar un blog específico
      * 

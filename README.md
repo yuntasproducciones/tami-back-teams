@@ -17,6 +17,14 @@ php artisan route:list
 ```
 
 ````shell
+#Documentacion para utilizar la api de Imgur (subida de imagenes)
+
+Se tiene que verificar el archivo php.ini y quitar los ; de este archivo: 'curl.cainfo = "D:/Projects/Laragon-installer/7.0-W64/etc/ssl/cacert.pem"' 
+para tener activado el trafico https entre la api de imgur con la api de tami, despues verificar la ruta del archivo ´cacert.pem´, si esta en otra
+ubicacion modifiquelo.
+````
+
+````shell
 # Ejecutar las pruebas unitarias
 php artisan migrate:fresh --seed --env=testing
 php artisan migrate:fresh --env=testing

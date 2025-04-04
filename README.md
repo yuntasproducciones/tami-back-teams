@@ -22,6 +22,9 @@ php artisan route:list
 Se tiene que verificar el archivo php.ini y quitar los ; de este archivo: 'curl.cainfo = "D:/Projects/Laragon-installer/7.0-W64/etc/ssl/cacert.pem"' 
 para tener activado el trafico https entre la api de imgur con la api de tami, despues verificar la ruta del archivo ´cacert.pem´, si esta en otra
 ubicacion modifiquelo.
+
+Creacion de cuenta cliente: https://api.imgur.com/oauth2/addclient
+Documentacion de la API: https://apidocs.imgur.com/#de179b6a-3eda-4406-a8d7-1fb06c17cb9c
 ````
 
 ````shell

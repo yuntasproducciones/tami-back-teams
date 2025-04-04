@@ -65,7 +65,8 @@ class BlogRepository implements BlogRepositoryInterface
      *                         @OA\Items(type="string", example="Descripción adicional de la imagen")
      *                     ),
      *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
-     *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video")
+     *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
+     *                     @OA\Property(property="created_at", type="date", example="2023-10-01"),
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente")
@@ -95,6 +96,7 @@ class BlogRepository implements BlogRepositoryInterface
                     'parrafoImagenesBlog' => optional($blog->imagenes->pluck('parrafo_imagen')),
                     'videoBlog' => optional($blog->video)->url_video, 
                     'tituloVideoBlog' => optional($blog->video)->titulo_video,
+                    'created_at' => $blog->created_at
                 ];
             });
 
@@ -348,6 +350,7 @@ class BlogRepository implements BlogRepositoryInterface
                 'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
                 'videoBlog' => optional($blog->video)->url_video, 
                 'tituloVideoBlog' => optional($blog->video)->titulo_video,
+                'created_at' => $blog->created_at,
             ];
 
             return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente',
@@ -429,6 +432,7 @@ class BlogRepository implements BlogRepositoryInterface
                 'parrafo' => $data['parrafo'],
                 'descripcion' => $data['descripcion'],
                 'imagen_principal' => $data['imagen_principal'],
+                'created_at' => now(),
             ]);
 
             // Manejo de imágenes
@@ -438,7 +442,7 @@ class BlogRepository implements BlogRepositoryInterface
                 $imagenes = collect($data['imagenes'])->map(fn($imagen) => [
                     'url_imagen' => $imagen['url_imagen'],
                     'parrafo_imagen' => $imagen['parrafo_imagen'],
-                    'id_blog' => $blog->id
+                    'id_blog' => $blog->id,
                 ])->toArray();
 
                 ImagenBlog::insert($imagenes);
@@ -449,7 +453,7 @@ class BlogRepository implements BlogRepositoryInterface
             if ($detalle) {
                 $detalle->update([
                     'titulo_blog' => $data['titulo_blog'],
-                    'subtitulo_beneficio' => $data['subtitulo_beneficio'],
+                    'subtitulo_beneficio' => $data['subtitulo_beneficio']
                 ]);
             } else {
                 DetalleBlog::create([

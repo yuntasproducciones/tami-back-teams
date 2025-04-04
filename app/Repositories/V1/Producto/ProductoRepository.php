@@ -54,7 +54,7 @@ class ProductoRepository implements ProductoRepositoryInterface
      *                     @OA\Property(property="nombreProducto", type="string"),
      *                     @OA\Property(property="stockProducto", type="integer"),
      *                     @OA\Property(property="precioProducto", type="number", format="float"),
-     *                     @OA\Property(property="seccion", type="string")
+     *                     @OA\Property(property="seccion", type="string"),
      *                     @OA\Property(property="created_at", type="string")
      *                 )
      *             ),

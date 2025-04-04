@@ -459,6 +459,9 @@
                                                 "titulo_video": {
                                                     "type": "string",
                                                     "example": "Título del video"
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "type": "object"
@@ -1251,6 +1254,9 @@
                                                         "format": "float"
                                                     },
                                                     "seccion": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
                                                         "type": "string"
                                                     }
                                                 },

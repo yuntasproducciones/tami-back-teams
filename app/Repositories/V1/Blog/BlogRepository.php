@@ -318,7 +318,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                     )
      *                 ),
      *                 @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
-     *                 @OA\Property(property="titulo_video", type="string", example="Título del video")
+     *                 @OA\Property(property="titulo_video", type="string", example="Título del video"),
      *                 @OA\Property(property="created_at", type="string")
      *             ),
      *             @OA\Property(property="message", type="string", example="Blog encontrado exitosamente")

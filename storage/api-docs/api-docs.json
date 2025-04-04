@@ -239,6 +239,11 @@
                                                     "tituloVideoBlog": {
                                                         "type": "string",
                                                         "example": "Título del video"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2023-10-01"
                                                     }
                                                 },
                                                 "type": "object"
@@ -316,17 +321,16 @@
                                         "example": "Título del video"
                                     },
                                     "imagenes": {
-                                        "description": "Lista de imágenes adicionales",
                                         "type": "array",
                                         "items": {
                                             "properties": {
                                                 "url_imagen": {
-                                                    "description": "Archivo de imagen",
+                                                    "description": "Archivo de imagen adicional",
                                                     "type": "string",
                                                     "format": "binary"
                                                 },
                                                 "parrafo_imagen": {
-                                                    "description": "Descripción de la imagen",
+                                                    "description": "Descripción de la imagen adicional",
                                                     "type": "string"
                                                 }
                                             },
@@ -455,6 +459,9 @@
                                                 "titulo_video": {
                                                     "type": "string",
                                                     "example": "Título del video"
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "type": "object"
@@ -1247,6 +1254,9 @@
                                                         "format": "float"
                                                     },
                                                     "seccion": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
                                                         "type": "string"
                                                     }
                                                 },

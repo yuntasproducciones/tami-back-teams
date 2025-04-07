@@ -6,6 +6,7 @@ use App\Http\Contains\HttpStatusCode;
 use App\Models\Producto;
 use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
 use App\Services\ApiResponseService;
+use App\Services\ImgurService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
@@ -18,10 +19,11 @@ use Illuminate\Support\Facades\DB;
 class ProductoRepository implements ProductoRepositoryInterface
 {
     protected ApiResponseService $apiResponse;
+    protected $imgurService;
 
-    public function __construct(ApiResponseService $apiResponse)
-    {
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
         $this->apiResponse = $apiResponse;
+        $this->imgurService = $imgurService;
     }
 
     /**

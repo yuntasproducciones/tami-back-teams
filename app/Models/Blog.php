@@ -20,16 +20,16 @@ class Blog extends Model
 
     public function imagenes()
     {
-        return $this->hasMany(ImagenBlog::class, 'id_blog', 'id'); 
+        return $this->hasMany(ImagenBlog::class, 'id_blog'); 
     }
 
     public function video()
     {
-        return $this->hasOne(VideoBlog::class, 'id_blog', 'id');
+        return $this->hasOne(VideoBlog::class, 'id_blog');
     }
 
     public function detalle()
     {
-        return $this->hasOne(DetalleBlog::class, 'id_blog', 'id');
+        return $this->hasOne(DetalleBlog::class, 'id_blog');
     }
 }

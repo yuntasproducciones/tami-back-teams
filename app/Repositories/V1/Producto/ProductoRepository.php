@@ -6,6 +6,7 @@ use App\Http\Contains\HttpStatusCode;
 use App\Models\Producto;
 use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
 use App\Services\ApiResponseService;
+use App\Services\ImgurService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
@@ -18,10 +19,11 @@ use Illuminate\Support\Facades\DB;
 class ProductoRepository implements ProductoRepositoryInterface
 {
     protected ApiResponseService $apiResponse;
+    protected $imgurService;
 
-    public function __construct(ApiResponseService $apiResponse)
-    {
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
         $this->apiResponse = $apiResponse;
+        $this->imgurService = $imgurService;
     }
 
     /**
@@ -54,7 +56,7 @@ class ProductoRepository implements ProductoRepositoryInterface
      *                     @OA\Property(property="nombreProducto", type="string"),
      *                     @OA\Property(property="stockProducto", type="integer"),
      *                     @OA\Property(property="precioProducto", type="number", format="float"),
-     *                     @OA\Property(property="seccion", type="string")
+     *                     @OA\Property(property="seccion", type="string"),
      *                     @OA\Property(property="created_at", type="string")
      *                 )
      *             ),

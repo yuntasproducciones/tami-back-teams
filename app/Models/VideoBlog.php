@@ -19,6 +19,6 @@ class VideoBlog extends Model
 
     public function blog()
     {
-        return $this->belongsTo(Blog::class, 'id_blog', 'id');
+        return $this->belongsTo(Blog::class, 'id_blog');
     }
 }

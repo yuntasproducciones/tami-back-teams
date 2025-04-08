@@ -195,7 +195,7 @@
                                                     },
                                                     "descripcion": {
                                                         "type": "string",
-                                                        "example": "Un producto elaborado por los mejores especialistas del pais."
+                                                        "example": "Un producto elaborado por los mejores especialistas del país."
                                                     },
                                                     "imagenPrincipal": {
                                                         "type": "string",
@@ -213,23 +213,16 @@
                                                         "type": "array",
                                                         "items": {
                                                             "properties": {
-                                                                "url_imagen": {
+                                                                "url": {
                                                                     "type": "string",
                                                                     "example": "https://example.com/imagen1.jpg"
                                                                 },
-                                                                "parrafo_imagen": {
+                                                                "parrafo": {
                                                                     "type": "string",
                                                                     "example": "Descripción de la imagen"
                                                                 }
                                                             },
                                                             "type": "object"
-                                                        }
-                                                    },
-                                                    "parrafoImagenesBlog": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string",
-                                                            "example": "Descripción adicional de la imagen"
                                                         }
                                                     },
                                                     "videoBlog": {
@@ -242,8 +235,8 @@
                                                     },
                                                     "created_at": {
                                                         "type": "string",
-                                                        "format": "date",
-                                                        "example": "2023-10-01"
+                                                        "format": "date-time",
+                                                        "example": "2023-10-01T14:30:00Z"
                                                     }
                                                 },
                                                 "type": "object"
@@ -297,7 +290,7 @@
                                     },
                                     "descripcion": {
                                         "type": "string",
-                                        "example": "Descripcion del blog..."
+                                        "example": "Descripción del blog..."
                                     },
                                     "imagen_principal": {
                                         "description": "Archivo de imagen principal del blog",
@@ -324,14 +317,16 @@
                                         "type": "array",
                                         "items": {
                                             "properties": {
-                                                "url_imagen": {
+                                                "imagen": {
                                                     "description": "Archivo de imagen adicional",
                                                     "type": "string",
-                                                    "format": "binary"
+                                                    "format": "binary",
+                                                    "example": "https://example.com/imagen-adicional.jpg"
                                                 },
-                                                "parrafo_imagen": {
+                                                "parrafo": {
                                                     "description": "Descripción de la imagen adicional",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "example": "Parrafo de la imagen adicional"
                                                 }
                                             },
                                             "type": "object"

@@ -19,26 +19,19 @@ class PostStoreBlog extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //Blog
-            'titulo' => 'required|string|max:120',
-            'parrafo' => 'required|string|max:100',
-            'imagen_principal' => 'required|string|max:255',
-
-            //Imagenes
-            'imagenes' => 'array',
-                'imagenes.*.url_imagen' => 'required|string|max:255',
-                'imagenes.*.parrafo_imagen' => 'required|string|max:40',
-
-            //Detalle del Blog
-            'titulo_blog' => 'required|string|max:40',
-            'subtitulo_beneficio' => 'required|string|max:70',
-
-            //Video
-            'url_video' => 'required|string|max:255',
-            'titulo_video' => 'required|string|max:40',
+            'titulo' => 'required|string|max:255',
+            'parrafo' => 'required|string',
+            'descripcion' => 'required|string',
+            'imagen_principal' => 'required|file|image|max:2048', 
+            'titulo_blog' => 'required|string',
+            'subtitulo_beneficio' => 'required|string',
+            'url_video' => 'required|string|url',
+            'titulo_video' => 'required|string',
+            'imagenes.*.url_imagen' => 'required|file|image',
+            'imagenes.*.parrafo_imagen' => 'required|string',
         ];
-    }
+    }   
 }

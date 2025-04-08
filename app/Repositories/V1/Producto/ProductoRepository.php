@@ -41,6 +41,7 @@ class ProductoRepository implements ProductoRepositoryInterface
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
+     *                      @OA\Property(property="name", type="string", example="Producto Premium"),
      *                     @OA\Property(property="title", type="string", example="Producto Premium"),
      *                     @OA\Property(property="subtitle", type="string", example="La mejor calidad"),
      *                     @OA\Property(property="tagline", type="string", example="Innovación y calidad"),
@@ -53,7 +54,8 @@ class ProductoRepository implements ProductoRepositoryInterface
      *                     @OA\Property(property="nombreProducto", type="string"),
      *                     @OA\Property(property="stockProducto", type="integer"),
      *                     @OA\Property(property="precioProducto", type="number", format="float"),
-     *                     @OA\Property(property="seccion", type="string")
+     *                     @OA\Property(property="seccion", type="string"),
+     *                     @OA\Property(property="created_at", type="string")
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="Productos obtenidos exitosamente")
@@ -73,6 +75,7 @@ class ProductoRepository implements ProductoRepositoryInterface
             $formattedProductos = $productos->map(function ($producto) {
                 return [
                     'id' => $producto->id,
+                    'name' => $producto->nombre,
                     'title' => $producto->titulo,
                     'subtitle' => $producto->subtitulo,
                     'tagline' => $producto->lema,
@@ -86,6 +89,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                     'stockProducto' => $producto->stock,
                     'precioProducto' => $producto->precio,
                     'seccion' => $producto->seccion,
+                    'created_at' => $producto->created_at,
                 ];
             });
 
@@ -225,6 +229,7 @@ class ProductoRepository implements ProductoRepositoryInterface
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Producto Premium"),
      *                 @OA\Property(property="title", type="string", example="Producto Premium"),
      *                 @OA\Property(property="subtitle", type="string", example="La mejor calidad"),
      *                 @OA\Property(property="tagline", type="string", example="Innovación y calidad"),
@@ -260,6 +265,7 @@ class ProductoRepository implements ProductoRepositoryInterface
 
             $formattedProducto = [
                 'id' => $producto->id,
+                'name' => $producto->nombre,
                 'title' => $producto->titulo,
                 'subtitle' => $producto->subtitulo,
                 'tagline' => $producto->lema,

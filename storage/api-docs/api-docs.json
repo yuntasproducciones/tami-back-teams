@@ -8,7 +8,11 @@
     "servers": [
         {
             "url": "http://localhost:8000",
-            "description": "API Server"
+            "description": "API Server - Development"
+        },
+        {
+            "url": "https://apitami.tami-peru.com/",
+            "description": "API Server - Production"
         },
         {
             "url": "/api"
@@ -189,6 +193,10 @@
                                                         "type": "string",
                                                         "example": "La mejor calidad"
                                                     },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Un producto elaborado por los mejores especialistas del pais."
+                                                    },
                                                     "imagenPrincipal": {
                                                         "type": "string",
                                                         "example": "https://example.com/imagen.jpg"
@@ -231,6 +239,11 @@
                                                     "tituloVideoBlog": {
                                                         "type": "string",
                                                         "example": "Título del video"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2023-10-01"
                                                     }
                                                 },
                                                 "type": "object"
@@ -261,11 +274,12 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "titulo",
                                     "parrafo",
+                                    "descripcion",
                                     "imagen_principal",
                                     "titulo_blog",
                                     "subtitulo_beneficio",
@@ -281,9 +295,14 @@
                                         "type": "string",
                                         "example": "Contenido del blog..."
                                     },
-                                    "imagen_principal": {
+                                    "descripcion": {
                                         "type": "string",
-                                        "example": "https://example.com/imagen-principal.jpg"
+                                        "example": "Descripcion del blog..."
+                                    },
+                                    "imagen_principal": {
+                                        "description": "Archivo de imagen principal del blog",
+                                        "type": "string",
+                                        "format": "binary"
                                     },
                                     "titulo_blog": {
                                         "type": "string",
@@ -293,22 +312,6 @@
                                         "type": "string",
                                         "example": "Subtítulo de beneficios"
                                     },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "url_imagen": {
-                                                    "type": "string",
-                                                    "example": "https://example.com/imagen1.jpg"
-                                                },
-                                                "parrafo_imagen": {
-                                                    "type": "string",
-                                                    "example": "Descripción de la imagen"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
                                     "url_video": {
                                         "type": "string",
                                         "example": "https://example.com/video.mp4"
@@ -316,6 +319,23 @@
                                     "titulo_video": {
                                         "type": "string",
                                         "example": "Título del video"
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "url_imagen": {
+                                                    "description": "Archivo de imagen adicional",
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "parrafo_imagen": {
+                                                    "description": "Descripción de la imagen adicional",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -400,6 +420,10 @@
                                                     "type": "string",
                                                     "example": "Contenido del blog..."
                                                 },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Descripcion del blog..."
+                                                },
                                                 "imagen_principal": {
                                                     "type": "string",
                                                     "example": "https://example.com/imagen-principal.jpg"
@@ -435,6 +459,9 @@
                                                 "titulo_video": {
                                                     "type": "string",
                                                     "example": "Título del video"
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "type": "object"
@@ -488,6 +515,10 @@
                                     "parrafo": {
                                         "type": "string",
                                         "example": "Contenido actualizado del blog..."
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripcion actualizado del blog..."
                                     },
                                     "imagen_principal": {
                                         "type": "string",
@@ -1172,6 +1203,10 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Producto Premium"
@@ -1219,6 +1254,9 @@
                                                         "format": "float"
                                                     },
                                                     "seccion": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
                                                         "type": "string"
                                                     }
                                                 },
@@ -1409,6 +1447,10 @@
                                                 "id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
                                                 },
                                                 "title": {
                                                     "type": "string",
@@ -2238,13 +2280,8 @@
             "sanctum": {
                 "type": "http",
                 "description": "Bearer authentication with Sanctum",
-                "scheme": "bearer"
-            },
-            "cookieAuth": {
-                "type": "apiKey",
-                "description": "Autenticación basada en cookies con Sanctum",
-                "in": "cookie",
-                "name": "XSRF-TOKEN"
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     },
@@ -2272,8 +2309,7 @@
     ],
     "security": [
         {
-            "sanctum": [],
-            "cookieAuth": []
+            "sanctum": []
         }
     ]
 }

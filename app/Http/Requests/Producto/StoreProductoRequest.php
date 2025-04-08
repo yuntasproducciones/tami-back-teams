@@ -24,6 +24,9 @@ class StoreProductoRequest extends FormRequest
         return [
             'nombre' => 'required|string',
             'titulo' => 'required|string',
+            'subtitulo' => 'required|string',
+            'lema' => 'required|string',
+            'descripcion' => 'required|string',
             'imagen_principal' => 'required|string',
             'precio' => 'required|numeric',
             'stock' => 'required|integer',
@@ -31,6 +34,7 @@ class StoreProductoRequest extends FormRequest
             'dimensiones' => 'array',
             'imagenes' => 'array',
             'relacionados' => 'array',
+            'seccion' => 'required|string',
             'mensaje_correo' => 'nullable|string'
         ];
     }

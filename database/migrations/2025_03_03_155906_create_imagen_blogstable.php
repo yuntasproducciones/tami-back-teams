@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('imagen_blogs', function (Blueprint $table) {
             $table->id();
-            $table->string('url_imagen');
-            $table->string('parrafo_imagen');
+            $table->text('url_imagen');
+            $table->text('parrafo_imagen');
             $table->unsignedBigInteger('id_blog');
 
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');

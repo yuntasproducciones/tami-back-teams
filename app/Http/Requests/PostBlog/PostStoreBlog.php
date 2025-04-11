@@ -25,7 +25,7 @@ class PostStoreBlog extends FormRequest
             'titulo' => 'required|string|max:255',
             'parrafo' => 'required|string',
             'descripcion' => 'required|string',
-            'imagen_principal' => 'required|file|image|max:2048', 
+            'imagen_principal' => 'required|file|image', 
             'titulo_blog' => 'required|string',
             'subtitulo_beneficio' => 'required|string',
             'url_video' => 'required|string|url',

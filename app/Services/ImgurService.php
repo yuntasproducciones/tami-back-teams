@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Log;
 
 class ImgurService
 {
-    protected $clientId;
+    protected $accessToken;
 
     public function __construct()
     {
-        $this->clientId = config('services.imgur.client_id');
+        $this->accessToken = config('services.imgur.access_token');
     }
 
     /**
@@ -30,7 +30,7 @@ class ImgurService
             }
 
             $response = Http::withHeaders([
-                'Authorization' => 'Client-ID ' . $this->clientId,
+                'Authorization' => 'Bearer ' . $this->accessToken,
             ])->attach(
                 'image',
                 fopen($imageFile->getPathname(), 'r'),

@@ -36,7 +36,7 @@ return [
     ],
 
     'imgur' => [
-        'client_id' => env('IMGUR_CLIENT_ID'),
+        'access_token' => env('IMGUR_ACCESS_TOKEN'),
     ],
 
 ];

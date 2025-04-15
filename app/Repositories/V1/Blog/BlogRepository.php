@@ -219,6 +219,21 @@ class BlogRepository implements BlogRepositoryInterface
     {
         DB::beginTransaction();
         try {
+             // 🟡 Validar y subir imagen principal si existe
+            if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
+                $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
+                    throw new \Exception("El archivo de imagen principal no es válido.");
+                }
+                // Subir imagen principal a Imgur
+                $uploadedMainImageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+                if (!$uploadedMainImageUrl) {
+                    throw new \Exception("Falló la subida de la imagen principal.");
+                }
+                // Reemplazar el valor en el array original
+                $data['imagen_principal'] = $uploadedMainImageUrl;
+            }
+
             // Crear el blog (excluyendo relaciones)
             $blog = Blog::create(array_diff_key($data, array_flip([
                 'imagenes', 'video', 'detalle'
@@ -241,33 +256,33 @@ class BlogRepository implements BlogRepositoryInterface
                     'titulo_video' => $data['titulo_video'] ?? null,
                 ]);
             }
-
             // Relación: imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
                 foreach ($data['imagenes'] as $item) {
-                    if (isset($item['imagen']) && $item['imagen'] instanceof \Illuminate\Http\UploadedFile) {
-                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-
-                        if (!in_array($item['imagen']->getMimeType(), $validMimeTypes)) {
-                            throw new \Exception("El archivo no es una imagen válida.");
+                    if (isset($item['url_imagen']) && $item['url_imagen'] instanceof \Illuminate\Http\UploadedFile) {
+                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                        if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
+                            throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.\n");
                         }
-
+            
                         // Subir la imagen a Imgur
-                        $uploadedImageUrl = $this->imgurService->uploadImage($item['imagen']);
+                        $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
                         if (!$uploadedImageUrl) {
-                            throw new \Exception("Falló la subida de imagen adicional.");
+                            throw new \Exception("Falló la subida de la imagen adicional.\n $item");
                         }
-
+            
                         // Crear la relación con las imágenes
                         $blog->imagenes()->create([
                             'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
-                            'parrafo_imagen' => $item['parrafo'] ?? '',  // Descripción de la imagen
+                            'parrafo_imagen' => $item['parrafo_imagen'] ?? '',  // Descripción de la imagen
                             'id_blog' => $blog->id,  // Vincular al blog creado
                         ]);
                     } else {
-                        throw new \Exception("Formato inválido para imagen adicional.");
+                        throw new \Exception("Formato inválido para imagenes adicionales.");
                     }
                 }
+            }else{
+                throw new \Exception("Array de imagenes vacio");
             }
 
             // ✅ Las relaciones ya están cargadas al momento de la creación, no es necesario cargar de nuevo

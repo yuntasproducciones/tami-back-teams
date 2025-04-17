@@ -9,6 +9,7 @@ use App\Services\ApiResponseService;
 use App\Services\ImgurService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @OA\Tag(
@@ -155,13 +156,47 @@ class ProductoRepository implements ProductoRepositoryInterface
      *     )
      * )
      */
+
+     //A quien lea esto, te recomiendo ver los demás archivos relacionados con productos
+     //me sirvió bastante para entender esta vaina
+     // ProductoRepository, ProductoController, Producto/StoreProductoRequest
+     // Models/Dimension, Models/ImagenProducto
+     // Models/Producto, Models/ProductoRelacionados
+     //Y routes/api
     public function create(array $data)
     {
         DB::beginTransaction();
         try {
+            //Aquí se cambia el tipo de String a integer o float
+            $data['stock'] = (int) $data['stock'];
+            $data['precio'] = (float) $data['precio'];
+            //Lo puse por si acaso, pero no estoy seguro que sea necesario
+            //si existe un campo mensaje_correo se guardará, si no se guarda null
+            $data['mensaje_correo'] = $data['mensaje_correo'] ?? null;
+
+             // 🟡 Validar y subir imagen principal si existe
+            if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
+                $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
+                    throw new \Exception("El archivo de imagen principal no es válido.");
+                }
+                // Subir imagen principal a Imgur
+                $uploadedMainImageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+                if (!$uploadedMainImageUrl) {
+                    throw new \Exception("Falló la subida de la imagen principal.");
+                }
+                // Reemplazar el valor en el array original
+                $data['imagen_principal'] = $uploadedMainImageUrl;
+            }
+
+            //Crea el producto
             $producto = Producto::create(array_diff_key($data, array_flip(
+                //Separa los campos que no son necesarios para crear el producto
+                //Las tablas que estan enlazadas a producto
                 ['especificaciones', 'dimensiones', 'imagenes', 'relacionados'])));
 
+
+            //Crea las especificaciones y las enlaza con el idProducto (tabla especificaciones)
             if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
                 foreach ($data['especificaciones'] as $clave => $valor) {
                     $producto->especificaciones()->create([
@@ -170,7 +205,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                     ]);
                 }
             }
-
+            //Crea las dimensiones y las enlaza con el idProducto (tabla dimensiones)
             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
                 foreach ($data['dimensiones'] as $tipo => $valor) {
                     $producto->dimensiones()->create([
@@ -180,15 +215,38 @@ class ProductoRepository implements ProductoRepositoryInterface
                 }
             }
 
+            //Crea las imagenes y las enlaza con el idProducto (tabla imagen_productos)
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                foreach ($data['imagenes'] as $url) {
-                    $producto->imagenes()->create([
-                        'url_imagen' => $url
-                    ]);
+                foreach ($data['imagenes'] as $item) {
+                    //Valida que haya un campo url_imagen y que contenga un archivo
+                    if (isset($item['url_imagen']) && $item['url_imagen'] instanceof \Illuminate\Http\UploadedFile) {
+                        //Valida que sea un tipo aceptable, imgur no acepta webp ❌
+                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                        if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
+                            throw new \Exception("El archivo de imagen no cumple con los tipos especificados.\n SOLO SE ADMITEN IMAGENES: jpeg, png, jpg");
+                        }
+            
+                        // Subir la imagen a Imgur
+                        $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
+                        if (!$uploadedImageUrl) {
+                            throw new \Exception("Falló la subida de las imagenes.\n $item");
+                        }
+            
+                        // Crear la relación con las imágenes
+                        $producto->imagenes()->create([
+                            'id_producto' => $producto->id,  // Vincular al blog creado
+                            'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
+                        ]);
+                    } else {
+                        throw new \Exception("Formato inválido para imagenes de producto.");
+                    }
                 }
             }
 
             if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
+                // Convertir los valores de relacionados a enteros
+                $data['relacionados'] = array_map('intval', $data['relacionados']);
+                // Adjuntar los productos relacionados
                 $producto->productosRelacionados()->attach($data['relacionados']);
             }
 

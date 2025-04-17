@@ -131,7 +131,7 @@ class UserRepository implements UserRepositoryInterface
             $data['password'] = Hash::make($data['password']);
 
             $user = User::create($data);
-            $user->assignRole('USER');
+            $user->assignRole($data['role'] ?? 'USER');
             
             DB::commit();
 

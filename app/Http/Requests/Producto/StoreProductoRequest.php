@@ -22,18 +22,26 @@ class StoreProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            //En el front stock y precio se mandan como string por la clase FormData
+            //Quiero aclarar que no importa que se mande un string desde el front
+            // aquí se valida que sea un integer (1, 2, 3, 4) o numeric (299.99, 1.50)
             'nombre' => 'required|string',
             'titulo' => 'required|string',
             'subtitulo' => 'required|string',
             'lema' => 'required|string',
             'descripcion' => 'required|string',
-            'imagen_principal' => 'required|string',
+            'imagen_principal' => 'required|file|image',
             'precio' => 'required|numeric',
             'stock' => 'required|integer',
             'especificaciones' => 'array',
             'dimensiones' => 'array',
-            'imagenes' => 'array',
+            //Valida que las en el ARRAY llamado imagenes, todos los elementos tengan una key llamada url_imagen
+            //y que sea un archivo de tipo imagen (file|image)
+            'imagenes.*.url_imagen' => 'required|file|image',
+            //Valida que relacionados sea un ARRAY
             'relacionados' => 'array',
+            //Valida que todos los elementos del array sean del tipo integer
+            'relacionados.*' => 'integer',
             'seccion' => 'required|string',
             'mensaje_correo' => 'nullable|string'
         ];

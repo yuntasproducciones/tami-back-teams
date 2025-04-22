@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cliente\StoreClienteRequest;
 use App\Http\Requests\Cliente\UpdateClienteRequest;
 use App\Repositories\V1\Contracts\ClienteRepositoryInterface;
+use App\Traits\HttpResponses;
 
 class ClienteController extends Controller
 {
+    use HttpResponses;
+
     protected $clienteRepository;
     
     public function __construct(ClienteRepositoryInterface $clienteRepository) {

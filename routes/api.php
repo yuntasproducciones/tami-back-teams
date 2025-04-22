@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\V2ClienteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
@@ -57,4 +58,16 @@ Route::prefix('v1')->group(function () {
         });
     });
 
+});
+
+Route::prefix("v2")->group(function(){
+    Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
+        Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){
+            Route::get("/", "index");
+            Route::get("/{id}", 'show');
+            Route::post("/", "store");
+            Route::put("/{id}", "update");
+            Route::delete("/{id}", "destroy");
+        });
+    });
 });

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('detalle_blogs', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo_blog', 40);
-            $table->string('subtitulo_beneficio', 70);
+            $table->string('titulo_blog', 80);
+            $table->string('subtitulo_beneficio', 80);
             $table->unsignedBigInteger('id_blog');
 
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');

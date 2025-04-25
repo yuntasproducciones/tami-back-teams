@@ -16,7 +16,7 @@ class V2ClienteController extends Controller
     public function index()
     {
         //
-        return Cliente::get();
+        return Cliente::paginate(10);
     }
 
     /**
@@ -85,7 +85,8 @@ class V2ClienteController extends Controller
             "nombre" => "required",
             "correo" => [
                 "required",
-                Rule::unique('clientes', 'email')->ignore($cliente->id),
+                "email:rfc,strict,filter",
+                Rule::unique('clientes', 'email')->ignore($cliente->id)
             ],
             "celular" => [
                 "required",

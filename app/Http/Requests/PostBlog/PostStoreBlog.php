@@ -22,16 +22,16 @@ class PostStoreBlog extends FormRequest
     public function rules()
     {
         return [
-            'titulo' => 'required|string|max:255',
-            'parrafo' => 'required|string',
-            'descripcion' => 'required|string',
+            'titulo' => 'required|string|max:120',
+            'parrafo' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:255',
             'imagen_principal' => 'required|file|image', 
-            'titulo_blog' => 'required|string',
-            'subtitulo_beneficio' => 'required|string',
+            'titulo_blog' => 'required|string|max:80',
+            'subtitulo_beneficio' => 'required|string|max:80',
             'url_video' => 'required|string|url',
-            'titulo_video' => 'required|string',
+            'titulo_video' => 'required|string|max:40',
             'imagenes.*.url_imagen' => 'required|file|image',
-            'imagenes.*.parrafo_imagen' => 'required|string',
+            'imagenes.*.parrafo_imagen' => 'required|string|max:65535',
         ];
     }   
 }

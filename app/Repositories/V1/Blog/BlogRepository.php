@@ -93,6 +93,7 @@ class BlogRepository implements BlogRepositoryInterface
                             'parrafo' => $imagen->parrafo_imagen,
                         ];
                     }),
+                    'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
                     'videoBlog' => optional($blog->video)->url_video, 
                     'tituloVideoBlog' => optional($blog->video)->titulo_video,
                     'created_at' => $blog->created_at
@@ -365,6 +366,7 @@ class BlogRepository implements BlogRepositoryInterface
                 'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
                 'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
                 'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
+                'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
                 'videoBlog' => optional($blog->video)->url_video, 
                 'tituloVideoBlog' => optional($blog->video)->titulo_video,
                 'created_at' => $blog->created_at,
@@ -560,5 +562,14 @@ class BlogRepository implements BlogRepositoryInterface
             return $this->apiResponse->errorResponse('Error al eliminar el blog: ' . $e->getMessage(),
             HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private function obtenerIdVideoYoutube($url)
+    {
+        $pattern = '%(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([^\s&?]+)%';
+        if (preg_match($pattern, $url, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 }

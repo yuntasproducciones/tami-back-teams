@@ -23,7 +23,8 @@ class PostUserUpdate extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100',
+            'email' => 'required|email|max:100|unique:users,email,' . $this->route('id'),
+            'celular' => 'sometimes|string|regex:/^[0-9]{9}$/'
         ];
     }
 }

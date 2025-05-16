@@ -22,8 +22,8 @@ class PostUserUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100',
+            'name' => ['required','string','min:2','max:100','regex:/^[\pL\s\-]+$/u'],
+            'email' => ['required','email:rfc,dns','max:100','unique:users,email,' . $this->route('id')]
         ];
     }
 }

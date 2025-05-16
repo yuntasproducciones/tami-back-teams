@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostUser\PostUser;
 use App\Http\Requests\PostUser\PostUserUpdate;
 use App\Repositories\V1\Contracts\UserRepositoryInterface;
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -20,7 +21,7 @@ class UserController extends Controller
     }
     
     public function store(PostUser $request) {
-        return $this->userRepository->create($request->validated());
+        $user = $this->userRepository->create($request->validated());
     }
     
     public function show($id) {

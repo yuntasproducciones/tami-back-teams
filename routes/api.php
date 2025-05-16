@@ -17,12 +17,14 @@ Route::prefix('v1')->group(function () {
     Route::controller(UserController::class)->prefix('users')->group(function(){
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::post('/', 'store')->name('users.store');
-            Route::get('/', 'index')->name('users.index');
-            Route::get('/{id}', 'show');
-            Route::delete('/{id}', 'destroy')->name('users.destroy');
-            Route::put('/{id}', 'update')->name('users.update'); 
+           
         });
+
+        Route::post('/', 'store')->name('users.store');
+        Route::get('/', 'index')->name('users.index');
+        Route::get('/{id}', 'show');
+        Route::delete('/{id}', 'destroy')->name('users.destroy');
+        Route::put('/{id}', 'update')->name('users.update'); 
     });
     
     Route::controller(ClienteController::class)->prefix('clientes')->group(function () {

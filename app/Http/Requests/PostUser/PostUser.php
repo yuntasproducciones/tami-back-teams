@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Requests\PostUser;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PostUser extends FormRequest
@@ -27,5 +28,14 @@ class PostUser extends FormRequest
             'celular' => 'required|string|unique:users,celular|regex:/^[0-9]{9}$/',
             'password' => 'required|string|min:8|max:255'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'errors' => $validator->errors(),
+            ], 422)
+        );
     }
 }

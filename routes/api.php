@@ -31,11 +31,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/', 'store');
         
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');            
+                     
         });
+
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');   
     });
 
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){

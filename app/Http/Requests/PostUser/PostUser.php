@@ -23,7 +23,7 @@ class PostUser extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:2|max:100',
+            'name' => 'required|string|unique:users,name|min:2|max:100',
             'email' => 'required|email|unique:users,email|min:15|max:100',
             'celular' => 'required|string|unique:users,celular|regex:/^[0-9]{9}$/',
             'password' => 'required|string|min:8|max:255'

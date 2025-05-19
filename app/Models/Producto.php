@@ -45,4 +45,5 @@ class Producto extends Model
     {
         return $this->hasMany(Blog::class, 'producto_id', 'id');
     }
+
 }

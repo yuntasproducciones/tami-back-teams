@@ -13,17 +13,18 @@ use App\Services\ImgurService;
 use Illuminate\Support\Facades\DB;;
 
 /**
-     * @OA\Tag(
-     *     name="Blogs",
-     *     description="API para gestión de blogs"
-     * )
-*/
+ * @OA\Tag(
+ *     name="Blogs",
+ *     description="API para gestión de blogs"
+ * )
+ */
 class BlogRepository implements BlogRepositoryInterface
 {
     protected ApiResponseService $apiResponse;
     protected $imgurService;
 
-    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService)
+    {
         $this->apiResponse = $apiResponse;
         $this->imgurService = $imgurService;
     }
@@ -45,6 +46,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="producto_id", type="integer", example=1),
      *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
      *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
      *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del país."),
@@ -76,16 +78,17 @@ class BlogRepository implements BlogRepositoryInterface
     public function getAll()
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle'])->get();
+            $blog = Blog::with(['imagenes', 'video', 'detalle', 'producto'])->get();
 
             $showBlog = $blog->map(function ($blog) {
                 return [
                     'id' => $blog->id,
+                    'producto_id' => $blog->producto_id,
                     'titulo' => $blog->titulo,
                     'parrafo' => $blog->parrafo,
                     'descripcion' => $blog->descripcion,
                     'imagenPrincipal' => $blog->imagen_principal,
-                    'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+                    'tituloBlog' => optional($blog->detalle)->titulo_blog,
                     'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
                     'imagenesBlog' => $blog->imagenes->map(function ($imagen) {
                         return [
@@ -94,18 +97,22 @@ class BlogRepository implements BlogRepositoryInterface
                         ];
                     }),
                     'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
-                    'videoBlog' => optional($blog->video)->url_video, 
+                    'videoBlog' => optional($blog->video)->url_video,
                     'tituloVideoBlog' => optional($blog->video)->titulo_video,
                     'created_at' => $blog->created_at
                 ];
             });
 
-            return $this->apiResponse->successResponse($showBlog, 'Blogs obtenidos exitosamente', 
-            HttpStatusCode::OK);
-        
+            return $this->apiResponse->successResponse(
+                $showBlog,
+                'Blogs obtenidos exitosamente',
+                HttpStatusCode::OK
+            );
         } catch (\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al obtener los blogs: ' . $e->getMessage(),
-             HttpStatusCode::INTERNAL_SERVER_ERROR);
+            return $this->apiResponse->errorResponse(
+                'Error al obtener los blogs: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -125,6 +132,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Schema(
      *                 required={
      *                     "titulo", 
+     *                     "producto_id",
      *                     "parrafo", 
      *                     "descripcion", 
      *                     "imagen_principal", 
@@ -137,6 +145,12 @@ class BlogRepository implements BlogRepositoryInterface
      *                     property="titulo",
      *                     type="string",
      *                     example="Título del blog"
+     *                 ),
+     *                 @OA\Property(    
+     *                     property="producto_id",
+     *                     type="integer",
+     *                     example=1,
+     *                     description="ID del producto asociado al blog"
      *                 ),
      *                 @OA\Property(
      *                     property="parrafo",
@@ -220,7 +234,12 @@ class BlogRepository implements BlogRepositoryInterface
     {
         DB::beginTransaction();
         try {
-             // 🟡 Validar y subir imagen principal si existe
+            // Validacion producto_id
+            if (empty($data['producto_id']) || !is_int($data['producto_id'])) {
+                throw new \Exception("El campo producto_id es requerido y debe ser un entero.");
+            }
+
+            // 🟡 Validar y subir imagen principal si existe
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
                 $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
@@ -237,7 +256,9 @@ class BlogRepository implements BlogRepositoryInterface
 
             // Crear el blog (excluyendo relaciones)
             $blog = Blog::create(array_diff_key($data, array_flip([
-                'imagenes', 'video', 'detalle'
+                'imagenes',
+                'video',
+                'detalle'
             ])));
 
             // Relación: detalle del blog
@@ -265,13 +286,13 @@ class BlogRepository implements BlogRepositoryInterface
                         if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
                             throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.\n");
                         }
-            
+
                         // Subir la imagen a Imgur
                         $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
                         if (!$uploadedImageUrl) {
                             throw new \Exception("Falló la subida de la imagen adicional.\n $item");
                         }
-            
+
                         // Crear la relación con las imágenes
                         $blog->imagenes()->create([
                             'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
@@ -282,7 +303,7 @@ class BlogRepository implements BlogRepositoryInterface
                         throw new \Exception("Formato inválido para imagenes adicionales.");
                     }
                 }
-            }else{
+            } else {
                 throw new \Exception("Array de imagenes vacio");
             }
 
@@ -290,7 +311,6 @@ class BlogRepository implements BlogRepositoryInterface
             DB::commit();
 
             return $this->apiResponse->successResponse($blog, 'Blog creado con éxito.', HttpStatusCode::CREATED);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse(
@@ -322,6 +342,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="producto_id", type="integer", example=1),
      *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
@@ -354,30 +375,35 @@ class BlogRepository implements BlogRepositoryInterface
     public function find($id)
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle'])->findOrFail($id);
+            $blog = Blog::with(['imagenes', 'video', 'detalle', 'producto'])->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
+                'producto_id' => $blog->producto_id,
                 'titulo' => $blog->titulo,
                 'parrafo' => $blog->parrafo,
                 'descripcion' => $blog->descripcion,
                 'imagenPrincipal' => $blog->imagen_principal,
-                'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+                'tituloBlog' => optional($blog->detalle)->titulo_blog,
                 'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
-                'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
+                'imagenesBlog' => $blog->imagenes->pluck('url_imagen'),
                 'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
                 'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
-                'videoBlog' => optional($blog->video)->url_video, 
+                'videoBlog' => optional($blog->video)->url_video,
                 'tituloVideoBlog' => optional($blog->video)->titulo_video,
                 'created_at' => $blog->created_at,
             ];
 
-            return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente',
-            HttpStatusCode::OK);
-
-        } catch(\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(),
-            HttpStatusCode::INTERNAL_SERVER_ERROR);
+            return $this->apiResponse->successResponse(
+                $showBlog,
+                'Blog obtenido exitosamente',
+                HttpStatusCode::OK
+            );
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Error al obtener el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -400,6 +426,7 @@ class BlogRepository implements BlogRepositoryInterface
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+     *             @OA\Property(property="producto_id", type="integer", example=1),
      *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
@@ -447,6 +474,7 @@ class BlogRepository implements BlogRepositoryInterface
             // Buscar el blog
             $blog = Blog::findOrFail($id);
             $blog->update([
+                'producto_id' => $data['producto_id'],
                 'titulo' => $data['titulo'],
                 'parrafo' => $data['parrafo'],
                 'descripcion' => $data['descripcion'],
@@ -497,14 +525,13 @@ class BlogRepository implements BlogRepositoryInterface
                 ]);
             }
 
-            DB::commit(); 
+            DB::commit();
 
             return $this->apiResponse->successResponse(
                 null,
                 'Blog actualizado exitosamente',
                 HttpStatusCode::OK
             );
-
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse(
@@ -555,12 +582,16 @@ class BlogRepository implements BlogRepositoryInterface
             $blog = Blog::findOrFail($id);
             $blog->delete();
 
-            return $this->apiResponse->successResponse($blog, 'Blog eliminado exitosamente',
-            HttpStatusCode::OK);
-
-        } catch(\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al eliminar el blog: ' . $e->getMessage(),
-            HttpStatusCode::INTERNAL_SERVER_ERROR);
+            return $this->apiResponse->successResponse(
+                $blog,
+                'Blog eliminado exitosamente',
+                HttpStatusCode::OK
+            );
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Error al eliminar el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
 

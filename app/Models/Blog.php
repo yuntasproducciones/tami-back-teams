@@ -10,6 +10,7 @@ class Blog extends Model
     use Hasfactory;
 
     protected $fillable = [
+        'producto_id',
         'titulo',
         'parrafo',
         'descripcion',

@@ -59,7 +59,8 @@ class BlogRepository implements BlogRepositoryInterface
      *                             @OA\Property(property="parrafo", type="string", example="Descripción de la imagen")
      *                         )
      *                     ),
-     *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
+     *                     @OA\Property(property="video_id", type="string", example="CSqLojbONfw"),
+     *                     @OA\Property(property="videoBlog", type="string", example="https://youtu.be/CSqLojbONfw"),
      *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
      *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-10-01T14:30:00Z")
      *                 )
@@ -167,7 +168,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                 @OA\Property(
      *                     property="url_video",
      *                     type="string",
-     *                     example="https://example.com/video.mp4"
+     *                     example="https://youtu.be/CSqLojbONfw"
      *                 ),
      *                 @OA\Property(
      *                     property="titulo_video",
@@ -334,7 +335,8 @@ class BlogRepository implements BlogRepositoryInterface
      *                         @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
      *                     )
      *                 ),
-     *                 @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
+     *                 @OA\Property(property="video_id", type="string", example="CSqLojbONfw"),
+     *                 @OA\Property(property="videoBlog", type="string", example="https://youtu.be/CSqLojbONfw"),
      *                 @OA\Property(property="titulo_video", type="string", example="Título del video"),
      *                 @OA\Property(property="created_at", type="string")
      *             ),

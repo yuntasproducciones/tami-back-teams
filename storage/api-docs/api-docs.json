@@ -19,6 +19,168 @@
         }
     ],
     "paths": {
+        "/api/v1/permisos": {
+            "get": {
+                "tags": [
+                    "Roles y Permisos"
+                ],
+                "summary": "Muestra un listado de todos los permisos",
+                "description": "Retorna un array con todos los permisos",
+                "operationId": "indexPermisos",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
+                                                    "parrafo": {
+                                                        "type": "string",
+                                                        "example": "La mejor calidad"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Un producto elaborado por los mejores especialistas del país."
+                                                    },
+                                                    "imagenPrincipal": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/imagen.jpg"
+                                                    },
+                                                    "tituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del Blog"
+                                                    },
+                                                    "subTituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Subtítulo del Blog"
+                                                    },
+                                                    "imagenesBlog": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "url": {
+                                                                    "type": "string",
+                                                                    "example": "https://example.com/imagen1.jpg"
+                                                                },
+                                                                "parrafo": {
+                                                                    "type": "string",
+                                                                    "example": "Descripción de la imagen"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "video_id": {
+                                                        "type": "string",
+                                                        "example": "CSqLojbONfw"
+                                                    },
+                                                    "videoBlog": {
+                                                        "type": "string",
+                                                        "example": "https://youtu.be/CSqLojbONfw"
+                                                    },
+                                                    "tituloVideoBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del video"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-01T14:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Permisos obtenidos exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles y Permisos"
+                ],
+                "summary": "Crear un nuevo permiso",
+                "description": "Almacena un nuevo permiso",
+                "operationId": "storePermiso",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "CREAR BLOGS"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Permiso creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Permiso creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
         "/api/v1/auth/login": {
             "post": {
                 "tags": [
@@ -225,9 +387,13 @@
                                                             "type": "object"
                                                         }
                                                     },
+                                                    "video_id": {
+                                                        "type": "string",
+                                                        "example": "CSqLojbONfw"
+                                                    },
                                                     "videoBlog": {
                                                         "type": "string",
-                                                        "example": "https://example.com/video.mp4"
+                                                        "example": "https://youtu.be/CSqLojbONfw"
                                                     },
                                                     "tituloVideoBlog": {
                                                         "type": "string",
@@ -307,7 +473,7 @@
                                     },
                                     "url_video": {
                                         "type": "string",
-                                        "example": "https://example.com/video.mp4"
+                                        "example": "https://youtu.be/CSqLojbONfw"
                                     },
                                     "titulo_video": {
                                         "type": "string",
@@ -447,9 +613,13 @@
                                                         "type": "object"
                                                     }
                                                 },
-                                                "url_video": {
+                                                "video_id": {
                                                     "type": "string",
-                                                    "example": "https://example.com/video.mp4"
+                                                    "example": "CSqLojbONfw"
+                                                },
+                                                "videoBlog": {
+                                                    "type": "string",
+                                                    "example": "https://youtu.be/CSqLojbONfw"
                                                 },
                                                 "titulo_video": {
                                                     "type": "string",
@@ -2296,6 +2466,10 @@
         {
             "name": "Usuarios",
             "description": "API para gestión de usuarios"
+        },
+        {
+            "name": "Roles y Permisos",
+            "description": "Roles y Permisos"
         },
         {
             "name": "Autenticación",

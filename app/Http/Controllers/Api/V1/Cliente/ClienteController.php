@@ -9,9 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Cliente;
 use Illuminate\Validation\ValidationException;
+use App\Traits\HttpResponses;
 
 class ClienteController extends Controller
 {
+    use HttpResponses;
 
     public function index()
     {
@@ -22,17 +24,9 @@ class ClienteController extends Controller
                 ? 'No hay clientes para listar.'
                 : 'Clientes listados correctamente.';
 
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'data' => $clientes
-            ], Response::HTTP_OK);
+            return $this->success($clientes, $message, Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un problema al listar los clientes.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(null, 'Ocurrió un problema al listar los clientes. ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -41,17 +35,9 @@ class ClienteController extends Controller
         try {
             $cliente = Cliente::create($request->validated());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cliente registrado exitosamente.',
-                'data' => $cliente
-            ], Response::HTTP_CREATED);
+            return $this->success($cliente, 'Cliente registrado exitosamente.', Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un problema al registrar el cliente.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(null, 'Ocurrió un problema al registrar el cliente. ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,59 +46,28 @@ class ClienteController extends Controller
         try {
             $cliente = Cliente::findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cliente encontrado.',
-                'data' => $cliente
-            ], Response::HTTP_OK);
+            return $this->success($cliente, 'Cliente encontrado.', Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cliente no encontrado.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_NOT_FOUND);
+            return $this->error(null, 'Cliente no encontrado.', Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un problema al procesar la solicitud.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(null, 'Ocurrió un problema al procesar la solicitud. ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     public function update(UpdateClienteRequest $request, $id)
     {
         try {
-
             $data = $request->validated();
-
             $cliente = Cliente::findOrFail($id);
-
             $cliente->update($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cliente actualizado exitosamente.',
-                'data' => $cliente
-            ], Response::HTTP_OK);
+            return $this->success($cliente, 'Cliente actualizado exitosamente.', Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cliente no encontrado.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_NOT_FOUND);
+            return $this->error(null, 'Cliente no encontrado.', Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación.',
-                'errors' => $e->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->error($e->errors(), 'Error de validación.', Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un problema al procesar la solicitud.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(null, 'Ocurrió un problema al procesar la solicitud. ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -120,25 +75,13 @@ class ClienteController extends Controller
     {
         try {
             $cliente = Cliente::findOrFail($id);
-
             $cliente->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cliente eliminado exitosamente.'
-            ], Response::HTTP_OK);
+            return $this->success(null, 'Cliente eliminado exitosamente.', Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cliente no encontrado.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_NOT_FOUND);
+            return $this->error(null, 'Cliente no encontrado.', Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un problema al procesar la solicitud.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(null, 'Ocurrió un problema al procesar la solicitud. ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

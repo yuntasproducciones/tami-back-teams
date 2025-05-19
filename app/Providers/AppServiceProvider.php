@@ -13,6 +13,7 @@ use App\Repositories\V1\Contracts\UserRepositoryInterface;
 use App\Repositories\V1\Producto\ProductoRepository;
 use App\Repositories\V1\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Schema::defaultStringLength(125);
     }
 }

@@ -32,4 +32,9 @@ class Blog extends Model
     {
         return $this->hasOne(DetalleBlog::class, 'id_blog');
     }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'producto_id');
+    }   
 }

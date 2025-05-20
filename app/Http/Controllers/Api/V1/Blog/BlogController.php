@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostBlog\PostStoreBlog;
 use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 use App\Services\ApiResponseService;
+use App\Models\ImagenBlog;
+use App\Models\VideoBlog;
+use App\Models\DetalleBlog;
 use App\Services\ImgurService;
 use App\Models\Blog;
 use App\Http\Contains\HttpStatusCode;
@@ -60,9 +63,10 @@ class BlogController extends Controller
         }
     }
 
-    public function store(array $data)
+    public function store(array $data, PostStoreBlog $request)
     {
         DB::beginTransaction();
+        $data = $request->validated();
         try {
              // 🟡 Validar y subir imagen principal si existe
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
@@ -174,9 +178,79 @@ class BlogController extends Controller
         }
     }
 
-    public function update(PostStoreBlog $request, $blog)
+    public function update(array $data, $id, PostStoreBlog $request)
     {
-        return $this->blogRepository->update($request->validated(), $blog);
+         try {
+            DB::beginTransaction();
+
+            // Buscar el blog
+            $blog = Blog::findOrFail($id);
+            $blog->update([
+                'titulo' => $data['titulo'],
+                'parrafo' => $data['parrafo'],
+                'descripcion' => $data['descripcion'],
+                'imagen_principal' => $data['imagen_principal'],
+                'created_at' => now(),
+            ]);
+
+            // Manejo de imágenes
+            if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+                $blog->imagenes()->delete(); // Eliminar imágenes anteriores
+
+                $imagenes = collect($data['imagenes'])->map(fn($imagen) => [
+                    'url_imagen' => $imagen['url_imagen'],
+                    'parrafo_imagen' => $imagen['parrafo_imagen'],
+                    'id_blog' => $blog->id,
+                ])->toArray();
+
+                ImagenBlog::insert($imagenes);
+            }
+
+            // Manejo de detalles del blog
+            $detalle = DetalleBlog::where('id_blog', $blog->id)->first();
+            if ($detalle) {
+                $detalle->update([
+                    'titulo_blog' => $data['titulo_blog'],
+                    'subtitulo_beneficio' => $data['subtitulo_beneficio']
+                ]);
+            } else {
+                DetalleBlog::create([
+                    'id_blog' => $blog->id,
+                    'titulo_blog' => $data['titulo_blog'],
+                    'subtitulo_beneficio' => $data['subtitulo_beneficio'],
+                ]);
+            }
+
+            // Manejo de video del blog
+            $video = VideoBlog::where('id_blog', $blog->id)->first();
+            if ($video) {
+                $video->update([
+                    'url_video' => $data['url_video'],
+                    'titulo_video' => $data['titulo_video'],
+                ]);
+            } else {
+                VideoBlog::create([
+                    'id_blog' => $blog->id,
+                    'url_video' => $data['url_video'],
+                    'titulo_video' => $data['titulo_video'],
+                ]);
+            }
+
+            DB::commit(); 
+
+            return $this->apiResponse->successResponse(
+                null,
+                'Blog actualizado exitosamente',
+                HttpStatusCode::OK
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->apiResponse->errorResponse(
+                'Error al actualizar el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     public function destroy($id)

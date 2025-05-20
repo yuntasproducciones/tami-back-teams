@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
+
+    protected $casts = [
+        'especificaciones' => 'array',
+    ];
+
     protected $fillable = [
         'nombre',
         'titulo',
@@ -16,15 +21,11 @@ class Producto extends Model
         'stock',
         'precio',
         'seccion',
-        'mensaje_correo'
+        'mensaje_correo',
+        'especificaciones'
     ];
 
     public $timestamps = true;
-
-    public function especificaciones()
-    {
-        return $this->hasMany(Especificacion::class, 'id_producto');
-    }
 
     public function dimensiones()
     {
@@ -33,12 +34,11 @@ class Producto extends Model
 
     public function imagenes()
     {
-        return $this->hasMany(ImagenProducto::class, 'id_producto');
+        return $this->hasMany(ProductoImagen::class, 'producto_id');
     }
 
     public function productosRelacionados()
     {
         return $this->belongsToMany(Producto::class, 'producto_relacionados', 'id_producto', 'id_relacionado');
     }
-
 }

@@ -73,7 +73,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     public function getAll()
     {
         try {
-            $productos = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->get();
+            $productos = Producto::with(['dimensiones', 'imagenes', 'productosRelacionados'])->get();
 
             $formattedProductos = $productos->map(function ($producto) {
                 return [
@@ -83,7 +83,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                     'subtitle' => $producto->subtitulo,
                     'tagline' => $producto->lema,
                     'description' => $producto->descripcion,
-                    'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                    'specs' => $producto->especificaciones,
                     'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
                     'relatedProducts' => $producto->productosRelacionados->pluck('id'),
                     'images' => $producto->imagenes->pluck('url_imagen'),

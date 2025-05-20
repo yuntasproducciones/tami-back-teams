@@ -46,7 +46,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="producto_id", type="integer", example=1),
+     *                     //@OA\Property(property="producto_id", type="integer", example=1),
      *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
      *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
      *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del país."),
@@ -78,12 +78,12 @@ class BlogRepository implements BlogRepositoryInterface
     public function getAll()
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle', 'producto'])->get();
+            $blog = Blog::with(['imagenes', 'video', 'detalle' ])->get();
 
             $showBlog = $blog->map(function ($blog) {
                 return [
                     'id' => $blog->id,
-                    'producto_id' => $blog->producto_id,
+                    //'producto_id' => $blog->producto_id,
                     'titulo' => $blog->titulo,
                     'parrafo' => $blog->parrafo,
                     'descripcion' => $blog->descripcion,
@@ -131,8 +131,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={
-     *                     "titulo", 
-     *                     "producto_id",
+     *                     "titulo",
      *                     "parrafo", 
      *                     "descripcion", 
      *                     "imagen_principal", 
@@ -146,12 +145,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                     type="string",
      *                     example="Título del blog"
      *                 ),
-     *                 @OA\Property(    
-     *                     property="producto_id",
-     *                     type="integer",
-     *                     example=1,
-     *                     description="ID del producto asociado al blog"
-     *                 ),
+     *                 
      *                 @OA\Property(
      *                     property="parrafo",
      *                     type="string",
@@ -235,9 +229,9 @@ class BlogRepository implements BlogRepositoryInterface
         DB::beginTransaction();
         try {
             // Validacion producto_id
-            if (empty($data['producto_id']) || !is_int($data['producto_id'])) {
-                throw new \Exception("El campo producto_id es requerido y debe ser un entero.");
-            }
+            // if (empty($data['producto_id']) || !is_int($data['producto_id'])) {
+            //     throw new \Exception("El campo producto_id es requerido y debe ser un entero.");
+            // }
 
             // 🟡 Validar y subir imagen principal si existe
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
@@ -342,7 +336,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="producto_id", type="integer", example=1),
+     *                // @OA\Property(property="producto_id", type="integer", example=1),
      *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
@@ -375,11 +369,11 @@ class BlogRepository implements BlogRepositoryInterface
     public function find($id)
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle', 'producto'])->findOrFail($id);
+            $blog = Blog::with(['imagenes', 'video', 'detalle'])->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
-                'producto_id' => $blog->producto_id,
+                //'producto_id' => $blog->producto_id,
                 'titulo' => $blog->titulo,
                 'parrafo' => $blog->parrafo,
                 'descripcion' => $blog->descripcion,
@@ -426,7 +420,7 @@ class BlogRepository implements BlogRepositoryInterface
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="producto_id", type="integer", example=1),
+     *            //@OA\Property(property="producto_id", type="integer", example=1),
      *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
@@ -474,7 +468,7 @@ class BlogRepository implements BlogRepositoryInterface
             // Buscar el blog
             $blog = Blog::findOrFail($id);
             $blog->update([
-                'producto_id' => $data['producto_id'],
+                //'producto_id' => $data['producto_id'],
                 'titulo' => $data['titulo'],
                 'parrafo' => $data['parrafo'],
                 'descripcion' => $data['descripcion'],

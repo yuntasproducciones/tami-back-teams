@@ -193,18 +193,8 @@ class ProductoRepository implements ProductoRepositoryInterface
             $producto = Producto::create(array_diff_key($data, array_flip(
                 //Separa los campos que no son necesarios para crear el producto
                 //Las tablas que estan enlazadas a producto
-                ['especificaciones', 'dimensiones', 'imagenes', 'relacionados'])));
+                ['dimensiones', 'imagenes', 'relacionados'])));
 
-
-            //Crea las especificaciones y las enlaza con el idProducto (tabla especificaciones)
-            if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-                foreach ($data['especificaciones'] as $clave => $valor) {
-                    $producto->especificaciones()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
             //Crea las dimensiones y las enlaza con el idProducto (tabla dimensiones)
             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
                 foreach ($data['dimensiones'] as $tipo => $valor) {
@@ -321,7 +311,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     public function find($id)
     {
         try {
-            $producto = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
+            $producto = Producto::with(['dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
 
             $formattedProducto = [
                 'id' => $producto->id,
@@ -330,7 +320,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                 'subtitle' => $producto->subtitulo,
                 'tagline' => $producto->lema,
                 'description' => $producto->descripcion,
-                'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                'specs' => $producto->especificaciones,
                 'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
                 'relatedProducts' => $producto->productosRelacionados->pluck('id'),
                 'images' => $producto->imagenes->pluck('url_imagen'),
@@ -437,17 +427,8 @@ class ProductoRepository implements ProductoRepositoryInterface
                 'stock' => $data['stock'] ?? $producto->stock,
                 'precio' => $data['precio'] ?? $producto->precio,
                 'seccion' => $data['seccion'] ?? $producto->seccion,
+                'especificaciones' => $data['especificaciones'] ?? $producto->especificaciones,
             ]);
-
-            if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-                $producto->especificaciones()->delete();
-                foreach ($data['especificaciones'] as $clave => $valor) {
-                    $producto->especificaciones()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
 
             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
                 $producto->dimensiones()->delete();

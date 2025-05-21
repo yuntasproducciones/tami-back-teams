@@ -21,7 +21,7 @@ class Producto extends Model
         'stock',
         'precio',
         'seccion',
-        'mensaje_correo',
+        // 'mensaje_correo',
         'especificaciones'
     ];
 

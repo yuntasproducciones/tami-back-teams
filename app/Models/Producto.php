@@ -41,4 +41,9 @@ class Producto extends Model
         return $this->belongsToMany(Producto::class, 'producto_relacionados', 'id_producto', 'id_relacionado');
     }
 
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'producto_id', 'id');
+    }
+
 }

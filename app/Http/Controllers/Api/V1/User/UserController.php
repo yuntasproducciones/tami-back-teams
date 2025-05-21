@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\User;
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostUser\PostUser;
 use App\Http\Requests\PostUser\PostUserUpdate;

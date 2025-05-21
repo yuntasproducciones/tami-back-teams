@@ -1,10 +1,9 @@
 <?php
 
 namespace App\Http\Requests\Cliente;
-
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClienteRequest extends FormRequest
 {
@@ -16,9 +15,9 @@ class StoreClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
+            'name' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:clientes,email|max:100',
-            'celular' => 'required|regex:/^[0-9]{9}$/'
+            'celular' => 'required|string|unique:clientes,celular|regex:/^[0-9]{9}$/'
         ];
     }
 
@@ -39,8 +38,6 @@ class StoreClienteRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
-            'success' => false,
-            'message' => 'Error de validación.',
             'errors' => $validator->errors()
         ], 422));
     }

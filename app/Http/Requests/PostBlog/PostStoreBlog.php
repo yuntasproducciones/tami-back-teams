@@ -3,6 +3,8 @@
 namespace App\Http\Requests\PostBlog;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostStoreBlog extends FormRequest
 {
@@ -34,4 +36,13 @@ class PostStoreBlog extends FormRequest
             'imagenes.*.parrafo_imagen' => 'required|string|max:65535',
         ];
     }   
+
+     protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
 }

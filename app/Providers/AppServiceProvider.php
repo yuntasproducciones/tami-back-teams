@@ -8,9 +8,7 @@ use App\Repositories\V1\Cliente\ClienteRepository;
 use App\Repositories\V1\Contracts\AuthRepositoryInterface;
 use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 use App\Repositories\V1\Contracts\ClienteRepositoryInterface;
-use App\Repositories\V1\Contracts\ProductoRepositoryInterface;
 use App\Repositories\V1\Contracts\UserRepositoryInterface;
-use App\Repositories\V1\Producto\ProductoRepository;
 use App\Repositories\V1\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -26,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
         $this->app->bind(BlogRepositoryInterface::class, BlogRepository::class);
         $this->app->bind(ClienteRepositoryInterface::class, ClienteRepository::class);
-        $this->app->bind(ProductoRepositoryInterface::class, ProductoRepository::class);
     }
 
     /**

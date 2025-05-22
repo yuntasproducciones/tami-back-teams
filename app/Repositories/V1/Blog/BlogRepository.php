@@ -46,7 +46,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     //@OA\Property(property="producto_id", type="integer", example=1),
+     *                     
      *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
      *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
      *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del país."),
@@ -78,7 +78,7 @@ class BlogRepository implements BlogRepositoryInterface
     public function getAll()
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle' ])->get();
+            $blog = Blog::with(['imagenes', 'video', 'detalle'])->get();
 
             $showBlog = $blog->map(function ($blog) {
                 return [
@@ -138,14 +138,14 @@ class BlogRepository implements BlogRepositoryInterface
      *                     "titulo_blog", 
      *                     "subtitulo_beneficio", 
      *                     "url_video", 
-     *                     "titulo_video"
+     *                     "titulo_video",
+     *                     "imagenes"
      *                 },
      *                 @OA\Property(
      *                     property="titulo",
      *                     type="string",
      *                     example="Título del blog"
      *                 ),
-     *                 
      *                 @OA\Property(
      *                     property="parrafo",
      *                     type="string",
@@ -162,6 +162,7 @@ class BlogRepository implements BlogRepositoryInterface
      *                     format="binary",
      *                     description="Archivo de imagen principal del blog"
      *                 ),
+     * 
      *                 @OA\Property(
      *                     property="titulo_blog",
      *                     type="string",
@@ -185,23 +186,24 @@ class BlogRepository implements BlogRepositoryInterface
      *                 @OA\Property(
      *                     property="imagenes",
      *                     type="array",
+     *                     description="Array de objetos con imagen y texto",
      *                     @OA\Items(
      *                         type="object",
+     *                         required={"imagen"},
      *                         @OA\Property(
      *                             property="imagen",
      *                             type="string",
-     *                             example="https://example.com/imagen-adicional.jpg",
      *                             format="binary",
-     *                             description="Archivo de imagen adicional"
+     *                             description="Archivo de imagen"
      *                         ),
      *                         @OA\Property(
-     *                             property="parrafo",
+     *                             property="parrafo_imagen",
      *                             type="string",
-     *                             description="Descripción de la imagen adicional",
-     *                             example="Parrafo de la imagen adicional"
+     *                             description="Descripción de la imagen",
+     *                             example="Descripción del párrafo para esta imagen"
      *                         )
      *                     )
-     *                 )
+     *                 ),
      *             )
      *         )
      *     ),
@@ -224,6 +226,8 @@ class BlogRepository implements BlogRepositoryInterface
      *     )
      * )
      */
+
+
     public function create(array $data)
     {
         DB::beginTransaction();
@@ -274,32 +278,32 @@ class BlogRepository implements BlogRepositoryInterface
             }
             // Relación: imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                foreach ($data['imagenes'] as $item) {
-                    if (isset($item['url_imagen']) && $item['url_imagen'] instanceof \Illuminate\Http\UploadedFile) {
-                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                        if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
-                            throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.\n");
-                        }
+                $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
-                        // Subir la imagen a Imgur
-                        $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
-                        if (!$uploadedImageUrl) {
-                            throw new \Exception("Falló la subida de la imagen adicional.\n $item");
-                        }
-
-                        // Crear la relación con las imágenes
-                        $blog->imagenes()->create([
-                            'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
-                            'parrafo_imagen' => $item['parrafo_imagen'] ?? '',  // Descripción de la imagen
-                            'id_blog' => $blog->id,  // Vincular al blog creado
-                        ]);
-                    } else {
-                        throw new \Exception("Formato inválido para imagenes adicionales.");
+                foreach ($data['imagenes'] as $index => $item) {
+                    if (!isset($item['imagen']) || !($item['imagen'] instanceof \Illuminate\Http\UploadedFile)) {
+                        throw new \Exception("El archivo en la posición $index no es válido.");
                     }
+
+                    if (!in_array($item['imagen']->getMimeType(), $validMimeTypes)) {
+                        throw new \Exception("El archivo en la posición $index no es un tipo permitido.");
+                    }
+
+                    $uploadedImageUrl = $this->imgurService->uploadImage($item['imagen']);
+                    if (!$uploadedImageUrl) {
+                        throw new \Exception("Falló la subida de la imagen en la posición $index.");
+                    }
+
+                    $blog->imagenes()->create([
+                        'url_imagen' => $uploadedImageUrl,
+                        'parrafo_imagen' => $item['parrafo_imagen'] ?? '',
+                        'id_blog' => $blog->id,
+                    ]);
                 }
             } else {
-                throw new \Exception("Array de imagenes vacio");
+                throw new \Exception("Array de imágenes vacío o inválido.");
             }
+
 
             // ✅ Las relaciones ya están cargadas al momento de la creación, no es necesario cargar de nuevo
             DB::commit();
@@ -336,7 +340,7 @@ class BlogRepository implements BlogRepositoryInterface
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                // @OA\Property(property="producto_id", type="integer", example=1),
+     *               
      *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
@@ -420,7 +424,6 @@ class BlogRepository implements BlogRepositoryInterface
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *            //@OA\Property(property="producto_id", type="integer", example=1),
      *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),

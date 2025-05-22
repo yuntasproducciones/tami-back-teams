@@ -19,6 +19,642 @@
         }
     ],
     "paths": {
+        "/api/v1/emails": {
+            "post": {
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Enviar correo electrónico",
+                "description": "Envía un correo electrónico con asunto y mensaje a una dirección especificada",
+                "operationId": "sendEmail",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "to",
+                                    "subject",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "destinatario": {
+                                        "description": "Correo del destinatario",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "destinatario@gmail.com"
+                                    },
+                                    "asunto": {
+                                        "description": "Asunto del correo",
+                                        "type": "string",
+                                        "example": "Asunto del correo"
+                                    },
+                                    "mensaje": {
+                                        "description": "Contenido del mensaje",
+                                        "type": "string",
+                                        "example": "Este es el contenido del correo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Correo enviado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Correo enviado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación de datos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "to": [
+                                                    "The to field is required."
+                                                ],
+                                                "subject": [
+                                                    "The subject field is required."
+                                                ],
+                                                "message": [
+                                                    "The message field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al enviar el correo"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Muestra un listado de todos los productos",
+                "description": "Retorna un array con todos los productos y sus relaciones",
+                "operationId": "indexProductos",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
+                                                    "subtitle": {
+                                                        "type": "string",
+                                                        "example": "La mejor calidad"
+                                                    },
+                                                    "tagline": {
+                                                        "type": "string",
+                                                        "example": "Innovación y calidad"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    },
+                                                    "specs": {
+                                                        "type": "object"
+                                                    },
+                                                    "dimensions": {
+                                                        "type": "object"
+                                                    },
+                                                    "relatedProducts": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "images": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "image": {
+                                                        "type": "string"
+                                                    },
+                                                    "nombreProducto": {
+                                                        "type": "string"
+                                                    },
+                                                    "stockProducto": {
+                                                        "type": "integer"
+                                                    },
+                                                    "precioProducto": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    },
+                                                    "seccion": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Productos obtenidos exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Crea un nuevo producto",
+                "description": "Almacena un nuevo producto y retorna los datos creados",
+                "operationId": "storeProducto",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "titulo",
+                                    "descripcion",
+                                    "imagen_principal",
+                                    "stock",
+                                    "precio",
+                                    "seccion"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Producto XYZ"
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Producto Premium XYZ"
+                                    },
+                                    "subtitulo": {
+                                        "type": "string",
+                                        "example": "La mejor calidad"
+                                    },
+                                    "lema": {
+                                        "type": "string",
+                                        "example": "Innovación y calidad"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción detallada del producto"
+                                    },
+                                    "imagen_principal": {
+                                        "type": "string",
+                                        "example": "https://placehold.co/100x150/blue/white?text=XYZ"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 199.99
+                                    },
+                                    "seccion": {
+                                        "type": "string",
+                                        "example": "electrónica"
+                                    },
+                                    "especificaciones": {
+                                        "type": "object",
+                                        "example": {
+                                            "color": "rojo",
+                                            "material": "aluminio"
+                                        }
+                                    },
+                                    "dimensiones": {
+                                        "type": "object",
+                                        "example": {
+                                            "alto": "10cm",
+                                            "ancho": "20cm",
+                                            "largo": "30cm"
+                                        }
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "https://placehold.co/100x150/blue/white?text=Product_X",
+                                            "https://placehold.co/100x150/blue/white?text=Product_Y"
+                                        ]
+                                    },
+                                    "relacionados": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/productos/{id}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Muestra un producto específico",
+                "description": "Retorna los datos de un producto según su ID",
+                "operationId": "showProducto",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
+                                                },
+                                                "subtitle": {
+                                                    "type": "string",
+                                                    "example": "La mejor calidad"
+                                                },
+                                                "tagline": {
+                                                    "type": "string",
+                                                    "example": "Innovación y calidad"
+                                                },
+                                                "description": {
+                                                    "type": "string"
+                                                },
+                                                "specs": {
+                                                    "type": "object"
+                                                },
+                                                "dimensions": {
+                                                    "type": "object"
+                                                },
+                                                "relatedProducts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "images": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "image": {
+                                                    "type": "string"
+                                                },
+                                                "nombreProducto": {
+                                                    "type": "string"
+                                                },
+                                                "stockProducto": {
+                                                    "type": "integer"
+                                                },
+                                                "precioProducto": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "seccion": {
+                                                    "type": "string"
+                                                },
+                                                "mensaje_correo": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto encontrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualiza un producto específico",
+                "description": "Actualiza los datos de un producto existente según su ID",
+                "operationId": "updateProducto",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Producto XYZ Actualizado"
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Producto Premium XYZ V2"
+                                    },
+                                    "subtitulo": {
+                                        "type": "string",
+                                        "example": "La mejor calidad actualizada"
+                                    },
+                                    "lema": {
+                                        "type": "string",
+                                        "example": "Innovación y calidad mejorada"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción actualizada del producto"
+                                    },
+                                    "imagen_principal": {
+                                        "type": "string",
+                                        "example": "https://ejemplo.com/imagen_nueva.jpg"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 150
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 249.99
+                                    },
+                                    "seccion": {
+                                        "type": "string",
+                                        "example": "electrónica premium"
+                                    },
+                                    "especificaciones": {
+                                        "type": "object",
+                                        "example": {
+                                            "color": "negro",
+                                            "material": "titanio"
+                                        }
+                                    },
+                                    "dimensiones": {
+                                        "type": "object",
+                                        "example": {
+                                            "alto": "12cm",
+                                            "ancho": "22cm",
+                                            "largo": "32cm"
+                                        }
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "relacionados": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto actualizado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Elimina un producto específico",
+                "description": "Elimina un producto existente según su ID",
+                "operationId": "destroyProducto",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
         "/api/v1/auth/login": {
             "post": {
                 "tags": [
@@ -277,7 +913,8 @@
                                     "titulo_blog",
                                     "subtitulo_beneficio",
                                     "url_video",
-                                    "titulo_video"
+                                    "titulo_video",
+                                    "imagenes"
                                 ],
                                 "properties": {
                                     "titulo": {
@@ -314,19 +951,22 @@
                                         "example": "Título del video"
                                     },
                                     "imagenes": {
+                                        "description": "Array de objetos con imagen y texto",
                                         "type": "array",
                                         "items": {
+                                            "required": [
+                                                "imagen"
+                                            ],
                                             "properties": {
                                                 "imagen": {
-                                                    "description": "Archivo de imagen adicional",
+                                                    "description": "Archivo de imagen",
                                                     "type": "string",
-                                                    "format": "binary",
-                                                    "example": "https://example.com/imagen-adicional.jpg"
+                                                    "format": "binary"
                                                 },
-                                                "parrafo": {
-                                                    "description": "Descripción de la imagen adicional",
+                                                "parrafo_imagen": {
+                                                    "description": "Descripción de la imagen",
                                                     "type": "string",
-                                                    "example": "Parrafo de la imagen adicional"
+                                                    "example": "Descripción del párrafo para esta imagen"
                                                 }
                                             },
                                             "type": "object"
@@ -1171,535 +1811,6 @@
                 }
             }
         },
-        "/api/v1/productos": {
-            "get": {
-                "tags": [
-                    "Productos"
-                ],
-                "summary": "Muestra un listado de todos los productos",
-                "description": "Retorna un array con todos los productos y sus relaciones",
-                "operationId": "indexProductos",
-                "responses": {
-                    "200": {
-                        "description": "Operación exitosa",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "Producto Premium"
-                                                    },
-                                                    "title": {
-                                                        "type": "string",
-                                                        "example": "Producto Premium"
-                                                    },
-                                                    "subtitle": {
-                                                        "type": "string",
-                                                        "example": "La mejor calidad"
-                                                    },
-                                                    "tagline": {
-                                                        "type": "string",
-                                                        "example": "Innovación y calidad"
-                                                    },
-                                                    "description": {
-                                                        "type": "string"
-                                                    },
-                                                    "specs": {
-                                                        "type": "object"
-                                                    },
-                                                    "dimensions": {
-                                                        "type": "object"
-                                                    },
-                                                    "relatedProducts": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "images": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "image": {
-                                                        "type": "string"
-                                                    },
-                                                    "nombreProducto": {
-                                                        "type": "string"
-                                                    },
-                                                    "stockProducto": {
-                                                        "type": "integer"
-                                                    },
-                                                    "precioProducto": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                    },
-                                                    "seccion": {
-                                                        "type": "string"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Productos obtenidos exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Productos"
-                ],
-                "summary": "Crea un nuevo producto",
-                "description": "Almacena un nuevo producto y retorna los datos creados",
-                "operationId": "storeProducto",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "nombre",
-                                    "titulo",
-                                    "descripcion",
-                                    "imagen_principal",
-                                    "stock",
-                                    "precio",
-                                    "seccion"
-                                ],
-                                "properties": {
-                                    "nombre": {
-                                        "type": "string",
-                                        "example": "Producto XYZ"
-                                    },
-                                    "titulo": {
-                                        "type": "string",
-                                        "example": "Producto Premium XYZ"
-                                    },
-                                    "subtitulo": {
-                                        "type": "string",
-                                        "example": "La mejor calidad"
-                                    },
-                                    "lema": {
-                                        "type": "string",
-                                        "example": "Innovación y calidad"
-                                    },
-                                    "descripcion": {
-                                        "type": "string",
-                                        "example": "Descripción detallada del producto"
-                                    },
-                                    "imagen_principal": {
-                                        "type": "string",
-                                        "example": "https://placehold.co/100x150/blue/white?text=XYZ"
-                                    },
-                                    "stock": {
-                                        "type": "integer",
-                                        "example": 100
-                                    },
-                                    "precio": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 199.99
-                                    },
-                                    "seccion": {
-                                        "type": "string",
-                                        "example": "electrónica"
-                                    },
-                                    "especificaciones": {
-                                        "type": "object",
-                                        "example": {
-                                            "color": "rojo",
-                                            "material": "aluminio"
-                                        }
-                                    },
-                                    "dimensiones": {
-                                        "type": "object",
-                                        "example": {
-                                            "alto": "10cm",
-                                            "ancho": "20cm",
-                                            "largo": "30cm"
-                                        }
-                                    },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "example": [
-                                            "https://placehold.co/100x150/blue/white?text=Product_X",
-                                            "https://placehold.co/100x150/blue/white?text=Product_Y"
-                                        ]
-                                    },
-                                    "relacionados": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "example": [
-                                            1,
-                                            2,
-                                            3
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Producto creado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto creado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Error de validación"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            }
-        },
-        "/api/v1/productos/{id}": {
-            "get": {
-                "tags": [
-                    "Productos"
-                ],
-                "summary": "Muestra un producto específico",
-                "description": "Retorna los datos de un producto según su ID",
-                "operationId": "showProducto",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Producto encontrado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "Producto Premium"
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Producto Premium"
-                                                },
-                                                "subtitle": {
-                                                    "type": "string",
-                                                    "example": "La mejor calidad"
-                                                },
-                                                "tagline": {
-                                                    "type": "string",
-                                                    "example": "Innovación y calidad"
-                                                },
-                                                "description": {
-                                                    "type": "string"
-                                                },
-                                                "specs": {
-                                                    "type": "object"
-                                                },
-                                                "dimensions": {
-                                                    "type": "object"
-                                                },
-                                                "relatedProducts": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "images": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "image": {
-                                                    "type": "string"
-                                                },
-                                                "nombreProducto": {
-                                                    "type": "string"
-                                                },
-                                                "stockProducto": {
-                                                    "type": "integer"
-                                                },
-                                                "precioProducto": {
-                                                    "type": "number",
-                                                    "format": "float"
-                                                },
-                                                "seccion": {
-                                                    "type": "string"
-                                                },
-                                                "mensaje_correo": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto encontrado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Producto no encontrado"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Productos"
-                ],
-                "summary": "Actualiza un producto específico",
-                "description": "Actualiza los datos de un producto existente según su ID",
-                "operationId": "updateProducto",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto a actualizar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "nombre": {
-                                        "type": "string",
-                                        "example": "Producto XYZ Actualizado"
-                                    },
-                                    "titulo": {
-                                        "type": "string",
-                                        "example": "Producto Premium XYZ V2"
-                                    },
-                                    "subtitulo": {
-                                        "type": "string",
-                                        "example": "La mejor calidad actualizada"
-                                    },
-                                    "lema": {
-                                        "type": "string",
-                                        "example": "Innovación y calidad mejorada"
-                                    },
-                                    "descripcion": {
-                                        "type": "string",
-                                        "example": "Descripción actualizada del producto"
-                                    },
-                                    "imagen_principal": {
-                                        "type": "string",
-                                        "example": "https://ejemplo.com/imagen_nueva.jpg"
-                                    },
-                                    "stock": {
-                                        "type": "integer",
-                                        "example": 150
-                                    },
-                                    "precio": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 249.99
-                                    },
-                                    "seccion": {
-                                        "type": "string",
-                                        "example": "electrónica premium"
-                                    },
-                                    "especificaciones": {
-                                        "type": "object",
-                                        "example": {
-                                            "color": "negro",
-                                            "material": "titanio"
-                                        }
-                                    },
-                                    "dimensiones": {
-                                        "type": "object",
-                                        "example": {
-                                            "alto": "12cm",
-                                            "ancho": "22cm",
-                                            "largo": "32cm"
-                                        }
-                                    },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "relacionados": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Producto actualizado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto actualizado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Producto no encontrado"
-                    },
-                    "422": {
-                        "description": "Error de validación"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Productos"
-                ],
-                "summary": "Elimina un producto específico",
-                "description": "Elimina un producto existente según su ID",
-                "operationId": "destroyProducto",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Producto eliminado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "null"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto eliminado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Producto no encontrado"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            }
-        },
         "/api/v1/users": {
             "get": {
                 "tags": [
@@ -2282,16 +2393,20 @@
     },
     "tags": [
         {
+            "name": "Email",
+            "description": "API Endpoints de Email"
+        },
+        {
+            "name": "Productos",
+            "description": "API Endpoints de productos"
+        },
+        {
             "name": "Blogs",
             "description": "API para gestión de blogs"
         },
         {
             "name": "Clientes",
             "description": "API Endpoints para gestión de clientes"
-        },
-        {
-            "name": "Productos",
-            "description": "API Endpoints de productos"
         },
         {
             "name": "Usuarios",

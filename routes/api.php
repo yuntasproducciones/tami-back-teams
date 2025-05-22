@@ -7,9 +7,10 @@ use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
-use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Api\V1\Email\EmailController;
 
 Route::prefix('v1')->group(function () {
+
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('/login', 'login');
         Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
@@ -41,23 +42,28 @@ Route::prefix('v1')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
 
-        Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
+        //Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
             Route::post('/', 'store');
             Route::put('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
-        });
+        //});
     });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
 
-        Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
+        //Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
             Route::post('/', 'store');
             Route::put('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
-        });
+        //});
     });
+
+    Route::controller(EmailController::class)->prefix('emails')->group(function () {
+        Route::post('/', 'sendEmail');
+    });
+
 
 });
 
@@ -73,4 +79,3 @@ Route::prefix("v2")->group(function(){
     });
 });
 
-Route::post('/send-email', [EmailController::class, 'sendEmail']);

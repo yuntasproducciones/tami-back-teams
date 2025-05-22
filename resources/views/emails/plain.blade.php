@@ -1,1 +1,1 @@
-{{ $data['message'] }}
+{{ $data['mensaje'] }}

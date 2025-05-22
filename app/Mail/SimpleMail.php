@@ -18,7 +18,7 @@ class SimpleMail extends Mailable
     }
     public function build()
     {
-        return $this->subject($this->data['subject'])
+        return $this->subject($this->data['asunto'])
                 ->text('emails.plain');
     }
 }

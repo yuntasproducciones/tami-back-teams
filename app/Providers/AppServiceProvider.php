@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BlogRepositoryInterface::class, BlogRepository::class);
         $this->app->bind(ClienteRepositoryInterface::class, ClienteRepository::class);
     }
-
+    #comentario de prueba, borrar luego
     /**
      * Bootstrap any application services.
      */

@@ -26,14 +26,14 @@ class StoreProductoRequest extends FormRequest
             //En el front stock y precio se mandan como string por la clase FormData
             //Quiero aclarar que no importa que se mande un string desde el front
             // aquí se valida que sea un integer (1, 2, 3, 4) o numeric (299.99, 1.50)
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
-            'subtitulo' => 'required|string',
-            'lema' => 'required|string',
-            'descripcion' => 'required|string',
+            'nombre' => 'required|string|max:255',
+            'titulo' => 'required|string|max:255',
+            'subtitulo' => 'required|string|max:255',
+            'lema' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:1000',
             'imagen_principal' => 'required|file|image',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer',
+            'precio' => 'required|numeric|min:0.01|max:99999999.99',
+            'stock' => 'required|integer|min:0',
             'especificaciones' => 'array',
             'dimensiones' => 'array',
             //Valida que las en el ARRAY llamado imagenes, todos los elementos tengan una key llamada url_imagen
@@ -42,9 +42,9 @@ class StoreProductoRequest extends FormRequest
             //Valida que relacionados sea un ARRAY
             'relacionados' => 'array',
             //Valida que todos los elementos del array sean del tipo integer
-            'relacionados.*' => 'integer',
+            'relacionados.*' => 'integer|exists:productos,id',
             'seccion' => 'required|string',
-            'mensaje_correo' => 'nullable|string'
+            'mensaje_correo' => 'nullable|string|max:500',
         ];
 
         

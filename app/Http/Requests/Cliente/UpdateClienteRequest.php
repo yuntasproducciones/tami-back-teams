@@ -16,7 +16,7 @@ class UpdateClienteRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:clientes,email,' . $this->route('id'),
-            'telefono' => 'sometimes|string|max:20',
+            'celular' => 'sometimes|string|regex:/^[0-9]{9}$/',
         ];
     }
 }

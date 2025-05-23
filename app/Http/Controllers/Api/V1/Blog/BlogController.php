@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostBlog\PostStoreBlog;
-use App\Repositories\V1\Contracts\BlogRepositoryInterface;
+use App\Http\Requests\PostBlog\UpdateBlog;
 use App\Services\ApiResponseService;
 use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
@@ -23,12 +23,10 @@ use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
 {
-    protected $blogRepository;
     protected ApiResponseService $apiResponse;
     protected $imgurService;
     
-    public function __construct(BlogRepositoryInterface $blogRepository, ApiResponseService $apiResponse, ImgurService $imgurService) {
-        $this->blogRepository = $blogRepository;
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
         $this->apiResponse = $apiResponse;
         $this->imgurService = $imgurService;
     }
@@ -88,6 +86,7 @@ class BlogController extends Controller
                 return [
                     'id' => $blog->id,
                     'titulo' => $blog->titulo,
+                    'link' => $blog->link,
                     'parrafo' => $blog->parrafo,
                     'descripcion' => $blog->descripcion,
                     'imagenPrincipal' => $blog->imagen_principal,
@@ -225,8 +224,9 @@ class BlogController extends Controller
      * )
      */
 
-    public function store(array $data, PostStoreBlog $request)
+    public function store(PostStoreBlog $request)
     {
+        $data = $request->validated();
         DB::beginTransaction();
         try {
              // 🟡 Validar y subir imagen principal si existe
@@ -365,11 +365,12 @@ class BlogController extends Controller
     public function show($id)
     {
         try {
-            $blog = Blog::with(['imagenes', 'video', 'detalle'])->findOrFail($id);
+            $blog = Blog::with(['imagenes', 'detalle', 'video'])->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
+                'link' => $blog->link,
                 'parrafo' => $blog->parrafo,
                 'descripcion' => $blog->descripcion,
                 'imagenPrincipal' => $blog->imagen_principal,
@@ -383,14 +384,52 @@ class BlogController extends Controller
                 'created_at' => $blog->created_at,
             ];
 
-            return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente',
-            HttpStatusCode::OK);
+            return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente', HttpStatusCode::OK);
 
         } catch(\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(),
-            HttpStatusCode::INTERNAL_SERVER_ERROR);
+            return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function showLink($link)
+{
+    try {
+        $blog = Blog::with(['imagenes', 'detalle', 'video'])
+                    ->where('link', $link)
+                    ->firstOrFail();
+
+        $showBlog = [
+            'id' => $blog->id,
+            'titulo' => $blog->titulo,
+            'link' => $blog->link,
+            'parrafo' => $blog->parrafo,
+            'descripcion' => $blog->descripcion,
+            'imagenPrincipal' => $blog->imagen_principal,
+            'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+            'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
+            'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
+            'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
+            'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
+            'videoBlog' => optional($blog->video)->url_video, 
+            'tituloVideoBlog' => optional($blog->video)->titulo_video,
+            'created_at' => $blog->created_at,
+        ];
+
+        return $this->apiResponse->successResponse(
+            $showBlog,
+            'Blog obtenido exitosamente',
+            HttpStatusCode::OK
+        );
+
+    } catch (\Exception $e) {
+        return $this->apiResponse->errorResponse(
+            'Error al obtener el blog: ' . $e->getMessage(),
+            HttpStatusCode::INTERNAL_SERVER_ERROR
+        );
+    }
+}
+
+
 
     /**
      * Actualizar un blog específico
@@ -451,8 +490,10 @@ class BlogController extends Controller
      * )
      */
 
-    public function update(array $data, $id, PostStoreBlog $request)
+    public function update(UpdateBlog $request, $id)
     {
+        $data = $request->validated();
+
         try {
             DB::beginTransaction();
 
@@ -460,6 +501,7 @@ class BlogController extends Controller
             $blog = Blog::findOrFail($id);
             $blog->update([
                 'titulo' => $data['titulo'],
+                'link' => $data['link'],
                 'parrafo' => $data['parrafo'],
                 'descripcion' => $data['descripcion'],
                 'imagen_principal' => $data['imagen_principal'],

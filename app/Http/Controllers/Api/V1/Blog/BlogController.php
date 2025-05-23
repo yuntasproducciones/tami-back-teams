@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostBlog\PostStoreBlog;
-use App\Repositories\V1\Contracts\BlogRepositoryInterface;
 use App\Services\ApiResponseService;
 use App\Models\ImagenBlog;
 use App\Models\VideoBlog;
@@ -27,8 +26,7 @@ class BlogController extends Controller
     protected ApiResponseService $apiResponse;
     protected $imgurService;
     
-    public function __construct(BlogRepositoryInterface $blogRepository, ApiResponseService $apiResponse, ImgurService $imgurService) {
-        $this->blogRepository = $blogRepository;
+    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
         $this->apiResponse = $apiResponse;
         $this->imgurService = $imgurService;
     }

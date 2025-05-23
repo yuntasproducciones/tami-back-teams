@@ -1139,6 +1139,7 @@
                     }
                 }
             }
+<<<<<<< HEAD
         },
         "/api/v1/auth/login": {
             "post": {
@@ -2375,6 +2376,8 @@
                     }
                 }
             }
+=======
+>>>>>>> Erick
         }
     },
     "components": {
@@ -2389,6 +2392,10 @@
     },
     "tags": [
         {
+            "name": "Usuarios",
+            "description": "API para gestión de usuarios"
+        },
+        {
             "name": "Blogs",
             "description": "API para gestión de blogs"
         },
@@ -2401,6 +2408,7 @@
             "description": "API Endpoints de productos"
         },
         {
+<<<<<<< HEAD
             "name": "Clientes",
             "description": "API Endpoints para gestión de clientes"
         },
@@ -2409,6 +2417,8 @@
             "description": "API para gestión de usuarios"
         },
         {
+=======
+>>>>>>> Erick
             "name": "Autenticación",
             "description": "Autenticación"
         }

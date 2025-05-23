@@ -22,16 +22,22 @@ class UpdateProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string',
-            'titulo' => 'required|string',
+            'nombre' => 'nullable|string|max:255',
+            'titulo' => 'nullable|string|max:255',
+            'subtitulo' => 'nullable|string|max:255',
+            'lema' => 'nullable|string|max:255',
+            'descripcion' => 'nullable|string|max:1000',
             'imagen_principal' => 'required|string',
-            'precio' => 'required|numeric',
-            'stock' => 'required|integer',
-            'especificaciones' => 'array',
-            'dimensiones' => 'array',
+            'precio' => 'nullable|numeric|min:0.01|max:99999999.99',
+            'stock' => 'nullable|integer|min:0',
+            'especificaciones' => 'nullable|array',
+            'dimensiones' => 'nullable|array',
+            'imagenes.*.url_imagen' => 'nullable|file|image',
             'imagenes' => 'array',
-            'relacionados' => 'array',
-            'mensaje_correo' => 'nullable|string'
+            'relacionados' => 'nullable|array',
+            'relacionados.*' => 'nullable|integer|exists:productos,id',
+            'seccion' => 'nullable|string',
+            'mensaje_correo' => 'nullable|string|max:500',
         ];
     }
 }

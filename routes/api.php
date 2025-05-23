@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Api\V1\Email\EmailController;
 
 Route::prefix('v1')->group(function () {
 

@@ -18,9 +18,4 @@ class Cliente extends Model
     ];
 
     public $timestamps = true;
-
-    public function interesados(): HasMany
-    {
-        return $this->hasMany(Interesado::class, 'cliente_id', 'id');
-    }
 }

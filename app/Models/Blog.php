@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Blog extends Model
 {
-    use Hasfactory;
+    use HasFactory;
 
     protected $fillable = [
         'producto_id',

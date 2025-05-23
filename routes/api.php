@@ -70,7 +70,6 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{id}', 'destroy');
     });
 
-<<<<<<< HEAD
     Route::controller(PermissionController::class)->prefix("/permisos")->group(function () {
         Route::middleware(["auth:sanctum"])->group(function(){
             Route::get('/', 'index');
@@ -78,13 +77,9 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-=======
     Route::controller(EmailController::class)->prefix('emails')->group(function () {
         Route::post('/', 'sendEmail');
     });
-
-
->>>>>>> pre-master
 });
 
 Route::prefix("v2")->group(function(){

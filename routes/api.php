@@ -7,9 +7,10 @@ use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
-use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Api\V1\Email\EmailController;
 
 Route::prefix('v1')->group(function () {
+
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('/login', 'login');
         Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
@@ -68,6 +69,11 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{id}', 'destroy');
     });
 
+    Route::controller(EmailController::class)->prefix('emails')->group(function () {
+        Route::post('/', 'sendEmail');
+    });
+
+
 });
 
 Route::prefix("v2")->group(function(){
@@ -82,4 +88,3 @@ Route::prefix("v2")->group(function(){
     });
 });
 
-Route::post('/send-email', [EmailController::class, 'sendEmail']);

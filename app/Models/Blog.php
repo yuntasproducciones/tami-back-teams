@@ -10,6 +10,7 @@ class Blog extends Model
     use Hasfactory;
 
     protected $fillable = [
+        'producto_id',
         'titulo',
         'link',
         'parrafo',
@@ -33,4 +34,9 @@ class Blog extends Model
     {
         return $this->hasOne(DetalleBlog::class, 'id_blog');
     }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'producto_id');
+    }   
 }

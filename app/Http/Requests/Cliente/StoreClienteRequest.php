@@ -17,7 +17,7 @@ class StoreClienteRequest extends FormRequest
         return [
             'name' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:clientes,email|max:100',
-            'celular' => 'required|string|unique:clientes,celular|regex:/^[0-9]{9}$/',
+            'celular' => 'required|integer|unique:clientes,celular|min:900000000|max:999999999',
         ];
     }
 

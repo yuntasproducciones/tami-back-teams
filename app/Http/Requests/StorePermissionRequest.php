@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PostUser;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostUserUpdate extends FormRequest
+class StorePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class PostUserUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:users,email,' . $this->route('id'),
-            'celular' => 'sometimes|string|regex:/^[0-9]{9}$/'
+            //
+            "nombre" => "required|unique:permissions,name|string|max:30"
         ];
     }
 }

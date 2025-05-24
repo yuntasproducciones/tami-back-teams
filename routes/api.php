@@ -7,8 +7,11 @@ use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Api\V1\Email\EmailController;
 
 Route::prefix('v1')->group(function () {
+
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('/login', 'login');
         Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
@@ -60,6 +63,16 @@ Route::prefix('v1')->group(function () {
         }); 
     });
 
+    Route::controller(PermissionController::class)->prefix("/permisos")->group(function () {
+        Route::middleware(["auth:sanctum"])->group(function(){
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+        });
+    });
+
+    Route::controller(EmailController::class)->prefix('emails')->group(function () {
+        Route::post('/', 'sendEmail');
+    });
 });
 
 Route::prefix("v2")->group(function(){
@@ -73,3 +86,4 @@ Route::prefix("v2")->group(function(){
         });
     });
 });
+

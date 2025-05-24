@@ -279,11 +279,9 @@ class ClienteRepository implements ClienteRepositoryInterface
 
             $message = $cliente->wasChanged() 
                 ? 'Se actualizaron los campos correctamente.' 
-                : 'No se actualizaron los campos';
+                : 'No hubo ningún campo con nuevos datos por lo que no se produjeron cambios.';
 
-            $statusCode = $cliente->wasChanged() 
-                ? HttpStatusCode::OK 
-                : HttpStatusCode::NO_CONTENT;
+            $statusCode = HttpStatusCode::OK;
 
             return $this->apiResponse->successResponse(null, $message, $statusCode);
 

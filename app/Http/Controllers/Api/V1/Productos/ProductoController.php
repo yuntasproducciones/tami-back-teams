@@ -6,11 +6,12 @@ use App\Http\Requests\Producto\StoreProductoRequest;
 use App\Http\Requests\Producto\UpdateProductoRequest;
 use App\Http\Controllers\Controller;
 use App\Services\ApiResponseService;
-use App\Services\ImgurService;
+// use App\Services\ImgurService;
 use App\Models\Producto;
 use App\Http\Contains\HttpStatusCode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
@@ -23,10 +24,10 @@ class ProductoController extends Controller
     protected ApiResponseService $apiResponse;
     protected $imgurService;
 
-    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService)
+    public function __construct(ApiResponseService $apiResponse/*, ImgurService $imgurService*/)
     {
         $this->apiResponse = $apiResponse;
-        $this->imgurService = $imgurService;
+        // $this->imgurService = $imgurService;
     }
     /**
      * Obtener listado de productos
@@ -74,7 +75,7 @@ class ProductoController extends Controller
     public function index()
     {
         try {
-            $productos = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->get();
+            $productos = Producto::with(['dimensiones', 'imagenes', 'productosRelacionados'])->get();
 
             $formattedProductos = $productos->map(function ($producto) {
                 return [
@@ -84,7 +85,7 @@ class ProductoController extends Controller
                     'subtitle' => $producto->subtitulo,
                     'tagline' => $producto->lema,
                     'description' => $producto->descripcion,
-                    'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                    'specs' => $producto->especificaciones,
                     'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
                     'relatedProducts' => $producto->productosRelacionados->pluck('id'),
                     'images' => $producto->imagenes->pluck('url_imagen'),
@@ -169,9 +170,15 @@ class ProductoController extends Controller
     // Models/Producto, Models/ProductoRelacionados
     //Y routes/api
 
+    private function guardarImagen($x){
+        Storage::disk('public')->putFileAs("imagenes", $x, $x->hashName());
+        return "/storage/imagenes/" . $x->hashName();
+    }
+
     //usando los request
     public function store(StoreProductoRequest $request)
     {
+    
         $data = $request->validated();
         DB::beginTransaction();
         try {
@@ -182,38 +189,24 @@ class ProductoController extends Controller
             //si existe un campo mensaje_correo se guardará, si no se guarda null
             $data['mensaje_correo'] = $data['mensaje_correo'] ?? null;
 
-            // 🟡 Validar y subir imagen principal si existe
+            // Imagen principal local
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
                 $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
                     throw new \Exception("El archivo de imagen principal no es válido.");
                 }
-                
-                $uploadedMainImageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
-                if (!$uploadedMainImageUrl) {
-                    throw new \Exception("Falló la subida de la imagen principal.");
-                }
-               
-                $data['imagen_principal'] = $uploadedMainImageUrl;
+
+                // Guardar localmente
+                $data['imagen_principal'] = $this->guardarImagen($data['imagen_principal']);
             }
 
             //Crea el producto
             $producto = Producto::create(array_diff_key($data, array_flip(
                 //Separa los campos que no son necesarios para crear el producto
                 //Las tablas que estan enlazadas a producto
-                ['especificaciones', 'dimensiones', 'imagenes', 'relacionados']
+                ['dimensiones', 'imagenes', 'relacionados']
             )));
 
-
-            //Crea las especificaciones y las enlaza con el idProducto (tabla especificaciones)
-            if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-                foreach ($data['especificaciones'] as $clave => $valor) {
-                    $producto->especificaciones()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
             //Crea las dimensiones y las enlaza con el idProducto (tabla dimensiones)
             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
                 foreach ($data['dimensiones'] as $tipo => $valor) {
@@ -224,27 +217,19 @@ class ProductoController extends Controller
                 }
             }
 
-            //Crea las imagenes y las enlaza con el idProducto (tabla imagen_productos)
+            // Imágenes locales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
                 foreach ($data['imagenes'] as $item) {
-                    //Valida que haya un campo url_imagen y que contenga un archivo
                     if (isset($item['url_imagen']) && $item['url_imagen'] instanceof \Illuminate\Http\UploadedFile) {
-                        //Valida que sea un tipo aceptable, imgur no acepta webp ❌
                         $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                         if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
-                            throw new \Exception("El archivo de imagen no cumple con los tipos especificados.\n SOLO SE ADMITEN IMAGENES: jpeg, png, jpg");
+                            throw new \Exception("El archivo de imagen no cumple con los tipos permitidos.");
                         }
 
-                        // Subir la imagen a Imgur
-                        $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
-                        if (!$uploadedImageUrl) {
-                            throw new \Exception("Falló la subida de las imagenes.\n $item");
-                        }
-
-                        // Crear la relación con las imágenes
+                        $url = $this->guardarImagen($item['url_imagen']);
                         $producto->imagenes()->create([
-                            'id_producto' => $producto->id,  // Vincular al blog creado
-                            'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
+                            'url_imagen' => $url,
+                            'texto_alt_SEO' => $item['texto_alt_SEO'] ?? null,
                         ]);
                     } else {
                         throw new \Exception("Formato inválido para imagenes de producto.");
@@ -252,13 +237,14 @@ class ProductoController extends Controller
                 }
             }
 
+            // Productos relacionados
             if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
                 // Convertir los valores de relacionados a enteros
                 $data['relacionados'] = array_map('intval', $data['relacionados']);
                 // Adjuntar los productos relacionados
                 $producto->productosRelacionados()->attach($data['relacionados']);
             }
-            $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
+            $producto->refresh()->load(['dimensiones', 'imagenes', 'productosRelacionados']);
 
             DB::commit();
             return $this->apiResponse->successResponse(
@@ -330,7 +316,7 @@ class ProductoController extends Controller
     public function show($id)
     {
         try {
-            $producto = Producto::with(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
+            $producto = Producto::with(['dimensiones', 'imagenes', 'productosRelacionados'])->findOrFail($id);
 
             $formattedProducto = [
                 'id' => $producto->id,
@@ -339,7 +325,7 @@ class ProductoController extends Controller
                 'subtitle' => $producto->subtitulo,
                 'tagline' => $producto->lema,
                 'description' => $producto->descripcion,
-                'specs' => $producto->especificaciones->pluck('valor', 'clave'),
+                'specs' => $producto->especificaciones,
                 'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
                 'relatedProducts' => $producto->productosRelacionados->pluck('id'),
                 'images' => $producto->imagenes->pluck('url_imagen'),
@@ -452,15 +438,15 @@ class ProductoController extends Controller
                 'seccion' => $data['seccion'] ?? $producto->seccion,
             ]);
 
-            if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-                $producto->especificaciones()->delete();
-                foreach ($data['especificaciones'] as $clave => $valor) {
-                    $producto->especificaciones()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
+            // if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
+            //     $producto->especificaciones()->delete();
+            //     foreach ($data['especificaciones'] as $clave => $valor) {
+            //         $producto->especificaciones()->create([
+            //             'clave' => $clave,
+            //             'valor' => $valor
+            //         ]);
+            //     }
+            // }
 
             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
                 $producto->dimensiones()->delete();
@@ -485,7 +471,7 @@ class ProductoController extends Controller
                 $producto->productosRelacionados()->sync($data['relacionados']);
             }
 
-            $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
+            $producto->refresh()->load(['dimensiones', 'imagenes', 'productosRelacionados']);
 
             DB::commit();
 

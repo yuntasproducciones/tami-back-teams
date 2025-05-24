@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V2ClienteController;
+use App\Http\Controllers\Api\V2\V2ClienteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
@@ -81,6 +81,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/', 'sendEmail');
     });
 });
+
+Route::get('/link/{link}', 'showByLink');
 
 Route::prefix("v2")->group(function(){
     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){

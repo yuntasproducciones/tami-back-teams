@@ -3,6 +3,8 @@
 namespace App\Http\Requests\PostUser;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostUserUpdate extends FormRequest
 {
@@ -27,4 +29,14 @@ class PostUserUpdate extends FormRequest
             'celular' => 'sometimes|string|regex:/^[0-9]{9}$/'
         ];
     }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
+
 }

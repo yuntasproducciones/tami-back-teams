@@ -17,16 +17,28 @@ class StoreClienteRequest extends FormRequest
         return [
             'name' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:clientes,email|max:100',
-            'celular' => 'required|integer|unique:clientes,celular|min:900000000|max:999999999',
+            'celular' => 'required|integer|unique:clientes,celular|min:900000000|max:999999999'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.max' => 'El nombre no debe exceder los 100 caracteres.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingrese un correo electrónico válido.',
+            'email.unique' => 'Este correo ya está registrado.',
+            'email.max' => 'El correo no debe exceder los 100 caracteres.',
+            'celular.required' => 'El número de celular es obligatorio.',
+            'celular.regex' => 'El celular debe tener exactamente 9 dígitos numéricos.'
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(
-            response()->json([
-                'errors' => $validator->errors(),
-            ], 422)
-        );
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors()
+        ], 422));
     }
 }

@@ -27,6 +27,7 @@ class StoreProductoRequest extends FormRequest
             //Quiero aclarar que no importa que se mande un string desde el front
             // aquí se valida que sea un integer (1, 2, 3, 4) o numeric (299.99, 1.50)
             'nombre' => 'required|string|max:255',
+            'link' => 'nullable|string|max:255|unique:productos,link',
             'titulo' => 'required|string|max:255',
             'subtitulo' => 'required|string|max:255',
             'lema' => 'required|string|max:255',

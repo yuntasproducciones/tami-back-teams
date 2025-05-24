@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
             
             // Productos
             ProductoSeeder::class,
-            EspecificacionSeeder::class,
+            // EspecificacionSeeder::class,
             DimensionSeeder::class,
-            ImagenProductoSeeder::class,
+            ProductoImagenSeeder::class,
             ProductoRelacionadoSeeder::class,
 
             // Blog

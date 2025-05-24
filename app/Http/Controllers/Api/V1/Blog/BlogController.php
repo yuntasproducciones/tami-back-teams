@@ -392,42 +392,42 @@ class BlogController extends Controller
     }
 
     public function showLink($link)
-{
-    try {
-        $blog = Blog::with(['imagenes', 'detalle', 'video'])
-                    ->where('link', $link)
-                    ->firstOrFail();
+    {
+        try {
+            $blog = Blog::with(['imagenes', 'detalle', 'video'])
+                        ->where('link', $link)
+                        ->firstOrFail();
 
-        $showBlog = [
-            'id' => $blog->id,
-            'titulo' => $blog->titulo,
-            'link' => $blog->link,
-            'parrafo' => $blog->parrafo,
-            'descripcion' => $blog->descripcion,
-            'imagenPrincipal' => $blog->imagen_principal,
-            'tituloBlog' => optional($blog->detalle)->titulo_blog, 
-            'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
-            'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
-            'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
-            'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
-            'videoBlog' => optional($blog->video)->url_video, 
-            'tituloVideoBlog' => optional($blog->video)->titulo_video,
-            'created_at' => $blog->created_at,
-        ];
+            $showBlog = [
+                'id' => $blog->id,
+                'titulo' => $blog->titulo,
+                'link' => $blog->link,
+                'parrafo' => $blog->parrafo,
+                'descripcion' => $blog->descripcion,
+                'imagenPrincipal' => $blog->imagen_principal,
+                'tituloBlog' => optional($blog->detalle)->titulo_blog, 
+                'subTituloBlog' => optional($blog->detalle)->subtitulo_beneficio,
+                'imagenesBlog' => $blog->imagenes->pluck('url_imagen'), 
+                'parrafoImagenesBlog' => $blog->imagenes->pluck('parrafo_imagen'),
+                'video_id' => $this->obtenerIdVideoYoutube(optional($blog->video)->url_video),
+                'videoBlog' => optional($blog->video)->url_video, 
+                'tituloVideoBlog' => optional($blog->video)->titulo_video,
+                'created_at' => $blog->created_at,
+            ];
 
-        return $this->apiResponse->successResponse(
-            $showBlog,
-            'Blog obtenido exitosamente',
-            HttpStatusCode::OK
-        );
+            return $this->apiResponse->successResponse(
+                $showBlog,
+                'Blog obtenido exitosamente',
+                HttpStatusCode::OK
+            );
 
-    } catch (\Exception $e) {
-        return $this->apiResponse->errorResponse(
-            'Error al obtener el blog: ' . $e->getMessage(),
-            HttpStatusCode::INTERNAL_SERVER_ERROR
-        );
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Error al obtener el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
+        }
     }
-}
 
 
 

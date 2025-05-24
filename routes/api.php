@@ -54,6 +54,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/', 'store');
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
+        ///link
+        Route::get('/link/{link}', 'showByLink');
     });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -82,7 +84,6 @@ Route::prefix('v1')->group(function () {
     });
 });
 
-Route::get('/link/{link}', 'showByLink');
 
 Route::prefix("v2")->group(function(){
     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){

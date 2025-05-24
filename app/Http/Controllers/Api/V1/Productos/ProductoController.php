@@ -185,9 +185,7 @@ class ProductoController extends Controller
             //Aquí se cambia el tipo de String a integer o float
             $data['stock'] = (int) $data['stock'];
             $data['precio'] = (float) $data['precio'];
-            //Lo puse por si acaso, pero no estoy seguro que sea necesario
-            //si existe un campo mensaje_correo se guardará, si no se guarda null
-            $data['mensaje_correo'] = $data['mensaje_correo'] ?? null;
+            $data['link'] = $data['link'] ?? null;
 
             // Imagen principal local
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
@@ -428,6 +426,7 @@ class ProductoController extends Controller
         try {
             $producto->update([
                 'nombre' => $data['nombre'] ?? $producto->nombre,
+                'link' => $data['link'] ?? $producto->link,
                 'titulo' => $data['titulo'] ?? $producto->titulo,
                 'subtitulo' => $data['subtitulo'] ?? $producto->subtitulo,
                 'lema' => $data['lema'] ?? $producto->lema,
@@ -565,9 +564,9 @@ class ProductoController extends Controller
                 'seccion' => $producto->seccion
             ];
 
-            return $this->successResponse($formattedProducto, 'Producto encontrado exitosamente');
+            return $this->apiResponse->successResponse($formattedProducto, 'Producto encontrado exitosamente');
         } catch (\Exception $e) {
-            return $this->notFoundResponse('Producto no encontrado');
+            return $this->apiResponse->notFoundResponse('Producto no encontrado ' . $e->getMessage());
         }
     }
 }

@@ -28,7 +28,7 @@ class UpdateProductoRequest extends FormRequest
             'subtitulo' => 'nullable|string|max:255',
             'lema' => 'nullable|string|max:255',
             'descripcion' => 'nullable|string|max:1000',
-            'imagen_principal' => 'required|string',
+            'imagen_principal' => 'required|file|image',
             'precio' => 'nullable|numeric|min:0.01|max:99999999.99',
             'stock' => 'nullable|integer|min:0',
             'especificaciones' => 'nullable|array',

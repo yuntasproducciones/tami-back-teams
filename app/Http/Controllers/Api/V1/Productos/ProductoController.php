@@ -555,5 +555,34 @@ class ProductoController extends Controller
             return $this->apiResponse->errorResponse('Error al eliminar el producto: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function showByLink($link)
+    {
+        try {
+            $producto = Producto::with(['dimensiones', 'imagenes', 'productosRelacionados'])->where('link', $link)->firstOrFail();
+
+            $formattedProducto = [
+                'id' => $producto->id,
+                'link'=> $producto->link,
+                'title' => $producto->titulo,
+                'subtitle' => $producto->subtitulo,
+                'tagline' => $producto->lema,
+                'description' => $producto->descripcion,
+                'specs' => $producto->especificaciones,
+                'dimensions' => $producto->dimensiones->pluck('valor', 'tipo'),
+                'relatedProducts' => $producto->productosRelacionados->pluck('id'),
+                'images' => $producto->imagenes->pluck('url_imagen'),
+                'image' => $producto->imagen_principal,
+                'nombreProducto' => $producto->nombre,
+                'stockProducto' => $producto->stock,
+                'precioProducto' => $producto->precio,
+                'seccion' => $producto->seccion
+            ];
+
+            return $this->successResponse($formattedProducto, 'Producto encontrado exitosamente');
+        } catch (\Exception $e) {
+            return $this->notFoundResponse('Producto no encontrado');
+        }
+    }
 }
 

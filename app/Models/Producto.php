@@ -8,6 +8,7 @@ class Producto extends Model
 {
     protected $fillable = [
         'nombre',
+        'link',
         'titulo',
         'subtitulo',
         'lema',
@@ -16,7 +17,6 @@ class Producto extends Model
         'stock',
         'precio',
         'seccion',
-        'mensaje_correo'
     ];
 
     public $timestamps = true;

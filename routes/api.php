@@ -82,6 +82,8 @@ Route::prefix('v1')->group(function () {
     });
 });
 
+Route::get('/link/{link}', 'showByLink');
+
 Route::prefix("v2")->group(function(){
     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
         Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){

@@ -122,7 +122,7 @@ class ProductoController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"nombre", "titulo", "descripcion", "imagen_principal", "stock", "precio", "seccion"},
+     *             required={"nombre", "titulo", "subtitulo", "lema", "descripcion", "imagen_principal", "stock", "precio", "seccion"},
      *             @OA\Property(property="nombre", type="string", example="Producto XYZ"),
      *             @OA\Property(property="titulo", type="string", example="Producto Premium XYZ"),
      *             @OA\Property(property="subtitulo", type="string", example="La mejor calidad"),
@@ -369,7 +369,7 @@ class ProductoController extends Controller
     /**
      * Actualizar un producto específico
      * 
-     * @OA\Put(
+     * @OA\Post(
      *     path="/api/v1/productos/{id}",
      *     summary="Actualiza un producto específico",
      *     description="Actualiza los datos de un producto existente según su ID",
@@ -429,78 +429,86 @@ class ProductoController extends Controller
      */
     public function update(UpdateProductoRequest $request, $id)
     {
-        $data = $request->validated();
-        try {
-            $producto = Producto::findOrFail($id);
-        } catch (\Exception $e) {
-            return $this->apiResponse->notFoundResponse(
-                'Producto no encontrado'
-            );
-        }
 
-        DB::beginTransaction();
-        try {
-            $producto->update([
-                'nombre' => $data['nombre'] ?? $producto->nombre,
-                'titulo' => $data['titulo'] ?? $producto->titulo,
-                'subtitulo' => $data['subtitulo'] ?? $producto->subtitulo,
-                'lema' => $data['lema'] ?? $producto->lema,
-                'descripcion' => $data['descripcion'] ?? $producto->descripcion,
-                'imagen_principal' => $data['imagen_principal'] ?? $producto->imagen_principal,
-                'stock' => $data['stock'] ?? $producto->stock,
-                'precio' => $data['precio'] ?? $producto->precio,
-                'seccion' => $data['seccion'] ?? $producto->seccion,
-            ]);
+        return response()->json([
+        'mensaje' => 'Update recibido',
+        'id' => $id,
+        'datos' => $request->all(),
+    ]);
 
-            if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-                $producto->especificaciones()->delete();
-                foreach ($data['especificaciones'] as $clave => $valor) {
-                    $producto->especificaciones()->create([
-                        'clave' => $clave,
-                        'valor' => $valor
-                    ]);
-                }
-            }
 
-            if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
-                $producto->dimensiones()->delete();
-                foreach ($data['dimensiones'] as $tipo => $valor) {
-                    $producto->dimensiones()->create([
-                        'tipo' => $tipo,
-                        'valor' => $valor
-                    ]);
-                }
-            }
+        // $data = $request->validated();
+        // try {
+        //     $producto = Producto::findOrFail($id);
+        // } catch (\Exception $e) {
+        //     return $this->apiResponse->notFoundResponse(
+        //         'Producto no encontrado'
+        //     );
+        // }
 
-            if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                $producto->imagenes()->delete();
-                foreach ($data['imagenes'] as $url) {
-                    $producto->imagenes()->create([
-                        'url_imagen' => $url
-                    ]);
-                }
-            }
+        // DB::beginTransaction();
+        // try {
+        //     $producto->update([
+        //         'nombre' => $data['nombre'] ?? $producto->nombre,
+        //         'titulo' => $data['titulo'] ?? $producto->titulo,
+        //         'subtitulo' => $data['subtitulo'] ?? $producto->subtitulo,
+        //         'lema' => $data['lema'] ?? $producto->lema,
+        //         'descripcion' => $data['descripcion'] ?? $producto->descripcion,
+        //         'imagen_principal' => $data['imagen_principal'] ?? $producto->imagen_principal,
+        //         'stock' => $data['stock'] ?? $producto->stock,
+        //         'precio' => $data['precio'] ?? $producto->precio,
+        //         'seccion' => $data['seccion'] ?? $producto->seccion,
+        //     ]);
 
-            if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
-                $producto->productosRelacionados()->sync($data['relacionados']);
-            }
+        //     if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
+        //         $producto->especificaciones()->delete();
+        //         foreach ($data['especificaciones'] as $clave => $valor) {
+        //             $producto->especificaciones()->create([
+        //                 'clave' => $clave,
+        //                 'valor' => $valor
+        //             ]);
+        //         }
+        //     }
 
-            $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
+        //     if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
+        //         $producto->dimensiones()->delete();
+        //         foreach ($data['dimensiones'] as $tipo => $valor) {
+        //             $producto->dimensiones()->create([
+        //                 'tipo' => $tipo,
+        //                 'valor' => $valor
+        //             ]);
+        //         }
+        //     }
 
-            DB::commit();
+        //     if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+        //         $producto->imagenes()->delete();
+        //         foreach ($data['imagenes'] as $url) {
+        //             $producto->imagenes()->create([
+        //                 'url_imagen' => $url
+        //             ]);
+        //         }
+        //     }
 
-            return $this->apiResponse->successResponse(
-                $producto,
-                'Producto actualizado exitosamente',
-                HttpStatusCode::OK
-            );
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $this->apiResponse->errorResponse(
-                'Error al actualizar el producto: ' . $e->getMessage(),
-                HttpStatusCode::INTERNAL_SERVER_ERROR
-            );
-        }
+        //     if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
+        //         $producto->productosRelacionados()->sync($data['relacionados']);
+        //     }
+
+        //     $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
+
+        //     DB::commit();
+
+        //     return $this->apiResponse->successResponse(
+        //         $producto,
+        //         'Producto actualizado exitosamente',
+        //         HttpStatusCode::OK
+        //     );
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return $this->apiResponse->errorResponse(
+        //         'Error al actualizar el producto: ' . $e->getMessage(),
+        //         HttpStatusCode::INTERNAL_SERVER_ERROR
+        //     );
+        // }
     }
 
     /**
@@ -542,6 +550,10 @@ class ProductoController extends Controller
     {
         try {
             $producto = Producto::findOrFail($id);
+            $blog = $producto->blogs;
+            foreach ($blog as $item) {
+                $item->delete();
+            }
             $producto->delete();
 
             return $this->apiResponse->successResponse(

@@ -57,10 +57,12 @@ Route::prefix('v1')->group(function () {
         
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::post('/', 'store');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
+            
         }); 
+
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
     });
 
     Route::controller(PermissionController::class)->prefix("/permisos")->group(function () {
@@ -70,7 +72,7 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    Route::controller(EmailController::class)->prefix('emails')->group(function () {
+    Route::controller(EmailController::class)->prefix('/emails')->group(function () {
         Route::post('/', 'sendEmail');
     });
 });

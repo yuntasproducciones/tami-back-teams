@@ -132,6 +132,7 @@ class BlogController extends Controller
      *             @OA\Schema(
      *                 required={
      *                     "titulo", 
+     *                     "link", 
      *                     "parrafo", 
      *                     "descripcion", 
      *                     "imagen_principal", 
@@ -144,6 +145,11 @@ class BlogController extends Controller
      *                     property="titulo",
      *                     type="string",
      *                     example="Título del blog"
+     *                 ),
+     *                  @OA\Property(
+     *                     property="link",
+     *                     type="string",
+     *                     example="Link a blog..."
      *                 ),
      *                 @OA\Property(
      *                     property="parrafo",
@@ -268,32 +274,31 @@ class BlogController extends Controller
             }
             // Relación: imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                foreach ($data['imagenes'] as $index=>$item) {
-                    if (isset($item['url_imagen']) && $item['url_imagen'] instanceof \Illuminate\Http\UploadedFile) {
+                foreach ($data['imagenes'] as $index => $item) {
+                    if (isset($item['imagen']) && $item['imagen'] instanceof \Illuminate\Http\UploadedFile) {
                         $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                        if (!in_array($item['url_imagen']->getMimeType(), $validMimeTypes)) {
-                            throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.\n");
+                        if (!in_array($item['imagen']->getMimeType(), $validMimeTypes)) {
+                            throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.");
                         }
-            
-                        // Subir la imagen a Imgur
-                        $uploadedImageUrl = $this->imgurService->uploadImage($item['url_imagen']);
+
+                        $uploadedImageUrl = $this->imgurService->uploadImage($item['imagen']);
                         if (!$uploadedImageUrl) {
-                            throw new \Exception("Falló la subida de la imagen adicional.\n $item");
+                            throw new \Exception("Falló la subida de la imagen adicional en la posición $index.");
                         }
-            
-                        // Crear la relación con las imágenes
+
                         $blog->imagenes()->create([
-                            'url_imagen' => $uploadedImageUrl,  // URL de la imagen subida
-                            'parrafo_imagen' => $item['parrafo_imagen'] ?? '',  // Descripción de la imagen
-                            'id_blog' => $blog->id,  // Vincular al blog creado
+                            'url_imagen' => $uploadedImageUrl,
+                            'parrafo_imagen' => $item['parrafo'] ?? '',
+                            'id_blog' => $blog->id,
                         ]);
                     } else {
-                        throw new \Exception("Formato inválido para imagenes adicionales.");
+                        throw new \Exception("Falta imagen válida en el índice $index.");
                     }
                 }
-            }else{
-                throw new \Exception("Array de imagenes vacio");
+            } else {
+                throw new \Exception("Array de imágenes vacío o mal estructurado.");
             }
+
 
             // ✅ Las relaciones ya están cargadas al momento de la creación, no es necesario cargar de nuevo
             DB::commit();
@@ -333,6 +338,7 @@ class BlogController extends Controller
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *                 @OA\Property(property="link", type="string", example="Link a blog..."),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
      *                 @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
@@ -390,6 +396,58 @@ class BlogController extends Controller
             return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Mostrar un blog por su link
+     * 
+     * @OA\Get(
+     *     path="/api/v1/blogs/link/{link}",
+     *     summary="Muestra un blog por su link",
+     *     description="Retorna los datos de un blog, incluyendo detalles, imágenes y video, según su campo link",
+     *     operationId="showBlogByLink",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="link",
+     *         in="path",
+     *         description="Link único del blog",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog obtenido exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *                 @OA\Property(property="link", type="string", example="mi-blog-unico"),
+     *                 @OA\Property(property="parrafo", type="string", example="Contenido introductorio del blog."),
+     *                 @OA\Property(property="descripcion", type="string", example="Descripción completa del blog."),
+     *                 @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen-principal.jpg"),
+     *                 @OA\Property(property="tituloBlog", type="string", example="Título del detalle del blog"),
+     *                 @OA\Property(property="subTituloBlog", type="string", example="Subtítulo de beneficios"),
+     *                 @OA\Property(property="imagenesBlog", type="array", @OA\Items(type="string", example="https://example.com/imagen1.jpg")),
+     *                 @OA\Property(property="parrafoImagenesBlog", type="array", @OA\Items(type="string", example="Texto descriptivo de la imagen")),
+     *                 @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
+     *                 @OA\Property(property="videoBlog", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+     *                 @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T12:00:00Z")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Blog obtenido exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Blog no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al obtener el blog"
+     *     )
+     * )
+     */
+
 
     public function showLink($link)
     {
@@ -451,6 +509,7 @@ class BlogController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+     *             @OA\Property(property="link", type="string", example="Link a blog..."),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
      *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/nueva-imagen.jpg"),
@@ -513,8 +572,8 @@ class BlogController extends Controller
                 $blog->imagenes()->delete(); // Eliminar imágenes anteriores
 
                 $imagenes = collect($data['imagenes'])->map(fn($imagen) => [
-                    'url_imagen' => $imagen['url_imagen'],
-                    'parrafo_imagen' => $imagen['parrafo_imagen'],
+                    'url_imagen' => $imagen['imagen'],
+                    'parrafo_imagen' => $imagen['parrafo'],
                     'id_blog' => $blog->id,
                 ])->toArray();
 

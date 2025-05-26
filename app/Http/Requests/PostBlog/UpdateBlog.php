@@ -34,8 +34,8 @@ class UpdateBlog extends FormRequest
             'url_video' => 'required|string|url',
             'titulo_video' => 'required|string|max:40',
             'imagenes' => 'required|array',
-            'imagenes.*.url_imagen' => 'required_with:imagenes|file|image',
-            'imagenes.*.parrafo_imagen' => 'required_with:imagenes|string|max:65535',
+            'imagenes.*.imagen' => 'required_with:imagenes|file|image',
+            'imagenes.*.parrafo' => 'required_with:imagenes|string|max:65535',
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V2ClienteController;
+use App\Http\Controllers\Api\V2\V2ClienteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
@@ -30,12 +30,13 @@ Route::prefix('v1')->group(function () {
     
     Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
         Route::post('/', 'store');
+        Route::get('/', 'getAll');
+        Route::get('/{id}', 'show');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');  
         
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');  
+            
         }); 
     });
 
@@ -50,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/', 'store');
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
+        Route::get('/link/{link}', 'showByLink');
     });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -79,15 +81,18 @@ Route::prefix('v1')->group(function () {
     });
 });
 
+
 Route::prefix("v2")->group(function(){
     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
         Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){
-            Route::get("/", "index");
-            Route::get("/{id}", 'show');
-            Route::post("/", "store");
-            Route::put("/{id}", "update");
-            Route::delete("/{id}", "destroy");
+           
         });
+
+        Route::get("/", "index");
+        Route::get("/{id}", 'show');
+        Route::post("/", "store");
+        Route::put("/{id}", "update");
+        Route::delete("/{id}", "destroy");
     });
 });
 

@@ -430,85 +430,81 @@ class ProductoController extends Controller
     public function update(UpdateProductoRequest $request, $id)
     {
 
-        return response()->json([
-        'mensaje' => 'Update recibido',
-        'id' => $id,
-        'datos' => $request->all(),
-    ]);
+        
 
 
-        // $data = $request->validated();
-        // try {
-        //     $producto = Producto::findOrFail($id);
-        // } catch (\Exception $e) {
-        //     return $this->apiResponse->notFoundResponse(
-        //         'Producto no encontrado'
-        //     );
-        // }
+         $data = $request->validated();
+        try {
+            $producto = Producto::findOrFail($id);
+        } catch (\Exception $e) {
+            return $this->apiResponse->notFoundResponse(
+                'Producto no encontrado'
+            );
+        }
 
-        // DB::beginTransaction();
-        // try {
-        //     $producto->update([
-        //         'nombre' => $data['nombre'] ?? $producto->nombre,
-        //         'titulo' => $data['titulo'] ?? $producto->titulo,
-        //         'subtitulo' => $data['subtitulo'] ?? $producto->subtitulo,
-        //         'lema' => $data['lema'] ?? $producto->lema,
-        //         'descripcion' => $data['descripcion'] ?? $producto->descripcion,
-        //         'imagen_principal' => $data['imagen_principal'] ?? $producto->imagen_principal,
-        //         'stock' => $data['stock'] ?? $producto->stock,
-        //         'precio' => $data['precio'] ?? $producto->precio,
-        //         'seccion' => $data['seccion'] ?? $producto->seccion,
-        //     ]);
+         DB::beginTransaction();
+         try {
+             $producto->update([
+                 'nombre' => $data['nombre'] ?? $producto->nombre,
+                 'titulo' => $data['titulo'] ?? $producto->titulo,
+                 'subtitulo' => $data['subtitulo'] ?? $producto->subtitulo,
+                 'lema' => $data['lema'] ?? $producto->lema,
+                 'descripcion' => $data['descripcion'] ?? $producto->descripcion,
+                 'imagen_principal' => $data['imagen_principal'] ?? $producto->imagen_principal,
+                 'stock' => $data['stock'] ?? $producto->stock,
+                 'precio' => $data['precio'] ?? $producto->precio,
+                 'seccion' => $data['seccion'] ?? $producto->seccion,
+             ]);
 
-        //     if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
-        //         $producto->especificaciones()->delete();
-        //         foreach ($data['especificaciones'] as $clave => $valor) {
-        //             $producto->especificaciones()->create([
-        //                 'clave' => $clave,
-        //                 'valor' => $valor
-        //             ]);
-        //         }
-        //     }
+             if (!empty($data['especificaciones']) && is_array($data['especificaciones'])) {
+                 $producto->especificaciones()->delete();
+                 foreach ($data['especificaciones'] as $clave => $valor) {
+                     $producto->especificaciones()->create([
+                         'clave' => $clave,
+                         'valor' => $valor
+                     ]);
+                 }
+             }
 
-        //     if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
-        //         $producto->dimensiones()->delete();
-        //         foreach ($data['dimensiones'] as $tipo => $valor) {
-        //             $producto->dimensiones()->create([
-        //                 'tipo' => $tipo,
-        //                 'valor' => $valor
-        //             ]);
-        //         }
-        //     }
+             if (!empty($data['dimensiones']) && is_array($data['dimensiones'])) {
+                 $producto->dimensiones()->delete();
+                 foreach ($data['dimensiones'] as $tipo => $valor) {
+                     $producto->dimensiones()->create([
+                         'tipo' => $tipo,
+                         'valor' => $valor
+                     ]);
+                 }
+             }
 
-        //     if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-        //         $producto->imagenes()->delete();
-        //         foreach ($data['imagenes'] as $url) {
-        //             $producto->imagenes()->create([
-        //                 'url_imagen' => $url
-        //             ]);
-        //         }
-        //     }
+             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+                 $producto->imagenes()->delete();
+                 foreach ($data['imagenes'] as $url) {
+                     $producto->imagenes()->create([
+                         'url_imagen' => $url
+                     ]);
+                 }
+             }
 
-        //     if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
-        //         $producto->productosRelacionados()->sync($data['relacionados']);
-        //     }
+             if (!empty($data['relacionados']) && is_array($data['relacionados'])) {
+                 $producto->productosRelacionados()->sync($data['relacionados']);
+             }
 
-        //     $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
+             $producto->refresh()->load(['especificaciones', 'dimensiones', 'imagenes', 'productosRelacionados']);
 
-        //     DB::commit();
+             DB::commit();
 
-        //     return $this->apiResponse->successResponse(
-        //         $producto,
-        //         'Producto actualizado exitosamente',
-        //         HttpStatusCode::OK
-        //     );
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return $this->apiResponse->errorResponse(
-        //         'Error al actualizar el producto: ' . $e->getMessage(),
-        //         HttpStatusCode::INTERNAL_SERVER_ERROR
-        //     );
-        // }
+             return $this->apiResponse->successResponse(
+                 $producto,
+                 'Producto actualizado exitosamente',
+                 HttpStatusCode::OK
+             );
+         } catch (\Exception $e) {
+             DB::rollBack();
+             return $this->apiResponse->errorResponse(
+                 'Error al actualizar el producto: ' . $e->getMessage(),
+                 HttpStatusCode::INTERNAL_SERVER_ERROR
+             );
+         }
     }
 
     /**

@@ -22,23 +22,21 @@ class UpdateProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'nullable|string|max:255',
-            'link' => 'nullable|string|max:255|unique:productos,link,' . $this->route('id'),
-            'titulo' => 'nullable|string|max:255',
-            'subtitulo' => 'nullable|string|max:255',
-            'lema' => 'nullable|string|max:255',
-            'descripcion' => 'nullable|string|max:1000',
-            'imagen_principal' => 'required|file|image',
-            'precio' => 'nullable|numeric|min:0.01|max:99999999.99',
-            'stock' => 'nullable|integer|min:0',
-            'especificaciones' => 'nullable|array',
-            'dimensiones' => 'nullable|array',
-            'imagenes.*.url_imagen' => 'nullable|file|image',
-            'imagenes' => 'array',
-            'relacionados' => 'nullable|array',
-            'relacionados.*' => 'nullable|integer|exists:productos,id',
-            'seccion' => 'nullable|string',
-            'mensaje_correo' => 'nullable|string|max:500',
+            //
+            'nombre' => "required|string|max:255",
+            'titulo' => "required|string|max:255",
+            'subtitulo' => "required|string|max:255",
+            'stock' => "required|integer|max:1000|min:0",
+            'precio' => "required|string|max:100000|min:0",
+            'seccion' => "required|string|max:255",
+            'lema' => "required|string|max:255",
+            'descripcion' => "required|string|max:65535",
+            'especificaciones' => "required|string|max:65535",
+            'imagenes' => "required|array|min:1|max:10",
+            'imagenes.*' => "file|image|max:2048",
+            'textos_alt' => "required|array|min:1|max:10",
+            'textos_alt.*' => "string|max:255",
+            'mensaje_correo' => "required|string|max:255",
         ];
     }
 }

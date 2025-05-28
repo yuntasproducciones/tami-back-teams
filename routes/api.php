@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Productos\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
+use App\Http\Controllers\ProductoController as ControllersProductoController;
 
 Route::prefix('v1')->group(function () {
 
@@ -45,13 +46,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', 'show');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
-            
+           Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+            Route::get('/link/{link}', 'showByLink'); 
         });
-
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-        Route::get('/link/{link}', 'showByLink');
     });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -85,14 +84,12 @@ Route::prefix('v1')->group(function () {
 Route::prefix("v2")->group(function(){
     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
         Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){
-           
+            Route::get("/", "index");
+            Route::get("/{id}", 'show');
+            Route::post("/", "store");
+            Route::put("/{id}", "update");
+            Route::delete("/{id}", "destroy");
         });
-
-        Route::get("/", "index");
-        Route::get("/{id}", 'show');
-        Route::post("/", "store");
-        Route::put("/{id}", "update");
-        Route::delete("/{id}", "destroy");
     });
 });
 

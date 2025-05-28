@@ -4,7 +4,7 @@ namespace App\Http\Requests\Producto;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductoRequest extends FormRequest
+class V2StoreProductoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class UpdateProductoRequest extends FormRequest
     {
         return [
             //
-            'nombre' => "required|string|max:255",
+            'nombre' => "required|string|max:255|unique:productos,nombre",
+            'link' => 'required|string|unique:productos,link|max:255',
             'titulo' => "required|string|max:255",
             'subtitulo' => "required|string|max:255",
             'stock' => "required|integer|max:1000|min:0",
@@ -36,7 +37,8 @@ class UpdateProductoRequest extends FormRequest
             'imagenes.*' => "file|image|max:2048",
             'textos_alt' => "required|array|min:1|max:10",
             'textos_alt.*' => "string|max:255",
-            'mensaje_correo' => "required|string|max:255",
+            'relacionados' => "sometimes|array",
+            'relacionados.*' => "integer|exists:productos,id",
         ];
     }
 }

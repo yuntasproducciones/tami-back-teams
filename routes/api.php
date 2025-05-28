@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Productos\ProductoController;
+use App\Http\Controllers\Api\V2\V2ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
@@ -39,18 +39,6 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
             
         }); 
-    });
-
-    Route::controller(ProductoController::class)->prefix('productos')->group(function(){
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
-           Route::post('/', 'store');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-            Route::get('/link/{link}', 'showByLink'); 
-        });
     });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -90,6 +78,34 @@ Route::prefix("v2")->group(function(){
             Route::put("/{id}", "update");
             Route::delete("/{id}", "destroy");
         });
+    });
+    
+    Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
+            
+        });
+
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+        Route::get('/link/{link}', 'showByLink');
+    });
+    
+    Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
+            
+        });
+
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+        Route::get('/link/{link}', 'showByLink');
     });
 });
 

@@ -30,52 +30,56 @@ class BlogController extends Controller
         $this->imgurService = $imgurService;
     }
 
-    /**
-     * Obtener listado de blogs
-     * 
-     * @OA\Get(
-     *     path="/api/v1/blogs",
-     *     summary="Muestra un listado de todos los blogs",
-     *     description="Retorna un array con todos los blogs y sus relaciones",
-     *     operationId="indexBlogs",
-     *     tags={"Blogs"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Operación exitosa",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="producto_id", type="integer", example=1),   
-     *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
-     *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
-     *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del país."),
-     *                     @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen.jpg"),
-     *                     @OA\Property(property="tituloBlog", type="string", example="Título del Blog"),
-     *                     @OA\Property(property="subTituloBlog", type="string", example="Subtítulo del Blog"),
-     *                     @OA\Property(
-     *                         property="imagenesBlog",
-     *                         type="array",
-     *                         @OA\Items(
-     *                             @OA\Property(property="url", type="string", example="https://example.com/imagen1.jpg"),
-     *                             @OA\Property(property="parrafo", type="string", example="Descripción de la imagen")
-     *                         )
-     *                     ),
-     *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
-     *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
-     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-10-01T14:30:00Z")
-     *                 )
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error del servidor"
-     *     )
-     * )
-     */
+/**
+ * Obtener listado de blogs
+ * 
+ * @OA\Get(
+ *     path="/api/v1/blogs",
+ *     summary="Muestra un listado de todos los blogs",
+ *     description="Retorna un array con todos los blogs y sus relaciones",
+ *     operationId="indexBlogs",
+ *     tags={"Blogs"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="producto_id", type="integer", example=1),
+ *                     @OA\Property(property="titulo", type="string", example="Producto Premium"),
+ *                     @OA\Property(property="link", type="string", example="https://example.com/blog/1"),
+ *                     @OA\Property(property="parrafo", type="string", example="La mejor calidad"),
+ *                     @OA\Property(property="descripcion", type="string", example="Un producto elaborado por los mejores especialistas del país."),
+ *                     @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen.jpg"),
+ *                     @OA\Property(property="tituloBlog", type="string", example="Título del Blog"),
+ *                     @OA\Property(property="subTituloBlog", type="string", example="Subtítulo del Blog"),
+ *                     @OA\Property(
+ *                         property="imagenesBlog",
+ *                         type="array",
+ *                         @OA\Items(
+ *                             @OA\Property(property="url", type="string", example="https://example.com/imagen1.jpg"),
+ *                             @OA\Property(property="parrafo", type="string", example="Descripción de la imagen")
+ *                         )
+ *                     ),
+ *                     @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
+ *                     @OA\Property(property="videoBlog", type="string", example="https://example.com/video.mp4"),
+ *                     @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
+ *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-10-01T14:30:00Z")
+ *                 )
+ *             ),
+ *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error del servidor"
+ *     )
+ * )
+ */
 
     public function index()
     {
@@ -393,6 +397,7 @@ class BlogController extends Controller
 
             $showBlog = [
                 'id' => $blog->id,
+                'producto_id' => $blog->producto_id,
                 'titulo' => $blog->titulo,
                 'link' => $blog->link,
                 'parrafo' => $blog->parrafo,
@@ -415,57 +420,61 @@ class BlogController extends Controller
         }
     }
 
-    /**
-     * Mostrar un blog por su link
-     * 
-     * @OA\Get(
-     *     path="/api/v1/blogs/link/{link}",
-     *     summary="Muestra un blog por su link",
-     *     description="Retorna los datos de un blog, incluyendo detalles, imágenes y video, según su campo link",
-     *     operationId="showBlogByLink",
-     *     tags={"Blogs"},
-     *     @OA\Parameter(
-     *         name="link",
-     *         in="path",
-     *         description="Link único del blog",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Blog obtenido exitosamente",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
-     *                 @OA\Property(property="link", type="string", example="mi-blog-unico"),
-     *                 @OA\Property(property="parrafo", type="string", example="Contenido introductorio del blog."),
-     *                 @OA\Property(property="descripcion", type="string", example="Descripción completa del blog."),
-     *                 @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen-principal.jpg"),
-     *                 @OA\Property(property="tituloBlog", type="string", example="Título del detalle del blog"),
-     *                 @OA\Property(property="subTituloBlog", type="string", example="Subtítulo de beneficios"),
-     *                 @OA\Property(property="imagenesBlog", type="array", @OA\Items(type="string", example="https://example.com/imagen1.jpg")),
-     *                 @OA\Property(property="parrafoImagenesBlog", type="array", @OA\Items(type="string", example="Texto descriptivo de la imagen")),
-     *                 @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
-     *                 @OA\Property(property="videoBlog", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
-     *                 @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T12:00:00Z")
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Blog obtenido exitosamente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Blog no encontrado"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error al obtener el blog"
-     *     )
-     * )
-     */
-
+/**
+ * Mostrar un blog por su link
+ * 
+ * @OA\Get(
+ *     path="/api/v1/blogs/link/{link}",
+ *     summary="Muestra un blog por su link",
+ *     description="Retorna los datos de un blog, incluyendo detalles, imágenes y video, según su campo link",
+ *     operationId="showBlogByLink",
+ *     tags={"Blogs"},
+ *     @OA\Parameter(
+ *         name="link",
+ *         in="path",
+ *         description="Link único del blog",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Blog obtenido exitosamente",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="id", type="integer", example=1),
+ *                 @OA\Property(property="producto_id", type="integer", example=5),
+ *                 @OA\Property(property="titulo", type="string", example="Título del blog"),
+ *                 @OA\Property(property="link", type="string", example="mi-blog-unico"),
+ *                 @OA\Property(property="parrafo", type="string", example="Contenido introductorio del blog."),
+ *                 @OA\Property(property="descripcion", type="string", example="Descripción completa del blog."),
+ *                 @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen-principal.jpg"),
+ *                 @OA\Property(property="tituloBlog", type="string", example="Título del detalle del blog"),
+ *                 @OA\Property(property="subTituloBlog", type="string", example="Subtítulo de beneficios"),
+ *                 @OA\Property(property="imagenesBlog", type="array", 
+ *                     @OA\Items(type="string", example="https://example.com/imagen1.jpg")
+ *                 ),
+ *                 @OA\Property(property="parrafoImagenesBlog", type="array", 
+ *                     @OA\Items(type="string", example="Texto descriptivo de la imagen")
+ *                 ),
+ *                 @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
+ *                 @OA\Property(property="videoBlog", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+ *                 @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
+ *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T12:00:00Z")
+ *             ),
+ *             @OA\Property(property="message", type="string", example="Blog obtenido exitosamente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Blog no encontrado"
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error al obtener el blog"
+ *     )
+ * )
+ */
 
     public function showLink($link)
     {
@@ -476,6 +485,7 @@ class BlogController extends Controller
 
             $showBlog = [
                 'id' => $blog->id,
+                'producto_id' => $blog->producto_id,
                 'titulo' => $blog->titulo,
                 'link' => $blog->link,
                 'parrafo' => $blog->parrafo,

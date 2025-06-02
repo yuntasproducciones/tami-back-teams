@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Producto;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class V2UpdateProductoRequest extends FormRequest
 {
     /**
@@ -21,10 +21,12 @@ class V2UpdateProductoRequest extends FormRequest
      */
     public function rules(): array
     {
+        $productoId = $this->route('producto');
+
         return [
             //
-            'nombre' => "required|string|max:255",
-            'link' => 'required|string|unique:productos,link|max:255',
+            'nombre' => ['required','string','max:255',Rule::unique('productos', 'nombre')->ignore($productoId)],
+            'link' => ['required','string','max:255',Rule::unique('productos', 'link')->ignore($productoId)],
             'titulo' => "required|string|max:255",
             'subtitulo' => "required|string|max:255",
             'stock' => "required|integer|max:1000|min:0",

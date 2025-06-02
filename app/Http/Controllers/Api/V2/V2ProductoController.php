@@ -59,11 +59,12 @@ class V2ProductoController extends Controller
     public function index()
     {
         //
-        $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
+        $productos = Producto::all();
 
         // Para decodificar especificaciones
-        $productos->getCollection()->transform(function ($producto) {
+        $productos->transform(function ($producto) {
             $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
+            $producto->unsetRelation('producto_Relacionado');
             return $producto;
         });
 

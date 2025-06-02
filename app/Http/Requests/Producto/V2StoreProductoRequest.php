@@ -23,7 +23,7 @@ class V2StoreProductoRequest extends FormRequest
     {
         return [
             //
-            'nombre' => "required|string|max:255",
+            'nombre' => "required|string|max:255|unique:productos,nombre",
             'link' => 'required|string|unique:productos,link|max:255',
             'titulo' => "required|string|max:255",
             'subtitulo' => "required|string|max:255",

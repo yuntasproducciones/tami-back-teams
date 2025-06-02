@@ -7,7 +7,7 @@ use App\Http\Requests\PostBlog\PostStoreBlog;
 use App\Http\Requests\PostBlog\UpdateBlog;
 use App\Services\ApiResponseService;
 use App\Models\ImagenBlog;
-use App\Services\ImgurService;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
 use App\Http\Contains\HttpStatusCode;
 use Illuminate\Support\Facades\DB;
@@ -23,11 +23,9 @@ use App\Models\Producto;
 class BlogController extends Controller
 {
     protected ApiResponseService $apiResponse;
-    protected $imgurService;
     
-    public function __construct(ApiResponseService $apiResponse, ImgurService $imgurService) {
+    public function __construct(ApiResponseService $apiResponse) {
         $this->apiResponse = $apiResponse;
-        $this->imgurService = $imgurService;
     }
 
     /**
@@ -235,38 +233,38 @@ class BlogController extends Controller
      * )
      */
 
+    private function guardarImagen($x) {
+        Storage::putFileAs("public/imagenes", $x, $x->hashName());
+        return "/storage/imagenes/" . $x->hashName();
+    }
+
     public function store(PostStoreBlog $request)
     {
         $data = $request->validated();
         DB::beginTransaction();
         try {
+            // Validar existencia del producto
+            $request->validate([
+                'producto_id' => ['required', 'integer', 'exists:productos,id'],
+            ]);
 
-            $data = $request->validated();
-
-            //Validar que el producto existe
-            $request->validate(
-                [
-                    'producto_id' => ['required', 'integer', 'exists:productos,id'],
-                ]
-            );
-
-
-            // 🟡 Validar y subir imagen principal si existe
+            // 🟡 Subir imagen principal si existe
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
                 $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
                     throw new \Exception("El archivo de imagen principal no es válido.");
                 }
-                // Subir imagen principal a Imgur
-                $uploadedMainImageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+
+                // Subir imagen al storage local
+                $uploadedMainImageUrl = $this->guardarImagen($data['imagen_principal']);
                 if (!$uploadedMainImageUrl) {
                     throw new \Exception("Falló la subida de la imagen principal.");
                 }
-                // Reemplazar el valor en el array original
+
                 $data['imagen_principal'] = $uploadedMainImageUrl;
             }
 
-            // Crear el blog (excluyendo relaciones)
+            // Crear blog
             $blog = Blog::create(array_diff_key($data, array_flip([
                 'imagenes',
                 'video',
@@ -276,7 +274,7 @@ class BlogController extends Controller
             // Relación: detalle del blog
             if (!empty($data['titulo_blog']) || !empty($data['subtitulo_beneficio'])) {
                 $blog->detalle()->create([
-                    'id_blog' => $blog->id,  // Vincular al blog creado
+                    'id_blog' => $blog->id,
                     'titulo_blog' => $data['titulo_blog'] ?? null,
                     'subtitulo_beneficio' => $data['subtitulo_beneficio'] ?? null,
                 ]);
@@ -285,11 +283,12 @@ class BlogController extends Controller
             // Relación: video
             if (!empty($data['url_video']) || !empty($data['titulo_video'])) {
                 $blog->video()->create([
-                    'id_blog' => $blog->id,  // Vincular al blog creado
+                    'id_blog' => $blog->id,
                     'url_video' => $data['url_video'] ?? null,
                     'titulo_video' => $data['titulo_video'] ?? null,
                 ]);
             }
+
             // Relación: imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
                 foreach ($data['imagenes'] as $index => $item) {
@@ -299,7 +298,7 @@ class BlogController extends Controller
                             throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.");
                         }
 
-                        $uploadedImageUrl = $this->imgurService->uploadImage($item['imagen']);
+                        $uploadedImageUrl = $this->guardarImagen($item['imagen']);
                         if (!$uploadedImageUrl) {
                             throw new \Exception("Falló la subida de la imagen adicional en la posición $index.");
                         }
@@ -317,11 +316,9 @@ class BlogController extends Controller
                 throw new \Exception("Array de imágenes vacío o mal estructurado.");
             }
 
-
-            // ✅ Las relaciones ya están cargadas al momento de la creación, no es necesario cargar de nuevo
             DB::commit();
-
             return $this->apiResponse->successResponse($blog->fresh(), 'Blog creado con éxito.', HttpStatusCode::CREATED);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse(
@@ -330,6 +327,7 @@ class BlogController extends Controller
             );
         }
     }
+
 
     /**
      * Mostrar un blog específico
@@ -571,6 +569,7 @@ class BlogController extends Controller
     {
         $data = $request->validated();
 
+        DB::beginTransaction();
         try {
             $blog = Blog::findOrFail($id);
 
@@ -579,19 +578,23 @@ class BlogController extends Controller
                 throw new \Exception("El producto con ID {$data['producto_id']} no existe.");
             }
 
-            // Validar y subir imagen principal si viene en el request
+            // 🟡 Subir nueva imagen principal si viene en el request
             if (!empty($data['imagen_principal']) && $data['imagen_principal'] instanceof \Illuminate\Http\UploadedFile) {
                 $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!in_array($data['imagen_principal']->getMimeType(), $validMimeTypes)) {
                     throw new \Exception("El archivo de imagen principal no es válido.");
                 }
-                $uploadedMainImageUrl = $this->imgurService->uploadImage($data['imagen_principal']);
+
+                // Subir al storage
+                $uploadedMainImageUrl = $this->guardarImagen($data['imagen_principal']);
                 if (!$uploadedMainImageUrl) {
                     throw new \Exception("Falló la subida de la imagen principal.");
                 }
+
                 $data['imagen_principal'] = $uploadedMainImageUrl;
             }
 
+            // Actualizar blog
             $blog->update([
                 'producto_id' => $data['producto_id'],
                 'titulo' => $data['titulo'],
@@ -602,20 +605,34 @@ class BlogController extends Controller
                 'updated_at' => now(),
             ]);
 
-            // Imágenes adicionales
+            // 🟡 Imágenes adicionales
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
-                $blog->imagenes()->delete(); // Eliminar imágenes anteriores
+                $blog->imagenes()->delete(); // Eliminar anteriores
 
-                $imagenes = collect($data['imagenes'])->map(fn($imagen) => [
-                    'url_imagen' => $imagen['imagen'],
-                    'parrafo_imagen' => $imagen['parrafo'],
-                    'id_blog' => $blog->id,
-                ])->toArray();
+                foreach ($data['imagenes'] as $index => $item) {
+                    if (isset($item['imagen']) && $item['imagen'] instanceof \Illuminate\Http\UploadedFile) {
+                        $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                        if (!in_array($item['imagen']->getMimeType(), $validMimeTypes)) {
+                            throw new \Exception("El archivo de imagen adicional en la posición $index no es válido.");
+                        }
 
-                ImagenBlog::insert($imagenes);
+                        $uploadedImageUrl = $this->guardarImagen($item['imagen']);
+                        if (!$uploadedImageUrl) {
+                            throw new \Exception("Falló la subida de la imagen adicional en la posición $index.");
+                        }
+
+                        $blog->imagenes()->create([
+                            'url_imagen' => $uploadedImageUrl,
+                            'parrafo_imagen' => $item['parrafo'] ?? '',
+                            'id_blog' => $blog->id,
+                        ]);
+                    } else {
+                        throw new \Exception("Falta imagen válida en el índice $index.");
+                    }
+                }
             }
 
-            // Manejo detalle blog
+            // Detalle del blog
             $detalle = $blog->detalle()->first();
             if ($detalle) {
                 $detalle->update([
@@ -629,7 +646,7 @@ class BlogController extends Controller
                 ]);
             }
 
-            // Manejo video blog
+            // Video del blog
             $video = $blog->video()->first();
             if ($video) {
                 $video->update([
@@ -651,6 +668,7 @@ class BlogController extends Controller
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
+
 
     /**
      * Eliminar un blog específico

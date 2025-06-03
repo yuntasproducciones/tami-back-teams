@@ -21,7 +21,7 @@ class V2UpdateProductoRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productoId = $this->route('producto');
+        $productoId = $this->route('id');
 
         return [
             //

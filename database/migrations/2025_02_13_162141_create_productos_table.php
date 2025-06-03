@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('subtitulo')->nullable();
             $table->string('lema')->nullable();
             $table->text('descripcion')->nullable();
-            $table->string('imagen_principal');
             $table->integer('stock')->default(0);
             $table->decimal('precio', 10, 2);
             $table->string('seccion', 100)->nullable();
+            $table->json('especificaciones')->nullable();
             $table->text('mensaje_correo')->nullable();
             
             $table->timestamps();

@@ -13,6 +13,7 @@ class Producto extends Model
     protected $fillable = [
         'nombre',
         'titulo',
+        'link',
         'subtitulo',
         'stock',
         'precio',
@@ -44,4 +45,9 @@ class Producto extends Model
     {
         return $this->hasMany(Blog::class, 'producto_id', 'id');
     }
+    public function especificaciones(): HasMany
+    {
+        return $this->hasMany(Especificacion::class, 'producto_id');
+    }
+
 }

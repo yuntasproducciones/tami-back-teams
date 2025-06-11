@@ -60,7 +60,9 @@ class V2ProductoController extends Controller
     public function index()
     {
         //
-        $productos = Producto::all();
+        $productos = Producto::with(['imagenes'])
+            ->orderBy('created_at')
+            ->get();
 
         // Para decodificar especificaciones
         $productos->transform(function ($producto) {
@@ -381,7 +383,7 @@ class V2ProductoController extends Controller
     public function showByLink($link)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados'])
+            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes'])
                 ->where('link', $link)
                 ->first();
 

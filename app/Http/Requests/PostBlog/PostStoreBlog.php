@@ -36,8 +36,9 @@ class PostStoreBlog extends FormRequest
             'imagenes' => 'required|array',
             'imagenes.*.imagen' => 'required|image|mimes:jpeg,jpg,png|max:2048',
             'imagenes.*.parrafo' => 'nullable|string|max:500',
+            'producto_id' => 'required|integer|exists:productos,id',
         ];
-    }   
+    }
 
      protected function failedValidation(Validator $validator)
     {

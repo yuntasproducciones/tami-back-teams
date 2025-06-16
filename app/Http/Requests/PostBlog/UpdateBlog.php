@@ -24,7 +24,7 @@ class UpdateBlog extends FormRequest
         $blogId = $this->route('id'); 
 
         return [
-            'producto_id' => 'required|exists:productos,id',
+            'producto_id' => 'required|integer|exists:productos,id',
             'titulo' => 'required|string|max:120',
             'link' => 'required|string|max:120|unique:blogs,link,' . $blogId,
             'parrafo' => 'required|string|max:100',

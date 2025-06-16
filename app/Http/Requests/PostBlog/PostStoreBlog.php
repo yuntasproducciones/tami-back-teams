@@ -24,6 +24,7 @@ class PostStoreBlog extends FormRequest
     public function rules()
     {
         return [
+            'producto_id' => 'required|integer|exists:productos,id',
             'titulo' => 'required|string|max:255',
             'link' => 'required|string|max:255',
             'parrafo' => 'required|string',

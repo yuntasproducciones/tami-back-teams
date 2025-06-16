@@ -81,21 +81,8 @@ Route::prefix("v2")->group(function(){
     });
     
     Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {
-            
-        });
-
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-        Route::get('/link/{link}', 'showByLink');
-    });
-    
-    Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
-        Route::get('/', 'index');
+        Route::get('/', 'paginate');
+        Route::get('/all', 'index');
         Route::get('/{id}', 'show');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {

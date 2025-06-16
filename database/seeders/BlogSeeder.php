@@ -18,29 +18,29 @@ class BlogSeeder extends Seeder
         $blog = [
             [
                 'titulo' => 'Panel de fibra de bamboo',
-                'parrafo' => 'Panel de Fibra de Bambú: Sostenibilidad y Estética para la construcción moderna',
-                'descripcion' => 'Futuro verde en la construcción Beneficios del bambú',
+                'subtitulo1' => 'Panel de Fibra de Bambú: Sostenibilidad y Estética para la construcción moderna',
+                'subtitulo2' => 'Futuro verde en la construcción Beneficios del bambú',
                 'imagen_principal' => 'https://i.imgur.com/bKisDUE.png',
                 'created_at' => Carbon::now(),
             ],
             [
                 'titulo' => 'Soldadora lingba',
-                'parrafo' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
-                'descripcion' => 'Descubre cómo incorporar materiales reciclados y energías renovables',
+                'subtitulo1' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
+                'subtitulo2' => 'Descubre cómo incorporar materiales reciclados y energías renovables',
                 'imagen_principal' => 'https://i.imgur.com/vgxpLns.png',
                 'created_at' => Carbon::now(),
             ],
             [
                 'titulo' => 'Soldadora spark',
-                'parrafo' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
-                'descripcion' => 'Explora las últimas tendencias en iluminación LED y sistemas de control',
+                'subtitulo1' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
+                'subtitulo2' => 'Explora las últimas tendencias en iluminación LED y sistemas de control',
                 'imagen_principal' => 'https://i.imgur.com/ZfXUcxC.png',
                 'created_at' => Carbon::now(),
             ],
             [
                 'titulo' => 'Ventilador holográfico',
-                'parrafo' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
-                'descripcion' => 'Aprende sobre materiales y técnicas de diseño para crear ambientes acústicamente agradables',
+                'subtitulo1' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
+                'subtitulo2' => 'Aprende sobre materiales y técnicas de diseño para crear ambientes acústicamente agradables',
                 'imagen_principal' => 'https://i.imgur.com/ZgElRO5.png',
                 'created_at' => Carbon::now(),
             ]

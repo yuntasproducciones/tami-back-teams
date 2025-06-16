@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Producto;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule; // ¡IMPORTA ESTA CLASE!
 
 class V2UpdateProductoRequest extends FormRequest
 {
@@ -21,14 +22,33 @@ class V2UpdateProductoRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Obtén el ID del producto que se está actualizando.
+        // En tu controlador `update(V2UpdateProductoRequest $request, string $id)`,
+        // el ID se pasa como el segundo parámetro `$id`.
+        // Dentro del Form Request, puedes acceder a él vía $this->route('id').
+        $productoId = $this->route('id');
+
         return [
-            //
-            'nombre' => "required|string|max:255",
-            'link' => 'required|string|unique:productos,link|max:255',
+            // Regla para 'nombre': debe ser único en la tabla 'productos',
+            // PERO ignora el registro cuyo ID es $productoId (el que estamos actualizando).
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('productos', 'nombre')->ignore($productoId),
+            ],
+            // Regla para 'link': debe ser único en la tabla 'productos',
+            // PERO ignora el registro cuyo ID es $productoId.
+            'link' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('productos', 'link')->ignore($productoId),
+            ],
             'titulo' => "required|string|max:255",
             'subtitulo' => "required|string|max:255",
             'stock' => "required|integer|max:1000|min:0",
-            'precio' => "required|string|max:100000|min:0",
+            'precio' => "required|string|max:100000|min:0", // Considera cambiar a 'numeric' si es un valor decimal
             'seccion' => "required|string|max:255",
             'lema' => "required|string|max:255",
             'descripcion' => "required|string|max:65535",

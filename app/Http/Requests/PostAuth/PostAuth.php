@@ -28,7 +28,7 @@ class PostAuth extends FormRequest
     {
         return [
             'email' => 'required|email|max:100',
-            'password' => 'required|string|min:8|max:255',
+            'password' => 'required|string|min:1|max:255',
             'device_name' => 'sometimes|string|max:100',
             'single_session' => 'sometimes|boolean'
         ];

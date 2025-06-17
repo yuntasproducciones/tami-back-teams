@@ -31,8 +31,9 @@ class V2ProductoController extends Controller
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="nombre", type="string", example="Laptop"),
      *                     @OA\Property(property="titulo", type="string", example="Producto premium"),
+     *                     @OA\Property(property="nombre", type="string", example="Laptop"),
+     *                     @OA\Property(property="link", type="string", example="Link producto"),
      *                     @OA\Property(property="subtitulo", type="string", example="Innovación y calidad"),
      *                     @OA\Property(property="stock", type="integer"),
      *                     @OA\Property(property="precio", type="number"),
@@ -57,6 +58,23 @@ class V2ProductoController extends Controller
      * security={}
      */
     public function index()
+    {
+        //
+        $productos = Producto::with(['imagenes'])
+            ->orderBy('created_at')
+            ->get();
+
+        // Para decodificar especificaciones
+        $productos->transform(function ($producto) {
+            $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
+            $producto->unsetRelation('producto_Relacionado');
+            return $producto;
+        });
+
+        return response()->json($productos);
+    }
+
+    public function paginate()
     {
         //
         $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
@@ -152,7 +170,6 @@ class V2ProductoController extends Controller
 
     public function store(V2StoreProductoRequest $request)
     {
-        //
         $datosValidados = $request->validated();
 
         $imagenes = $datosValidados["imagenes"];
@@ -166,7 +183,7 @@ class V2ProductoController extends Controller
                 "texto_alt_SEO" => $textos[$i]
             ];
         }
-        
+
         $producto = Producto::create([
             "nombre" => $datosValidados["nombre"],
             "link" => $datosValidados["link"],
@@ -177,14 +194,26 @@ class V2ProductoController extends Controller
             "seccion" => $datosValidados["seccion"],
             "lema" => $datosValidados["lema"],
             "descripcion" => $datosValidados["descripcion"],
-            "especificaciones" => $datosValidados["especificaciones"],
         ]);
 
-        $producto->productosRelacionados()->sync($datosValidados['relacionados']);
-
+        $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
-        return response()->json(["message"=>"Producto insertado exitosamente"], 201);
+
+        // Aquí solo este bloque basta
+        $especificaciones = json_decode($datosValidados['especificaciones'], true);
+
+        if (is_array($especificaciones)) {
+            foreach ($especificaciones as $clave => $valor) {
+                $producto->especificaciones()->create([
+                    'clave' => $clave,
+                    'valor' => $valor,
+                ]);
+            }
+        }
+
+        return response()->json(["message" => "Producto insertado exitosamente"], 201);
     }
+
 
     /**
      * Obtener un producto por su ID
@@ -368,7 +397,7 @@ class V2ProductoController extends Controller
     public function showByLink($link)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados'])
+            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes'])
                 ->where('link', $link)
                 ->first();
 
@@ -535,11 +564,20 @@ class V2ProductoController extends Controller
             "seccion" => $datosValidados["seccion"],
             "lema" => $datosValidados["lema"],
             "descripcion" => $datosValidados["descripcion"],
-            "especificaciones" => $datosValidados["especificaciones"],
         ]);
         $producto->imagenes()->delete();
         $producto->imagenes()->createMany($imagenesProcesadas);
-        $producto->productosRelacionados()->sync($datosValidados['relacionados']);
+        $producto->especificaciones()->delete();
+        $especificaciones = json_decode($datosValidados['especificaciones'], true);
+        if (is_array($especificaciones)) {
+            foreach ($especificaciones as $clave => $valor) {
+                $producto->especificaciones()->create([
+                    'clave' => $clave,
+                    'valor' => $valor,
+                ]);
+            }
+        }
+        $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         return response()->json(["message"=>"Producto actualizado exitosamente"], 201);
     }
 
@@ -586,7 +624,7 @@ class V2ProductoController extends Controller
         //
         DB::beginTransaction();
         try {
-            $producto = Producto::with("imagenes")->find($id);
+             $producto = Producto::with(['imagenes', 'especificaciones'])->find($id);
             if ($producto == null) {
                 return response()->json(["message" => "Producto no encontrado"], status: 404);
             }
@@ -598,6 +636,8 @@ class V2ProductoController extends Controller
             foreach ($productoImagenes as $imagen) {
                 Storage::delete("imagenes/" . $imagen);
             }
+
+            $producto->especificaciones()->delete(); 
 
             $producto->delete();
             DB::commit();

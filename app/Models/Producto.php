@@ -3,27 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\ProductoImagen;
+use App\Models\Dimension;
+use App\Http\Controllers\Api\V1\Blog\BlogController;
 
 class Producto extends Model
 {
-
-    protected $casts = [
-        'especificaciones' => 'array',
-    ];
-
     protected $fillable = [
         'nombre',
         'link',
         'titulo',
+        'link',
         'subtitulo',
-        'lema',
-        'descripcion',
-        'imagen_principal',
         'stock',
         'precio',
         'seccion',
-        // 'mensaje_correo',
-        'especificaciones'
+        'lema',
+        'descripcion',
+        'especificaciones',
+        'imagenes'
     ];
 
     public $timestamps = true;
@@ -46,6 +45,10 @@ class Producto extends Model
     public function blogs()
     {
         return $this->hasMany(Blog::class, 'producto_id', 'id');
+    }
+    public function especificaciones(): HasMany
+    {
+        return $this->hasMany(Especificacion::class, 'producto_id');
     }
 
 }

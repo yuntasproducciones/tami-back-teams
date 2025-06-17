@@ -52,8 +52,8 @@ Route::prefix('v1')->group(function () {
         }); 
 
         Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
+        Route::put('/{blog}', 'update');
+        Route::delete('/{blog}', 'destroy');
     });
 
     Route::controller(PermissionController::class)->prefix("/permisos")->group(function () {

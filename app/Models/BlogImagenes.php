@@ -8,10 +8,12 @@ use App\Models\Blog;
 
 class BlogImagenes extends Model
 {
-    //
+    protected $table = 'blog_imagenes';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'ruta_imagen',
         'texto_alt',
+        'blog_id'
     ];
 
     public $timestamps = true;

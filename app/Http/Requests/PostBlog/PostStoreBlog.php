@@ -32,16 +32,16 @@ class PostStoreBlog extends FormRequest
             'subtitulo3' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:255',
-            'imagenes' => 'required|array',
+            'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
             'textos_alt' => 'required|array',
             'textos_alt.*' => 'required|string|max:255',
             'parrafos' => 'required|array',
             'parrafos.*' => 'required|string|max:2047',
         ];
-    }   
+    }
 
-     protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
             response()->json([

@@ -22,7 +22,7 @@ class UpdateBlog extends FormRequest
      */
     public function rules(): array
     {
-        $blogId = $this->route('blog'); 
+        $blogId = $this->route('blog');
 
         return [
             'titulo' => 'required|string|max:255',
@@ -33,7 +33,7 @@ class UpdateBlog extends FormRequest
             'subtitulo3' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:255',
-            'imagenes' => 'required|array',
+            'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
             'textos_alt' => 'required|array',
             'textos_alt.*' => 'required|string|max:255',

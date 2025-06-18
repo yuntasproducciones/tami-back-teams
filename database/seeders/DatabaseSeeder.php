@@ -27,9 +27,7 @@ class DatabaseSeeder extends Seeder
 
             // Blog
             BlogSeeder::class,
-            DetalleBlogSeeder::class,
-            ImagenBlogSeeder::class,
-            VideoBlogSeeder::class,
+
         ]);
     }
 }

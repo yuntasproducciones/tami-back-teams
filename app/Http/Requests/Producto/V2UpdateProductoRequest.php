@@ -30,7 +30,7 @@ class V2UpdateProductoRequest extends FormRequest
             'titulo' => "required|string|max:255",
             'subtitulo' => "required|string|max:255",
             'stock' => "required|integer|max:1000|min:0",
-            'precio' => "required|string|max:100000|min:0",
+            'precio' => "required|string|max:100000|min:0", // Considera cambiar a 'numeric' si es un valor decimal
             'seccion' => "required|string|max:255",
             'lema' => "required|string|max:255",
             'descripcion' => "required|string|max:65535",

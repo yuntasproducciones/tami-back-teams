@@ -172,21 +172,37 @@ class PermissionController extends Controller
         ]);
     }
 
-    public function assignPermissionToRole(Request $request){
-        $request->validate([
-            'role_id' => 'required|exists:roles,id',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
+public function assignPermissionToRole(Request $request){
+    $request->validate([
+        'role_id' => 'required|exists:roles,id',
+        'permissions' => 'required|array',
+        'permissions.*' => 'exists:permissions,id',
+    ]);
 
-        $role = Role::findOrFail($request->role_id);
-        $role->syncPermissions($request->permissions);
+    $role = Role::findOrFail($request->role_id);
+    $role->syncPermissions($request->permissions);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Permisos asignados al rol exitosamente'
-        ], 200);
-    }
+    $role->load('permissions');
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Permisos asignados al rol exitosamente',
+        'data' => [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'guard_name' => $role->guard_name,
+            ],
+            'permissions' => $role->permissions->map(function($permission) {
+                return [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'guard_name' => $permission->guard_name,
+                ];
+            })
+        ]
+    ], 200);
+}
 
     public function removePermissionFromRole(Request $request)
     {

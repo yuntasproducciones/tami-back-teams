@@ -4,38 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\BlogImagenes;
+use App\Models\BlogParrafos;
+use App\Models\Producto;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Blog extends Model
 {
     use HasFactory;
 
+    protected $table = 'blogs';
+    protected $primaryKey = 'id';
     protected $fillable = [
-        'producto_id',
         'titulo',
+        'producto_id',
         'link',
-        'parrafo',
-        'descripcion',
-        'imagen_principal'
+        'subtitulo1',
+        'subtitulo2',
+        'subtitulo3',
+        'video_url',
+        'video_titulo',
     ];
 
     public $timestamps = true;
 
-    public function imagenes()
+    public function imagenes(): HasMany
     {
-        return $this->hasMany(ImagenBlog::class, 'id_blog'); 
+        return $this->hasMany(BlogImagenes::class, 'blog_id'); 
     }
 
-    public function video()
+    public function parrafos(): HasMany
     {
-        return $this->hasOne(VideoBlog::class, 'id_blog');
+        return $this->hasMany(BlogParrafos::class, 'blog_id'); 
     }
 
-    public function detalle()
-    {
-        return $this->hasOne(DetalleBlog::class, 'id_blog');
-    }
-
-    public function producto()
+    public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id');
     }   

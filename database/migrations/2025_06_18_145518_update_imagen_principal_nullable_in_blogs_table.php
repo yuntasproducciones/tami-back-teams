@@ -6,18 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('blogs', function (Blueprint $table) {
-            $table->string('link')->nullable()->unique()->after('titulo');
+            $table->string('imagen_principal')->nullable()->change();
         });
     }
 
-
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('blogs', function (Blueprint $table) {
-            $table->dropColumn('link');
+            $table->string('imagen_principal')->nullable(false)->change();
         });
     }
 };

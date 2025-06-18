@@ -10,10 +10,6 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->string('subtitulo3', 100)->after('subtitulo2')->nullable();
-        });
-
         $blogs = DB::table('blogs')->select('id')->get();
 
         foreach ($blogs as $blog) {
@@ -28,9 +24,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->dropColumn('subtitulo3'); 
-        });
+ 
     }
 };
 

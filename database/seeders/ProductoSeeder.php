@@ -25,11 +25,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 10,
                 'precio' => 299.99,
                 'seccion' => 'Trabajo',
-                'especificaciones' => [
-                    'voltaje' => '220V',
-                    'potencia' => '500W',
-                    'material' => 'Acero inoxidable',
-                ],
             ],
             [
                 'id' => 2,
@@ -42,11 +37,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 5,
                 'precio' => 499.99,
                 'seccion' => 'Trabajo',
-                'especificaciones' => [
-                    'peso' => '35kg',
-                    'dimensiones' => '60x45x70cm',
-                    'automatica' => 'true'
-                ],
             ],
             [
                 'id' => 3,
@@ -59,10 +49,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 15,
                 'precio' => 199.99,
                 'seccion' => 'Trabajo',
-                'especificaciones' => [
-                    'tipos_de_sello' => ['plástico', 'aluminio', 'papel'],
-                    'velocidad' => '30 bolsas/minuto'
-                ],
             ],
             [
                 'id' => 4,
@@ -75,10 +61,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 20,
                 'precio' => 149.99,
                 'seccion' => 'Decoracion',
-                'especificaciones' => [
-                    'capacidad' => '500g por bolsa',
-                    'material' => 'acero galvanizado'
-                ],
             ],
             [
                 'id' => 5,
@@ -91,10 +73,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 8,
                 'precio' => 399.99,
                 'seccion' => 'Decoracion',
-                'especificaciones' => [
-                    'corriente' => '150A',
-                    'frecuencia' => '60Hz'
-                ],
             ],
             [
                 'id' => 6,
@@ -107,10 +85,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 12,
                 'precio' => 599.99,
                 'seccion' => 'Decoracion',
-                'especificaciones' => [
-                    'resolucion' => '0.1mm',
-                    'tipo_filamento' => ['PLA', 'ABS']
-                ],
             ],
             [
                 'id' => 7,
@@ -123,10 +97,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 25,
                 'precio' => 89.99,
                 'seccion' => 'Decoracion',
-                'especificaciones' => [
-                    'bateria' => '18V',
-                    'velocidades' => '2'
-                ],
             ],
             [
                 'id' => 8,
@@ -139,10 +109,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 10,
                 'precio' => 129.99,
                 'seccion' => 'Negocio',
-                'especificaciones' => [
-                    'diametro_disco' => '7 1/4"',
-                    'rpm' => '5200'
-                ],
             ],
             [
                 'id' => 9,
@@ -155,10 +121,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 18,
                 'precio' => 79.99,
                 'seccion' => 'Negocio',
-                'especificaciones' => [
-                    'tipo' => 'orbital',
-                    'velocidad' => '13000 OPM'
-                ],
             ],
             [
                 'id' => 10,
@@ -171,10 +133,6 @@ class ProductoSeeder extends Seeder
                 'stock' => 7,
                 'precio' => 299.99,
                 'seccion' => 'Negocio',
-                'especificaciones' => [
-                    'capacidad' => '60L',
-                    'potencia' => '1200W'
-                ],
             ],
             [
                 'id' => 11,
@@ -187,37 +145,8 @@ class ProductoSeeder extends Seeder
                 'stock' => 9,
                 'precio' => 249.99,
                 'seccion' => 'Negocio',
-                'especificaciones' => [
-                    'presion_maxima' => '8 bar',
-                    'capacidad' => '50L',
-                    'potencia' => '2HP'
-                ],
-            ],
+            ]
         ];
-
-        foreach ($productos as $producto) {
-            $especificaciones = $producto['especificaciones'];
-            unset($producto['especificaciones']);
-
-            $producto['created_at'] = Carbon::now();
-            $producto['updated_at'] = Carbon::now();
-
-            DB::table('productos')->insert($producto);
-            $productoId = $producto['id'];
-
-            foreach ($especificaciones as $clave => $valor) {
-                if (is_array($valor)) {
-                    $valor = implode(', ', $valor);
-                }
-
-                DB::table('especificaciones')->insert([
-                    'producto_id' => $productoId,
-                    'clave' => $clave,
-                    'valor' => $valor,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
-            }
-        }
+        DB::table('productos')->insert($productos);
     }
 }

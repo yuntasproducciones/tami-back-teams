@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->string('imagen_principal')->nullable()->change();
+        Schema::create('blogs_parrafos', function (Blueprint $table) {
+            $table->id();
+            $table->text('parrafo');
+            $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->string('imagen_principal')->nullable(false)->change();
-        });
+        Schema::dropIfExists('blogs_parrafos');
     }
 };

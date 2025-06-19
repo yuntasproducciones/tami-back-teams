@@ -14,30 +14,29 @@ class UpdateBlog extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Cambia según tu lógica de permisos
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
-        $blogId = $this->route('blog');
+         $blogId = $this->route('id');
 
-        return [
-            'titulo' => 'required|string|max:255',
-            'producto_id' => 'required|integer|exists:productos,id',
-            'link' => ['required', 'string', 'max:255', Rule::unique("blogs", "link")->ignore($blogId)],
-            'subtitulo1' => 'required|string|max:255',
-            'subtitulo2' => 'required|string|max:255',
-            'subtitulo3' => 'required|string|max:255',
-            'video_url' => 'required|url',
-            'video_titulo' => 'required|string|max:255',
-            'imagenes' => 'nullable|array',
-            'imagenes.*' => 'required|image|max:2048',
-            'textos_alt' => 'required|array',
-            'textos_alt.*' => 'required|string|max:255',
-        ];
+    return [
+        'titulo' => 'required|string|max:255',
+        'producto_id' => 'required|integer|exists:productos,id',
+        'link' => ['required', 'string', 'max:255', Rule::unique("blogs", "link")->ignore($blogId)],
+        'subtitulo1' => 'required|string|max:255',
+        'subtitulo2' => 'required|string|max:255',
+        'subtitulo3' => 'required|string|max:255',
+        'video_url' => 'required|url',
+        'video_titulo' => 'required|string|max:255',
+        'imagenes' => 'nullable|array',
+        'imagenes.*' => 'image|max:2048', 
+        'textos_alt' => 'required|array',
+        'textos_alt.*' => 'required|string|max:255',
+        'parrafos' => 'required|array',
+        'parrafos.*' => 'required|string', 
+    ];
     }
 
     protected function failedValidation(Validator $validator)

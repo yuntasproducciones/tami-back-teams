@@ -279,10 +279,10 @@ class BlogController extends Controller
      * )
      */
 
-    public function show(Blog $blog)
+    public function show($id)
     {
         try {
-            $blog = $blog->with(['imagenes', 'parrafos', 'producto'])->get();
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,

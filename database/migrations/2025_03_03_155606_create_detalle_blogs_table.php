@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('blogs_parrafos', function (Blueprint $table) {
+        Schema::create('detalle_blogs', function (Blueprint $table) {
             $table->id();
-            $table->text('parrafo');
-            $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
+            $table->string('titulo_blog', 80);
+            $table->string('subtitulo_beneficio', 80);
+            $table->unsignedBigInteger('id_blog');
+
+            $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('blogs_parrafos');
+        Schema::dropIfExists('detalle_blogs');
     }
 };

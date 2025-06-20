@@ -64,8 +64,6 @@ class BlogController extends Controller
             );
         }
     }
-
-
     /**
      * Crear un nuevo blog
      * 

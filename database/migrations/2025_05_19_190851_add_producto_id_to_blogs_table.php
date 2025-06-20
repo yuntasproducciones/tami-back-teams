@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('blogs', function (Blueprint $table) {
-            $table->renameColumn('parrafo', 'subtitulo1');
-            $table->renameColumn('descripcion', 'subtitulo2');
-            $table->text('subtitulo3')->after('subtitulo2')->nullable();
+            $table->unsignedBigInteger('producto_id')->nullable()->after('id'); // corregido
+            $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
         });
     }
 
@@ -24,9 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('blogs', function (Blueprint $table) {
-            $table->renameColumn('subtitulo1', 'parrafo');
-            $table->renameColumn('subtitulo2', 'descripcion');
-            $table->dropColumn('subtitulo3');
+            $table->dropForeign(['producto_id']);
+            $table->dropColumn('producto_id');
         });
     }
 };

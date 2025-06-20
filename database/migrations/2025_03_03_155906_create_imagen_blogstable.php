@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('especificaciones', function (Blueprint $table) {
+        Schema::create('imagen_blogs', function (Blueprint $table) {
             $table->id();
-            $table->string('clave');
-            $table->string('valor');
-            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
+            $table->text('url_imagen');
+            $table->text('parrafo_imagen');
+            $table->unsignedBigInteger('id_blog');
+
+            $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('especificaciones');
+        Schema::dropIfExists('imagen_blogs');
     }
 };

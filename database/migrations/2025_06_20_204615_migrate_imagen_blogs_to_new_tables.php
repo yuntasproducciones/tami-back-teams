@@ -15,7 +15,8 @@ return new class extends Migration
         // Crear nueva tabla blogs_imagenes
         Schema::create('blogs_imagenes', function (Blueprint $table) {
             $table->id();
-            $table->text('url_imagen');
+            $table->text('ruta_imagen');
+            $table->text('text_alt')->nullable();
             $table->unsignedBigInteger('id_blog');
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
             $table->timestamps();

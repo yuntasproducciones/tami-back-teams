@@ -181,10 +181,19 @@ class BlogController extends Controller
      * )
      */
 
-    public function store(PostStoreBlog $request)
+    private function guardarImagen($archivo)
+    {
+        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+        $archivo->storeAs("imagenes", $nombre, "public");
+        return "/storage/imagenes/" . $nombre;
+    }
+
+
+   public function store(PostStoreBlog $request)
     {
         $datosValidados = $request->validated();
         DB::beginTransaction();
+
         try {
             $blog = Blog::create([
                 "titulo" => $datosValidados["titulo"],
@@ -196,19 +205,24 @@ class BlogController extends Controller
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
             ]);
-            $imagenes = $request->file("imagenes");
-            $contador = 0;
-            foreach($imagenes as $item) {
-                $nombreImagen = $item->hashName();
-                Storage::putFileAs("imagenes/", $item, $nombreImagen);
-                $blog->imagenes()->createMany([
-                    ["ruta_imagen"=>"storage/imagenes/".$nombreImagen, "texto_alt"=>$datosValidados["textos_alt"][$contador]]
+
+            // Guardar imágenes
+            $imagenes = $request->file("imagenes", []);
+            $altTexts = $datosValidados["text_alt"] ?? [];
+
+            foreach ($imagenes as $i => $imagen) {
+                $ruta = $this->guardarImagen($imagen);
+
+                $blog->imagenes()->create([
+                    "ruta_imagen" => $ruta,
+                    "text_alt" => $altTexts[$i] ?? null
                 ]);
-                $contador++;
             }
-            foreach($datosValidados["parrafos"] as $item) {
-                $blog->parrafos()->createMany([
-                    ["parrafo" =>$item]
+
+            // Guardar párrafos
+            foreach ($datosValidados["parrafos"] as $texto) {
+                $blog->parrafos()->create([
+                    "parrafo" => $texto
                 ]);
             }
 
@@ -223,6 +237,7 @@ class BlogController extends Controller
             );
         }
     }
+
 
     /**
      * Mostrar un blog específico
@@ -279,10 +294,11 @@ class BlogController extends Controller
      * )
      */
 
-    public function show(Blog $blog)
+    public function show(int $id)
     {
         try {
-            $blog = $blog->with(['imagenes', 'parrafos', 'producto'])->get();
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])
+                        ->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
@@ -292,13 +308,13 @@ class BlogController extends Controller
                 'subtitulo1' => $blog->subtitulo1,
                 'subtitulo2' => $blog->subtitulo2,
                 'subtitulo3' => $blog->subtitulo3,
-                'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
+                'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
                 'imagenes' => $blog->imagenes->map(function ($imagen) {
                     return [
                         'ruta_imagen' => $imagen->ruta_imagen,
-                        'texto_alt' => $imagen->texto_alt,
+                        'texto_alt' => $imagen->text_alt,
                     ];
                 }),
                 'parrafos' => $blog->parrafos->map(function ($parrafo) {
@@ -310,12 +326,20 @@ class BlogController extends Controller
                 'updated_at' => $blog->updated_at
             ];
 
-            return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente', HttpStatusCode::OK);
+            return $this->apiResponse->successResponse(
+                $showBlog,
+                'Blog obtenido exitosamente',
+                HttpStatusCode::OK
+            );
 
-        } catch(\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Error al obtener el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
+
 
 /**
  * Mostrar un blog por su link
@@ -484,7 +508,9 @@ class BlogController extends Controller
     {
         $datosValidados = $request->validated();
         DB::beginTransaction();
+
         try {
+            // Actualizar datos principales del blog
             $blog->update([
                 "titulo" => $datosValidados["titulo"],
                 "producto_id" => $datosValidados["producto_id"],
@@ -495,36 +521,46 @@ class BlogController extends Controller
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
             ]);
+
+            // Eliminar imágenes anteriores del disco y base de datos
             $rutasImagenes = [];
-            foreach($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));  
+            foreach ($blog->imagenes as $item) {
+                $rutasImagenes[] = str_replace("storage/", "", $item->ruta_imagen);
             }
             Storage::delete($rutasImagenes);
             $blog->imagenes()->delete();
             $blog->parrafos()->delete();
-            $imagenes = $request->file("imagenes");
-            $contador = 0;
-            foreach($imagenes as $item) {
-                $nombreImagen = $item->hashName();
-                Storage::putFileAs("imagenes/", $item, $nombreImagen);
-                $blog->imagenes()->createMany([
-                    ["ruta_imagen"=>"storage/imagenes/".$nombreImagen, "texto_alt"=>$datosValidados["textos_alt"][$contador]]
+
+            // Guardar nuevas imágenes
+            $imagenes = $request->file("imagenes", []);
+            $altTexts = $datosValidados["text_alt"] ?? [];
+
+            foreach ($imagenes as $i => $imagen) {
+                $ruta = $this->guardarImagen($imagen);
+
+                $blog->imagenes()->create([
+                    "ruta_imagen" => $ruta,
+                    "text_alt" => $altTexts[$i] ?? null
                 ]);
-                $contador++;
             }
-            foreach($datosValidados["parrafos"] as $item) {
-                $blog->parrafos()->createMany([
-                    ["parrafo" =>$item]
+
+            // Guardar nuevos párrafos
+            $parrafos = $datosValidados["parrafos"];
+            foreach ($parrafos as $texto) {
+                $blog->parrafos()->create([
+                    "parrafo" => $texto
                 ]);
             }
 
             DB::commit();
             return $this->apiResponse->successResponse(null, 'Blog actualizado exitosamente', HttpStatusCode::OK);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     /**

@@ -9,7 +9,7 @@ use App\Models\Blog;
 class BlogParrafos extends Model
 {
     //
-    protected $table = 'blog_parrafos';
+    protected $table = 'blogs_parrafos';
     protected $fillable = [
         'parrafo',
         'blog_id'

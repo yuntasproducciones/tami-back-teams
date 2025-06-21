@@ -34,8 +34,8 @@ class PostStoreBlog extends FormRequest
             'video_titulo' => 'required|string|max:255',
             'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
-            'textos_alt' => 'required|array',
-            'textos_alt.*' => 'required|string|max:255',
+            'text_alt' => 'required|array',
+            'text_alt.*' => 'required|string|max:255',
             'parrafos' => 'required|array',
             'parrafos.*' => 'required|string|max:2047',
         ];

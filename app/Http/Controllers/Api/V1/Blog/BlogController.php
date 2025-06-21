@@ -342,7 +342,7 @@ class BlogController extends Controller
     public function show(Blog $blog)
     {
         try {
-            $blog = $blog->with(['imagenes', 'parrafos', 'producto'])->get();
+            $blog->load(['imagenes', 'parrafos', 'producto']);
 
             $showBlog = [
                 'id' => $blog->id,
@@ -559,7 +559,7 @@ class BlogController extends Controller
             ]);
             $rutasImagenes = [];
             foreach($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));  
+                array_push($rutasImagenes, str_replace("storage/", "", $item["ruta_imagen"]));
             }
             Storage::delete($rutasImagenes);
             $blog->imagenes()->delete();
@@ -630,7 +630,7 @@ class BlogController extends Controller
         try {
             $rutasImagenes = [];
             foreach($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));  
+                array_push($rutasImagenes, str_replace("storage/", "", $item["ruta_imagen"]));
             }
             Storage::delete($rutasImagenes);
             $blog->delete();

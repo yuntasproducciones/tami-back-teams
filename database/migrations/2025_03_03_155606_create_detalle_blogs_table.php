@@ -16,9 +16,7 @@ return new class extends Migration
             $table->string('titulo_blog', 80);
             $table->string('subtitulo_beneficio', 80);
             $table->unsignedBigInteger('id_blog');
-
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
-            
             $table->timestamps();
         });
     }

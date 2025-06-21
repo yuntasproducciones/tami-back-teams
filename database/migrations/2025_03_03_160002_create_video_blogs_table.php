@@ -16,9 +16,7 @@ return new class extends Migration
             $table->string('url_video');
             $table->string('titulo_video', 40);
             $table->unsignedBigInteger('id_blog');
-
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
-            
             $table->timestamps();
         });
     }

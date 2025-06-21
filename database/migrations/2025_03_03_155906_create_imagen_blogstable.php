@@ -16,9 +16,7 @@ return new class extends Migration
             $table->text('url_imagen');
             $table->text('parrafo_imagen');
             $table->unsignedBigInteger('id_blog');
-
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
-            
             $table->timestamps();
         });
     }

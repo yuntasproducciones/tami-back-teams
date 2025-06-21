@@ -37,6 +37,8 @@ class UpdateBlog extends FormRequest
             'imagenes.*' => 'required|image|max:2048',
             'textos_alt' => 'required|array',
             'textos_alt.*' => 'required|string|max:255',
+            'parrafos' => 'required|array',
+            'parrafos.*' => 'required|string|max:2047',
         ];
     }
 

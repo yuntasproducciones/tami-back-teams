@@ -21,6 +21,9 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->decimal('precio', 10, 2);
             $table->string('seccion', 100)->nullable();
+            $table->json('especificaciones')->nullable();
+            $table->text('mensaje_correo')->nullable();
+            
             $table->timestamps();
         });
     }

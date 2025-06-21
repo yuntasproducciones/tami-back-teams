@@ -49,8 +49,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});
 
         Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
+        Route::put('/{blog}', 'update');
+        Route::delete('/{blog}', 'destroy');
     });
 
     Route::controller(EmailController::class)->prefix('/emails')->group(function () {

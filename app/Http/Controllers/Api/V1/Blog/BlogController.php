@@ -289,10 +289,11 @@ class BlogController extends Controller
      * )
      */
 
-    public function show(Blog $blog)
+    public function show(int $id)
     {
         try {
-            $blog = $blog->with(['imagenes', 'parrafos', 'producto'])->get();
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])
+                        ->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
@@ -320,10 +321,17 @@ class BlogController extends Controller
                 'updated_at' => $blog->updated_at
             ];
 
-            return $this->apiResponse->successResponse($showBlog, 'Blog obtenido exitosamente', HttpStatusCode::OK);
+            return $this->apiResponse->successResponse(
+                $showBlog,
+                'Blog obtenido exitosamente',
+                HttpStatusCode::OK
+            );
 
-        } catch(\Exception $e) {
-            return $this->apiResponse->errorResponse('Error al obtener el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            return $this->apiResponse->errorResponse(
+                'Error al obtener el blog: ' . $e->getMessage(),
+                HttpStatusCode::INTERNAL_SERVER_ERROR
+            );
         }
     }
 

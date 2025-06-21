@@ -43,7 +43,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');
         Route::get('/link/{link}', 'showLink');
-        Route::get('/{id}', 'show');
+         Route::get('/{id}', 'show');
 
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});

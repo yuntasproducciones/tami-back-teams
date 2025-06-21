@@ -25,7 +25,7 @@ return new class extends Migration
         // Crear nueva tabla blogs_parrafos
         Schema::create('blogs_parrafos', function (Blueprint $table) {
             $table->id();
-            $table->text('parrafo_imagen');
+            $table->text('parrafo');
             $table->unsignedBigInteger('id_blog');
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
             $table->timestamps();
@@ -36,14 +36,14 @@ return new class extends Migration
 
         foreach ($registros as $registro) {
             DB::table('blogs_imagenes')->insert([
-                'url_imagen' => $registro->url_imagen,
+                'ruta_imagen' => $registro->url_imagen,
                 'id_blog' => $registro->id_blog,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             DB::table('blogs_parrafos')->insert([
-                'parrafo_imagen' => $registro->parrafo_imagen,
+                'parrafo' => $registro->parrafo_imagen,
                 'id_blog' => $registro->id_blog,
                 'created_at' => now(),
                 'updated_at' => now(),

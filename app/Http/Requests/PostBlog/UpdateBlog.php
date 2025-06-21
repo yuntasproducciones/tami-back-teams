@@ -5,6 +5,7 @@ namespace App\Http\Requests\PostBlog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class UpdateBlog extends FormRequest
 {
@@ -21,22 +22,21 @@ class UpdateBlog extends FormRequest
      */
     public function rules(): array
     {
-        $blogId = $this->route('id'); 
+        $blogId = $this->route('blog');
 
         return [
-            'producto_id' => 'required|exists:productos,id',
-            'titulo' => 'required|string|max:120',
-            'link' => 'required|string|max:120|unique:blogs,link,' . $blogId,
-            'parrafo' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:255',
-            'imagen_principal' => 'required|file|image',  
-            'titulo_blog' => 'required|string|max:80',
-            'subtitulo_beneficio' => 'required|string|max:80',
-            'url_video' => 'required|string|url',
-            'titulo_video' => 'required|string|max:40',
-            'imagenes' => 'required|array',
-            'imagenes.*.imagen' => 'required_with:imagenes|file|image',
-            'imagenes.*.parrafo' => 'required_with:imagenes|string|max:65535',
+            'titulo' => 'required|string|max:255',
+            'producto_id' => 'required|integer|exists:productos,id',
+            'link' => ['required', 'string', 'max:255', Rule::unique("blogs", "link")->ignore($blogId)],
+            'subtitulo1' => 'required|string|max:255',
+            'subtitulo2' => 'required|string|max:255',
+            'subtitulo3' => 'required|string|max:255',
+            'video_url' => 'required|url',
+            'video_titulo' => 'required|string|max:255',
+            'imagenes' => 'nullable|array',
+            'imagenes.*' => 'required|image|max:2048',
+            'textos_alt' => 'required|array',
+            'textos_alt.*' => 'required|string|max:255',
         ];
     }
 

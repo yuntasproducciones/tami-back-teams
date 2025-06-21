@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             DetalleBlogSeeder::class,
             ImagenBlogSeeder::class,
             VideoBlogSeeder::class,
+
         ]);
     }
 }

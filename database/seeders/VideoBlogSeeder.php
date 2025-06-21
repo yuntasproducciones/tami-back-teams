@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\VideoBlog;
-use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class VideoBlogSeeder extends Seeder

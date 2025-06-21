@@ -18,6 +18,7 @@ class BlogSeeder extends Seeder
         $blog = [
             [
                 'titulo' => 'Panel de fibra de bamboo',
+                'link' => '1',
                 'parrafo' => 'Panel de Fibra de Bambú: Sostenibilidad y Estética para la construcción moderna',
                 'descripcion' => 'Futuro verde en la construcción Beneficios del bambú',
                 'imagen_principal' => 'https://i.imgur.com/bKisDUE.png',
@@ -25,6 +26,7 @@ class BlogSeeder extends Seeder
             ],
             [
                 'titulo' => 'Soldadora lingba',
+                'link' => '2',
                 'parrafo' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
                 'descripcion' => 'Descubre cómo incorporar materiales reciclados y energías renovables',
                 'imagen_principal' => 'https://i.imgur.com/vgxpLns.png',
@@ -32,6 +34,7 @@ class BlogSeeder extends Seeder
             ],
             [
                 'titulo' => 'Soldadora spark',
+                'link' => '3',
                 'parrafo' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
                 'descripcion' => 'Explora las últimas tendencias en iluminación LED y sistemas de control',
                 'imagen_principal' => 'https://i.imgur.com/ZfXUcxC.png',
@@ -39,6 +42,7 @@ class BlogSeeder extends Seeder
             ],
             [
                 'titulo' => 'Ventilador holográfico',
+                'link' => '4',
                 'parrafo' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
                 'descripcion' => 'Aprende sobre materiales y técnicas de diseño para crear ambientes acústicamente agradables',
                 'imagen_principal' => 'https://i.imgur.com/ZgElRO5.png',

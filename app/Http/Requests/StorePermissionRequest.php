@@ -23,7 +23,7 @@ class StorePermissionRequest extends FormRequest
     {
         return [
             //
-            "nombre" => "required|unique:permissions,name|string|max:30"
+            "name" => "required|unique:permissions,name|string|max:30"
         ];
     }
 }

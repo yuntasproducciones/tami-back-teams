@@ -34,6 +34,8 @@ class V2UpdateProductoRequest extends FormRequest
             'seccion' => "required|string|max:255",
             'lema' => "required|string|max:255",
             'descripcion' => "required|string|max:65535",
+            'meta_data' => "required|array",
+            'meta_data.*' => "string|max:255",
             'especificaciones' => "required|string|max:65535",
             'imagenes' => "required|array|min:1|max:10",
             'imagenes.*' => "file|image|max:2048",

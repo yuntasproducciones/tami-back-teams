@@ -194,6 +194,7 @@ class ProductoController extends Controller
             "seccion" => $datosValidados["seccion"],
             "lema" => $datosValidados["lema"],
             "descripcion" => $datosValidados["descripcion"],
+            "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
@@ -309,6 +310,7 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
+                'meta_data' => json_decode($producto->meta_data, true) ?? [],
                 'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
@@ -420,6 +422,7 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
+                'meta_data' => json_decode($producto->meta_data, true) ?? [],
                 'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
@@ -564,10 +567,12 @@ class ProductoController extends Controller
             "seccion" => $datosValidados["seccion"],
             "lema" => $datosValidados["lema"],
             "descripcion" => $datosValidados["descripcion"],
+            "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
         $producto->imagenes()->delete();
         $producto->imagenes()->createMany($imagenesProcesadas);
         $producto->especificaciones()->delete();
+        
         $especificaciones = json_decode($datosValidados['especificaciones'], true);
         if (is_array($especificaciones)) {
             foreach ($especificaciones as $clave => $valor) {

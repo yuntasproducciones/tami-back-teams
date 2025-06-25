@@ -21,6 +21,7 @@ class Producto extends Model
         'seccion',
         'lema',
         'descripcion',
+        'meta_data',
         'especificaciones',
         'imagenes'
     ];

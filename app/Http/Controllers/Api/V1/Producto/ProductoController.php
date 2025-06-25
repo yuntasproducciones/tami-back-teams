@@ -537,6 +537,7 @@ class ProductoController extends Controller
         if ($producto == null) {
             return response()->json(["message"=>"Producto no encontrado"], status: 404);
         }
+        
         $datosValidados = $request->validated();
         $imagenes = $datosValidados["imagenes"];
         $textos = $datosValidados["textos_alt"];

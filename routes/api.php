@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V2\V2ProductoController;
+use App\Http\Controllers\Api\V1\Producto\ProductoController;
+
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
@@ -31,23 +32,21 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
-        Route::post('/', 'store');
-        Route::get('/', 'getAll');
-        Route::get('/{id}', 'show');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-
-        Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});
-    });
+       Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () { 
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+            }); 
+        });
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');
         Route::get('/link/{link}', 'showLink');
-         Route::get('/{id}', 'show');
-
+        Route::get('/{id}', 'show');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});
-
         Route::post('/', 'store');
         Route::put('/{blog}', 'update');
         Route::delete('/{blog}', 'destroy');
@@ -56,21 +55,8 @@ Route::prefix('v1')->group(function () {
     Route::controller(EmailController::class)->prefix('/emails')->group(function () {
         Route::post('/', 'sendEmail');
     });
-});
 
-
-Route::prefix("v2")->group(function(){
-    Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
-        Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){
-            Route::get("/", "index");
-            Route::get("/{id}", 'show');
-            Route::post("/", "store");
-            Route::put("/{id}", "update");
-            Route::delete("/{id}", "destroy");
-        });
-    });
-    
-    Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
+    Route::controller(ProductoController::class)->prefix('productos')->group(function(){
         Route::get('/', 'paginate');
         Route::get('/all', 'index');
         Route::get('/{id}', 'show');
@@ -83,6 +69,32 @@ Route::prefix("v2")->group(function(){
         Route::get('/link/{link}', 'showByLink');
     });
 });
+
+
+// Route::prefix("v2")->group(function(){
+//     Route::controller(V2ClienteController::class)->prefix("/clientes")->group(function(){
+//         Route::middleware(["auth:sanctum", "role:ADMIN"])->group(function(){
+//             Route::get("/", "index");
+//             Route::get("/{id}", 'show');
+//             Route::post("/", "store");
+//             Route::put("/{id}", "update");
+//             Route::delete("/{id}", "destroy");
+//         });
+//     });
+    
+    // Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
+    //     Route::get('/', 'paginate');
+    //     Route::get('/all', 'index');
+    //     Route::get('/{id}', 'show');
+
+    //     Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {});
+
+    //     Route::post('/', 'store');
+    //     Route::put('/{id}', 'update');
+    //     Route::delete('/{id}', 'destroy');
+    //     Route::get('/link/{link}', 'showByLink');
+    // });
+// });
 
 
 Route::controller(PermissionController::class)->prefix("permisos")->group(function () {

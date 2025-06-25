@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V2;
+namespace App\Http\Controllers\Api\V1\Producto;
 
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
@@ -9,7 +9,7 @@ use App\Http\Requests\Producto\V2UpdateProductoRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
-class V2ProductoController extends Controller
+class ProductoController extends Controller
 {
     /**
      * Display a listing of the resource.

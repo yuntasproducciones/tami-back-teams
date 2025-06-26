@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('imagen_blogs', function (Blueprint $table) {
-            $table->id();
-            $table->text('url_imagen');
-            $table->text('parrafo_imagen');
-            $table->unsignedBigInteger('id_blog');
+        // Schema::create('imagen_blogs', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->text('url_imagen');
+        //     $table->text('parrafo_imagen');
+        //     $table->unsignedBigInteger('id_blog');
 
-            $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
+        //     $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');
             
-            $table->timestamps();
-        });
+        //     $table->timestamps();
+        // });
     }
 
     /**

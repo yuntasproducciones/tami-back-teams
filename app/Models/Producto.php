@@ -28,7 +28,7 @@ class Producto extends Model
         'descripcion',
         'meta_data',
         'especificaciones',
-        'imagenes'
+        // 'imagenes'
     ];
 
     public $timestamps = true;

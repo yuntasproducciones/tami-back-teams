@@ -533,30 +533,31 @@ class ProductoController extends Controller
     public function update(V2UpdateProductoRequest $request, string $id)
     {
         //
-        $producto = Producto::with("imagenes")->find($id);
+        // $producto = Producto::with("imagenes")->find($id);
+        $producto = Producto::find($id);
         if ($producto == null) {
             return response()->json(["message"=>"Producto no encontrado"], status: 404);
         }
         
         $datosValidados = $request->validated();
-        $imagenes = $datosValidados["imagenes"];
+        // $imagenes = $datosValidados["imagenes"];
         $textos = $datosValidados["textos_alt"];
-        $imagenesArray = $producto->imagenes->toArray();
-        $productoImagenes = array_map(function ($x) {
-            $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
-            return $archivo;
-        }, $imagenesArray);
-        foreach ($productoImagenes as $imagen) {
-            Storage::delete("imagenes/" . $imagen);
-        }
-        $imagenesProcesadas = [];
-        foreach ($imagenes as $i => $img) {
-            $url = $this->guardarImagen($img);
-            $imagenesProcesadas[] = [
-                "url_imagen" => $url,
-                "texto_alt_SEO" => $textos[$i]
-            ];
-        }
+        // $imagenesArray = $producto->imagenes->toArray();
+        // $productoImagenes = array_map(function ($x) {
+        //     $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
+        //     return $archivo;
+        // }, $imagenesArray);
+        // foreach ($productoImagenes as $imagen) {
+        //     Storage::delete("imagenes/" . $imagen);
+        // }
+        // $imagenesProcesadas = [];
+        // foreach ($imagenes as $i => $img) {
+        //     $url = $this->guardarImagen($img);
+        //     $imagenesProcesadas[] = [
+        //         "url_imagen" => $url,
+        //         "texto_alt_SEO" => $textos[$i]
+        //     ];
+        // }
 
         $producto->update([
             "nombre" => $datosValidados["nombre"],
@@ -570,8 +571,8 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"],
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
-        $producto->imagenes()->delete();
-        $producto->imagenes()->createMany($imagenesProcesadas);
+        // $producto->imagenes()->delete();
+        // $producto->imagenes()->createMany($imagenesProcesadas);
         $producto->especificaciones()->delete();
         
         $especificaciones = json_decode($datosValidados['especificaciones'], true);

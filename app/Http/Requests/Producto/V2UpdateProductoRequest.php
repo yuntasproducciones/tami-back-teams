@@ -25,17 +25,18 @@ class V2UpdateProductoRequest extends FormRequest
 
         return [
             //
-            'nombre' => ['required','string','max:255',Rule::unique('productos', 'nombre')->ignore($productoId)],
-            'link' => ['required','string','max:255',Rule::unique('productos', 'link')->ignore($productoId)],
-            'titulo' => "required|string|max:255",
+            'nombre' => ['string','max:255',Rule::unique('productos', 'nombre')->ignore($productoId)],
+            'link' => ['string','max:255',Rule::unique('productos', 'link')->ignore($productoId)],
+            'titulo' => "string|max:255",
             'subtitulo' => "string|max:255",
             'stock' => "integer|max:1000|min:0",
             'precio' => "string|max:100000|min:0", // Considera cambiar a 'numeric' si es un valor decimal
             'seccion' => "string|max:255",
             'lema' => "string|max:255",
             'descripcion' => "string|max:65535",
-            'meta_data' => "required|array",
-            'meta_data.*' => "string|max:255",
+            'meta_data' => 'array',
+            'meta_data.meta_titulo' => 'string|max:255',
+            'meta_data.meta_descripcion' => 'string|max:65535',
             'especificaciones' => "string|max:65535",
             'imagenes' => "array|min:1|max:10",
             'imagenes.*' => "file|image|max:2048",

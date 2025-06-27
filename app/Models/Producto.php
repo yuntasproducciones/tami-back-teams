@@ -12,6 +12,7 @@ class Producto extends Model
 {
     protected $casts = [
         'meta_data' => 'array',
+        'especificaciones' => 'array',
     ];
 
 

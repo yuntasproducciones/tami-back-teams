@@ -194,7 +194,7 @@ class ProductoController extends Controller
             "seccion" => $datosValidados["seccion"] ?? null,
             "lema" => $datosValidados["lema"] ?? null,
             "descripcion" => $datosValidados["descripcion"] ?? null,
-            "meta_data" => $datosValidados["meta_data"] ?? null,
+            "meta_data" => $datosValidados["meta_data"] ?? [],
         ]);
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);

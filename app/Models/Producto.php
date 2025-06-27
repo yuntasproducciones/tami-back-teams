@@ -10,6 +10,11 @@ use App\Http\Controllers\Api\V1\Blog\BlogController;
 
 class Producto extends Model
 {
+    protected $casts = [
+        'meta_data' => 'array',
+    ];
+
+
     protected $fillable = [
         'nombre',
         'link',

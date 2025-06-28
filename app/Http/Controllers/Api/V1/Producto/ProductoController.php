@@ -560,15 +560,15 @@ class ProductoController extends Controller
         // }
 
         $producto->update([
-            "nombre" => $datosValidados["nombre"],
-            "link" => $datosValidados["link"],
-            "titulo" => $datosValidados["titulo"],
-            "subtitulo" => $datosValidados["subtitulo"],
-            "stock" => $datosValidados["stock"],
-            "precio" => $datosValidados["precio"],
-            "seccion" => $datosValidados["seccion"],
-            "lema" => $datosValidados["lema"],
-            "descripcion" => $datosValidados["descripcion"],
+            "nombre" => $datosValidados["nombre"] ?? null,
+            "link" => $datosValidados["link"] ?? null,
+            "titulo" => $datosValidados["titulo"] ?? null,
+            "subtitulo" => $datosValidados["subtitulo"] ?? null,
+            "stock" => $datosValidados["stock"] ?? null,
+            "precio" => $datosValidados["precio"] ?? null,
+            "seccion" => $datosValidados["seccion"] ?? null,
+            "lema" => $datosValidados["lema"] ?? null,
+            "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
         // $producto->imagenes()->delete();

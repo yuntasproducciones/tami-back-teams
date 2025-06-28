@@ -172,8 +172,8 @@ class ProductoController extends Controller
     {
         $datosValidados = $request->validated();
 
-        $imagenes = $datosValidados["imagenes"];
-        $textos = $datosValidados["textos_alt"];
+        $imagenes = $datosValidados["imagenes"] ?? [];
+        $textos = $datosValidados["textos_alt"] ?? [];
 
         $imagenesProcesadas = [];
         foreach ($imagenes as $i => $img) {
@@ -185,23 +185,23 @@ class ProductoController extends Controller
         }
 
         $producto = Producto::create([
-            "nombre" => $datosValidados["nombre"],
-            "link" => $datosValidados["link"],
-            "titulo" => $datosValidados["titulo"],
-            "subtitulo" => $datosValidados["subtitulo"],
-            "stock" => $datosValidados["stock"],
-            "precio" => $datosValidados["precio"],
-            "seccion" => $datosValidados["seccion"],
-            "lema" => $datosValidados["lema"],
-            "descripcion" => $datosValidados["descripcion"],
-            "meta_data" => $datosValidados["meta_data"] ?? null,
+            "nombre" => $datosValidados["nombre"] ?? null,
+            "link" => $datosValidados["link"] ?? null, 
+            "titulo" => $datosValidados["titulo"] ?? null,
+            "subtitulo" => $datosValidados["subtitulo"] ?? null,
+            "stock" => $datosValidados["stock"] ?? null,
+            "precio" => $datosValidados["prec   io"] ?? null,
+            "seccion" => $datosValidados["seccion"] ?? null,
+            "lema" => $datosValidados["lema"] ?? null,
+            "descripcion" => $datosValidados["descripcion"] ?? null,
+            "meta_data" => $datosValidados["meta_data"] ?? [],
         ]);
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
 
         // Aquí solo este bloque basta
-        $especificaciones = json_decode($datosValidados['especificaciones'], true);
+        $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
 
         if (is_array($especificaciones)) {
             foreach ($especificaciones as $clave => $valor) {
@@ -560,15 +560,15 @@ class ProductoController extends Controller
         // }
 
         $producto->update([
-            "nombre" => $datosValidados["nombre"],
-            "link" => $datosValidados["link"],
-            "titulo" => $datosValidados["titulo"],
-            "subtitulo" => $datosValidados["subtitulo"],
-            "stock" => $datosValidados["stock"],
-            "precio" => $datosValidados["precio"],
-            "seccion" => $datosValidados["seccion"],
-            "lema" => $datosValidados["lema"],
-            "descripcion" => $datosValidados["descripcion"],
+            "nombre" => $datosValidados["nombre"] ?? null,
+            "link" => $datosValidados["link"] ?? null,
+            "titulo" => $datosValidados["titulo"] ?? null,
+            "subtitulo" => $datosValidados["subtitulo"] ?? null,
+            "stock" => $datosValidados["stock"] ?? null,
+            "precio" => $datosValidados["precio"] ?? null,
+            "seccion" => $datosValidados["seccion"] ?? null,
+            "lema" => $datosValidados["lema"] ?? null,
+            "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
         // $producto->imagenes()->delete();

@@ -35,7 +35,7 @@ class V2UpdateProductoRequest extends FormRequest
             'lema' => "string|max:255",
             'descripcion' => "string|max:65535",
             'meta_data' => 'array',
-            'meta_data.meta_titulo' => 'string|max:255',
+            'meta_data.meta_titulo' => 'string|max:65535',
             'meta_data.meta_descripcion' => 'string|max:65535',
             'especificaciones' => "string|max:65535",
             // 'imagenes' => "array|min:1|max:10",

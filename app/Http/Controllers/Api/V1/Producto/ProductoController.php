@@ -190,7 +190,7 @@ class ProductoController extends Controller
             "titulo" => $datosValidados["titulo"] ?? null,
             "subtitulo" => $datosValidados["subtitulo"] ?? null,
             "stock" => $datosValidados["stock"] ?? null,
-            "precio" => $datosValidados["prec   io"] ?? null,
+            "precio" => $datosValidados["precio"] ?? null,
             "seccion" => $datosValidados["seccion"] ?? null,
             "lema" => $datosValidados["lema"] ?? null,
             "descripcion" => $datosValidados["descripcion"] ?? null,

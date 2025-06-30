@@ -36,6 +36,7 @@ class BlogController extends Controller
                     'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                     'video_url' => $blog->video_url,
                     'video_titulo' => $blog->video_titulo,
+                    'imagen_principal' => $blog->imagen_principal,
                     'imagenes' => $blog->imagenes->map(function ($imagen) {
                         return [
                             'ruta_imagen' => $imagen->ruta_imagen,
@@ -179,12 +180,12 @@ class BlogController extends Controller
      * )
      */
 
-    private function guardarImagen($archivo)
-    {
-        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
-        $archivo->storeAs("imagenes", $nombre, "public");
-        return "/storage/imagenes/" . $nombre;
-    }
+        private function guardarImagen($archivo)
+        {
+            $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+            $archivo->storeAs("imagenes", $nombre, "public");
+            return "/storage/imagenes/" . $nombre;
+        }
 
 
    public function store(PostStoreBlog $request)
@@ -193,6 +194,13 @@ class BlogController extends Controller
         DB::beginTransaction();
 
         try {
+            if (!$request->hasFile('imagen_principal')) {
+                throw new \Exception('No se recibió imagen_principal como archivo');
+            }
+
+            $imagenPrincipal = $request->file("imagen_principal");
+            $rutaImagenPrincipal = $this->guardarImagen($imagenPrincipal);
+
             $blog = Blog::create([
                 "titulo" => $datosValidados["titulo"],
                 "producto_id" => $datosValidados["producto_id"],
@@ -202,6 +210,7 @@ class BlogController extends Controller
                 "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
+                "imagen_principal" => $rutaImagenPrincipal,
             ]);
 
             // Guardar imágenes
@@ -306,6 +315,7 @@ class BlogController extends Controller
                 'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
+                'imagen_principal' => $blog->imagen_principal,
                 'imagenes' => $blog->imagenes->map(function ($imagen) {
                     return [
                         'ruta_imagen' => $imagen->ruta_imagen,
@@ -410,6 +420,7 @@ class BlogController extends Controller
                 'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
+                'imagen_principal' => $blog->imagen_principal,
                 'imagenes' => $blog->imagenes->map(function ($imagen) {
                     return [
                         'ruta_imagen' => $imagen->ruta_imagen,
@@ -505,6 +516,16 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         try {
+            $nuevaRutaImagenPrincipal = $blog->imagen_principal;
+
+            if ($request->hasFile('imagen_principal')) {
+                if ($blog->imagen_principal) {
+                    $rutaAnterior = str_replace('/storage/', '', $blog->imagen_principal);
+                    Storage::disk('public')->delete($rutaAnterior);
+                }
+
+                $nuevaRutaImagenPrincipal = $this->guardarImagen($request->file('imagen_principal'));
+            }
             // Actualizar datos principales del blog
             $blog->update([
                 "titulo" => $datosValidados["titulo"],
@@ -515,6 +536,7 @@ class BlogController extends Controller
                 "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
+                "imagen_principal" => $nuevaRutaImagenPrincipal,
             ]);
 
             // Eliminar imágenes anteriores del disco y base de datos

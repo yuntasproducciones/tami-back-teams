@@ -25,6 +25,7 @@ class Blog extends Model
         'subtitulo3',
         'video_url',
         'video_titulo',
+        'imagen_principal',
     ];
 
     public $timestamps = true;

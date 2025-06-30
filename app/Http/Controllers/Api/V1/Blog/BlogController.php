@@ -542,7 +542,7 @@ class BlogController extends Controller
             // Eliminar imágenes anteriores del disco y base de datos
             $rutasImagenes = [];
             foreach($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));  
+                array_push($rutasImagenes, str_replace("storage/", "", $item["ruta_imagen"]));  
             }
             Storage::delete($rutasImagenes);
             $blog->imagenes()->delete();

@@ -32,6 +32,7 @@ class UpdateBlog extends FormRequest
             'subtitulo2' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:255',
+            'imagen_principal' => 'nullable|image|max:2048',
             'imagenes' => 'nullable|array',
             'imagenes.*' => 'nullable|image|max:2048',
             'text_alt' => 'required|array',

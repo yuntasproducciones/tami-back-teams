@@ -39,7 +39,7 @@ class BlogController extends Controller
                     'imagenes' => $blog->imagenes->map(function ($imagen) {
                         return [
                             'ruta_imagen' => $imagen->ruta_imagen,
-                            'texto_alt' => $imagen->texto_alt,
+                            'text_alt' => $imagen->text_alt,
                         ];
                     }),
                     'parrafos' => $blog->parrafos->map(function ($parrafo) {

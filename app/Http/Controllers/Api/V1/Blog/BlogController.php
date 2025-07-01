@@ -32,7 +32,6 @@ class BlogController extends Controller
                     'link' => $blog->link,
                     'subtitulo1' => $blog->subtitulo1,
                     'subtitulo2' => $blog->subtitulo2,
-                    'subtitulo3' => $blog->subtitulo3,
                     'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                     'video_url' => $blog->video_url,
                     'video_titulo' => $blog->video_titulo,
@@ -180,15 +179,15 @@ class BlogController extends Controller
      * )
      */
 
-        private function guardarImagen($archivo)
-        {
-            $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
-            $archivo->storeAs("imagenes", $nombre, "public");
-            return "/storage/imagenes/" . $nombre;
-        }
+    private function guardarImagen($archivo)
+    {
+        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+        $archivo->storeAs("imagenes", $nombre, "public");
+        return "/storage/imagenes/" . $nombre;
+    }
 
 
-   public function store(PostStoreBlog $request)
+    public function store(PostStoreBlog $request)
     {
         $datosValidados = $request->validated();
         DB::beginTransaction();
@@ -207,27 +206,27 @@ class BlogController extends Controller
                 "link" => $datosValidados["link"],
                 "subtitulo1" => $datosValidados["subtitulo1"],
                 "subtitulo2" => $datosValidados["subtitulo2"],
-                "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
                 "imagen_principal" => $rutaImagenPrincipal,
             ]);
 
-            // Guardar imágenes
-            $imagenes = $request->file("imagenes", []);
-            $altTexts = $datosValidados["text_alt"] ?? [];
-
-            foreach ($imagenes as $i => $imagen) {
-                $ruta = $this->guardarImagen($imagen);
-
-                $blog->imagenes()->create([
-                    "ruta_imagen" => $ruta,
-                    "text_alt" => $altTexts[$i] ?? null
-                ]);
+            // Guardar imágenes solo si se envían
+            if (isset($datosValidados['imagenes'])) {
+                $imagenes = $request->file("imagenes", []);
+                $altTexts = $datosValidados["text_alt"] ?? [];
+                foreach ($imagenes as $i => $imagen) {
+                    $ruta = $this->guardarImagen($imagen);
+                    $blog->imagenes()->create([
+                        "ruta_imagen" => $ruta,
+                        "text_alt" => $altTexts[$i] ?? null
+                    ]);
+                }
             }
-            foreach($datosValidados["parrafos"] as $item) {
+
+            foreach ($datosValidados["parrafos"] as $item) {
                 $blog->parrafos()->createMany([
-                    ["parrafo" =>$item]
+                    ["parrafo" => $item]
                 ]);
             }
 
@@ -241,8 +240,6 @@ class BlogController extends Controller
             );
         }
     }
-
-
     /**
      * Mostrar un blog específico
      * 
@@ -302,7 +299,7 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::with(['imagenes', 'parrafos', 'producto'])
-                        ->findOrFail($id);
+                ->findOrFail($id);
 
             $showBlog = [
                 'id' => $blog->id,
@@ -311,7 +308,6 @@ class BlogController extends Controller
                 'link' => $blog->link,
                 'subtitulo1' => $blog->subtitulo1,
                 'subtitulo2' => $blog->subtitulo2,
-                'subtitulo3' => $blog->subtitulo3,
                 'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
@@ -336,7 +332,6 @@ class BlogController extends Controller
                 'Blog obtenido exitosamente',
                 HttpStatusCode::OK
             );
-
         } catch (\Exception $e) {
             return $this->apiResponse->errorResponse(
                 'Error al obtener el blog: ' . $e->getMessage(),
@@ -344,7 +339,6 @@ class BlogController extends Controller
             );
         }
     }
-
 
     /**
      * Mostrar un blog por su link
@@ -416,7 +410,6 @@ class BlogController extends Controller
                 'link' => $blog->link,
                 'subtitulo1' => $blog->subtitulo1,
                 'subtitulo2' => $blog->subtitulo2,
-                'subtitulo3' => $blog->subtitulo3,
                 'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
@@ -518,6 +511,7 @@ class BlogController extends Controller
         try {
             $nuevaRutaImagenPrincipal = $blog->imagen_principal;
 
+            // Manejo de la imagen principal
             if ($request->hasFile('imagen_principal')) {
                 if ($blog->imagen_principal) {
                     $rutaAnterior = str_replace('/storage/', '', $blog->imagen_principal);
@@ -526,6 +520,7 @@ class BlogController extends Controller
 
                 $nuevaRutaImagenPrincipal = $this->guardarImagen($request->file('imagen_principal'));
             }
+
             // Actualizar datos principales del blog
             $blog->update([
                 "titulo" => $datosValidados["titulo"],
@@ -533,7 +528,6 @@ class BlogController extends Controller
                 "link" => $datosValidados["link"],
                 "subtitulo1" => $datosValidados["subtitulo1"],
                 "subtitulo2" => $datosValidados["subtitulo2"],
-                "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
                 "imagen_principal" => $nuevaRutaImagenPrincipal,
@@ -541,27 +535,29 @@ class BlogController extends Controller
 
             // Eliminar imágenes anteriores del disco y base de datos
             $rutasImagenes = [];
-            foreach($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace("storage/", "", $item["ruta_imagen"]));  
+            foreach ($blog->imagenes as $item) {
+                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));
             }
             Storage::delete($rutasImagenes);
             $blog->imagenes()->delete();
-            $blog->parrafos()->delete();
 
-            // Guardar nuevas imágenes
-            $imagenes = $request->file("imagenes", []);
-            $altTexts = $datosValidados["text_alt"] ?? [];
+            // Guardar nuevas imágenes solo si se envían
+            if (isset($datosValidados['imagenes'])) {
+                $imagenes = $request->file("imagenes", []);
+                $altTexts = $datosValidados["text_alt"] ?? [];
 
-            foreach ($imagenes as $i => $imagen) {
-                $ruta = $this->guardarImagen($imagen);
+                foreach ($imagenes as $i => $imagen) {
+                    $ruta = $this->guardarImagen($imagen);
 
-                $blog->imagenes()->create([
-                    "ruta_imagen" => $ruta,
-                    "text_alt" => $altTexts[$i] ?? null
-                ]);
+                    $blog->imagenes()->create([
+                        "ruta_imagen" => $ruta,
+                        "text_alt" => $altTexts[$i] ?? null
+                    ]);
+                }
             }
 
-            // Guardar nuevos párrafos
+            // Eliminar y guardar nuevos párrafos
+            $blog->parrafos()->delete(); // Eliminar párrafos existentes
             $parrafos = $datosValidados["parrafos"];
             foreach ($parrafos as $texto) {
                 $blog->parrafos()->create([
@@ -570,15 +566,12 @@ class BlogController extends Controller
             }
 
             DB::commit();
-            return $this->apiResponse->successResponse(null, 'Blog actualizado exitosamente', HttpStatusCode::OK);
-
+            return $this->apiResponse->successResponse($blog, 'Blog actualizado exitosamente', HttpStatusCode::OK);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     /**
      * Eliminar un blog específico

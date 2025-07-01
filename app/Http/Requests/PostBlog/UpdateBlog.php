@@ -30,7 +30,6 @@ class UpdateBlog extends FormRequest
             'link' => ['required', 'string', 'max:255', Rule::unique("blogs", "link")->ignore($blogId)],
             'subtitulo1' => 'required|string|max:255',
             'subtitulo2' => 'required|string|max:255',
-            'subtitulo3' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:255',
             'imagen_principal' => 'nullable|image|max:2048',

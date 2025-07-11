@@ -22,7 +22,6 @@ class Blog extends Model
         'link',
         'subtitulo1',
         'subtitulo2',
-        'subtitulo3',
         'video_url',
         'video_titulo',
         'miniatura',

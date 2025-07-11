@@ -312,8 +312,8 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => json_decode($producto->meta_data, true) ?? [],
-                'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
+                'meta_data' => $producto->meta_data ?? [],
+                'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
@@ -424,8 +424,8 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => json_decode($producto->meta_data, true) ?? [],
-                'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
+                'meta_data' => $producto->meta_data ?? [],
+                'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
@@ -535,13 +535,14 @@ class ProductoController extends Controller
     public function update(V2UpdateProductoRequest $request, string $id)
     {
         //
-        $producto = Producto::with("imagenes")->find($id);
+        // $producto = Producto::with("imagenes")->find($id);
+        $producto = Producto::find($id);
         if ($producto == null) {
             return response()->json(["message"=>"Producto no encontrado"], status: 404);
         }
         
         $datosValidados = $request->validated();
-        $imagenes = $datosValidados["imagenes"];
+        // $imagenes = $datosValidados["imagenes"];
         $textos = $datosValidados["textos_alt"];
         $imagenesArray = $producto->imagenes->toArray();
         $productoImagenes = array_map(function ($x) {
@@ -572,8 +573,8 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
-        $producto->imagenes()->delete();
-        $producto->imagenes()->createMany($imagenesProcesadas);
+        // $producto->imagenes()->delete();
+        // $producto->imagenes()->createMany($imagenesProcesadas);
         $producto->especificaciones()->delete();
         
         $especificaciones = json_decode($datosValidados['especificaciones'], true);

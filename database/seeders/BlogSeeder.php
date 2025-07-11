@@ -32,7 +32,7 @@ class BlogSeeder extends Seeder
                 'link' => '2',
                 'subtitulo1' => 'Diseño Sostenible: Interiores Eco-Friendly para Oficinas Modernas',
                 'subtitulo2' => 'Descubre cómo incorporar materiales reciclados y energías renovables',
-                'subtitulo3' => 'Futuro verde en la construcción  Beneficios del bambú',
+              
                 'video_url' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
                 'video_titulo' => 'COMO UTILIZAR NUESTRO PRODUCTO',
                 'miniatura' => 'https://i.imgur.com/vgxpLns.png',

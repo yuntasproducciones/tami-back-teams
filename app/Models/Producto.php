@@ -12,6 +12,7 @@ class Producto extends Model
 {
     protected $casts = [
         'meta_data' => 'array',
+        'especificaciones' => 'array',
     ];
 
 
@@ -28,7 +29,7 @@ class Producto extends Model
         'descripcion',
         'meta_data',
         'especificaciones',
-        'imagenes'
+        // 'imagenes'
     ];
 
     public $timestamps = true;

@@ -32,7 +32,7 @@ class PostStoreBlog extends FormRequest
             'subtitulo3' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:2000',
-            'imagen_principal' => 'required|file|image|max:2048',
+            'miniatura' => 'required|file|image|max:2048',
             'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
             'text_alt' => 'required|array',

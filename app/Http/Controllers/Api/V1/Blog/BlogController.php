@@ -36,7 +36,7 @@ class BlogController extends Controller
                     'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                     'video_url' => $blog->video_url,
                     'video_titulo' => $blog->video_titulo,
-                    'imagen_principal' => $blog->imagen_principal,
+                    'miniatura' => $blog->miniatura,
                     'imagenes' => $blog->imagenes->map(function ($imagen) {
                         return [
                             'ruta_imagen' => $imagen->ruta_imagen,
@@ -85,7 +85,7 @@ class BlogController extends Controller
      *                     "link", 
      *                     "parrafo", 
      *                     "descripcion", 
-     *                     "imagen_principal", 
+     *                     "miniatura", 
      *                     "titulo_blog", 
      *                     "subtitulo_beneficio", 
      *                     "url_video", 
@@ -112,7 +112,7 @@ class BlogController extends Controller
      *                     example="Descripción del blog..."
      *                 ),
      *                 @OA\Property(
-     *                     property="imagen_principal",
+     *                     property="miniatura",
      *                     type="string",
      *                     format="binary",
      *                     description="Archivo de imagen principal del blog"
@@ -194,11 +194,11 @@ class BlogController extends Controller
         DB::beginTransaction();
 
         try {
-            if (!$request->hasFile('imagen_principal')) {
-                throw new \Exception('No se recibió imagen_principal como archivo');
+            if (!$request->hasFile('miniatura')) {
+                throw new \Exception('No se recibió miniatura como archivo');
             }
 
-            $imagenPrincipal = $request->file("imagen_principal");
+            $imagenPrincipal = $request->file("miniatura");
             $rutaImagenPrincipal = $this->guardarImagen($imagenPrincipal);
 
             $blog = Blog::create([
@@ -210,7 +210,7 @@ class BlogController extends Controller
                 "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
-                "imagen_principal" => $rutaImagenPrincipal,
+                "miniatura" => $rutaImagenPrincipal,
             ]);
 
             // Guardar imágenes
@@ -271,7 +271,7 @@ class BlogController extends Controller
      *                 @OA\Property(property="link", type="string", example="Link a blog..."),
      *                 @OA\Property(property="parrafo", type="string", example="Contenido del blog..."),
      *                 @OA\Property(property="descripcion", type="string", example="Descripcion del blog..."),
-     *                 @OA\Property(property="imagen_principal", type="string", example="https://example.com/imagen-principal.jpg"),
+     *                 @OA\Property(property="miniatura", type="string", example="https://example.com/imagen-principal.jpg"),
      *                 @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
      *                 @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
      *                 @OA\Property(property="imagenes", type="array", 
@@ -315,7 +315,7 @@ class BlogController extends Controller
                 'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
-                'imagen_principal' => $blog->imagen_principal,
+                'miniatura' => $blog->miniatura,
                 'imagenes' => $blog->imagenes->map(function ($imagen) {
                     return [
                         'ruta_imagen' => $imagen->ruta_imagen,
@@ -420,7 +420,7 @@ class BlogController extends Controller
                 'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
                 'video_url' => $blog->video_url,
                 'video_titulo' => $blog->video_titulo,
-                'imagen_principal' => $blog->imagen_principal,
+                'miniatura' => $blog->miniatura,
                 'imagenes' => $blog->imagenes->map(function ($imagen) {
                     return [
                         'ruta_imagen' => $imagen->ruta_imagen,
@@ -472,7 +472,7 @@ class BlogController extends Controller
      *             @OA\Property(property="link", type="string", example="Link a blog..."),
      *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
      *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
-     *             @OA\Property(property="imagen_principal", type="string", example="https://example.com/nueva-imagen.jpg"),
+     *             @OA\Property(property="miniatura", type="string", example="https://example.com/nueva-imagen.jpg"),
      *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle actualizado"),
      *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios actualizado"),
      *             @OA\Property(property="imagenes", type="array", 
@@ -516,15 +516,15 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         try {
-            $nuevaRutaImagenPrincipal = $blog->imagen_principal;
+            $nuevaRutaImagenPrincipal = $blog->miniatura;
 
-            if ($request->hasFile('imagen_principal')) {
-                if ($blog->imagen_principal) {
-                    $rutaAnterior = str_replace('/storage/', '', $blog->imagen_principal);
+            if ($request->hasFile('miniatura')) {
+                if ($blog->miniatura) {
+                    $rutaAnterior = str_replace('/storage/', '', $blog->miniatura);
                     Storage::disk('public')->delete($rutaAnterior);
                 }
 
-                $nuevaRutaImagenPrincipal = $this->guardarImagen($request->file('imagen_principal'));
+                $nuevaRutaImagenPrincipal = $this->guardarImagen($request->file('miniatura'));
             }
             // Actualizar datos principales del blog
             $blog->update([
@@ -536,7 +536,7 @@ class BlogController extends Controller
                 "subtitulo3" => $datosValidados["subtitulo3"],
                 "video_url" => $datosValidados["video_url"],
                 "video_titulo" => $datosValidados["video_titulo"],
-                "imagen_principal" => $nuevaRutaImagenPrincipal,
+                "miniatura" => $nuevaRutaImagenPrincipal,
             ]);
 
             // Eliminar imágenes anteriores del disco y base de datos

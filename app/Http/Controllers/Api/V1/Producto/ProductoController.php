@@ -163,9 +163,11 @@ class ProductoController extends Controller
  *     )
  * )
  */
-    private function guardarImagen($x){
-        Storage::putFileAs("imagenes", $x, $x->hashName());
-        return "/storage/imagenes/" . $x->hashName();
+    private function guardarImagen($archivo)
+    {
+        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+        $archivo->storeAs("imagenes", $nombre, "public");
+        return "/storage/imagenes/" . $nombre;
     }
 
     public function store(V2StoreProductoRequest $request)
@@ -547,7 +549,7 @@ class ProductoController extends Controller
             return $archivo;
         }, $imagenesArray);
         foreach ($productoImagenes as $imagen) {
-            Storage::delete("imagenes/" . $imagen);
+            Storage::disk('public')->delete("imagenes/" . $imagen);
         }
         $imagenesProcesadas = [];
         foreach ($imagenes as $i => $img) {

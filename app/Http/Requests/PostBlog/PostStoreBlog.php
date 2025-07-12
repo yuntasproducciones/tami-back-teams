@@ -29,7 +29,6 @@ class PostStoreBlog extends FormRequest
             'link' => 'required|string|max:255|unique:blogs,link',
             'subtitulo1' => 'required|string|max:255',
             'subtitulo2' => 'required|string|max:255',
-            'subtitulo3' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:2000',
             'miniatura' => 'required|file|image|max:2048',

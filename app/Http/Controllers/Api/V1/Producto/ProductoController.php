@@ -312,8 +312,8 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => json_decode($producto->meta_data, true) ?? [],
-                'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
+                'meta_data' => $producto->meta_data ?? [],
+                'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
@@ -424,8 +424,8 @@ class ProductoController extends Controller
                 'subtitulo' => $producto->subtitulo,
                 'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => json_decode($producto->meta_data, true) ?? [],
-                'especificaciones' => json_decode($producto->especificaciones, true) ?? [],
+                'meta_data' => $producto->meta_data ?? [],
+                'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
@@ -535,12 +535,14 @@ class ProductoController extends Controller
     public function update(V2UpdateProductoRequest $request, string $id)
     {
         //
-        $producto = Producto::with("imagenes")->find($id);
+        // $producto = Producto::with("imagenes")->find($id);
+        $producto = Producto::find($id);
         if ($producto == null) {
             return response()->json(["message"=>"Producto no encontrado"], status: 404);
         }
         
         $datosValidados = $request->validated();
+<<<<<<< HEAD
         $imagenes = $datosValidados["imagenes"] ?? [];
         $textos = $datosValidados["textos_alt"] ?? [];
         if (!empty($imagenes)) {
@@ -565,6 +567,25 @@ class ProductoController extends Controller
 
             $producto->imagenes()->delete();
             $producto->imagenes()->createMany($imagenesProcesadas);
+=======
+        // $imagenes = $datosValidados["imagenes"];
+        $textos = $datosValidados["textos_alt"];
+        $imagenesArray = $producto->imagenes->toArray();
+        $productoImagenes = array_map(function ($x) {
+            $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
+            return $archivo;
+        }, $imagenesArray);
+        foreach ($productoImagenes as $imagen) {
+            Storage::disk('public')->delete("imagenes/" . $imagen);
+        }
+        $imagenesProcesadas = [];
+        foreach ($imagenes as $i => $img) {
+            $url = $this->guardarImagen($img);
+            $imagenesProcesadas[] = [
+                "url_imagen" => $url,
+                "texto_alt_SEO" => $textos[$i]
+            ];
+>>>>>>> f27c5e911ac21091b99bef1fa1e51fbd6181e62c
         }
 
         $producto->update([
@@ -579,6 +600,11 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
+<<<<<<< HEAD
+=======
+        // $producto->imagenes()->delete();
+        // $producto->imagenes()->createMany($imagenesProcesadas);
+>>>>>>> f27c5e911ac21091b99bef1fa1e51fbd6181e62c
         $producto->especificaciones()->delete();
         
         $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);

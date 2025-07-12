@@ -542,23 +542,30 @@ class ProductoController extends Controller
         }
         
         $datosValidados = $request->validated();
-        // $imagenes = $datosValidados["imagenes"];
-        $textos = $datosValidados["textos_alt"];
-        $imagenesArray = $producto->imagenes->toArray();
-        $productoImagenes = array_map(function ($x) {
-            $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
-            return $archivo;
-        }, $imagenesArray);
-        foreach ($productoImagenes as $imagen) {
-            Storage::disk('public')->delete("imagenes/" . $imagen);
-        }
-        $imagenesProcesadas = [];
-        foreach ($imagenes as $i => $img) {
-            $url = $this->guardarImagen($img);
-            $imagenesProcesadas[] = [
-                "url_imagen" => $url,
-                "texto_alt_SEO" => $textos[$i]
-            ];
+        $imagenes = $datosValidados["imagenes"] ?? [];
+        $textos = $datosValidados["textos_alt"] ?? [];
+        if (!empty($imagenes)) {
+            $imagenesArray = $producto->imagenes->toArray();
+            $productoImagenes = array_map(function ($x) {
+                $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
+                return $archivo;
+            }, $imagenesArray);
+            foreach ($productoImagenes as $imagen) {
+                Storage::disk('public')->delete("imagenes/" . $imagen);
+            }
+
+            // Guardar nuevas imágenes
+            $imagenesProcesadas = [];
+            foreach ($imagenes as $i => $img) {
+                $url = $this->guardarImagen($img);
+                $imagenesProcesadas[] = [
+                    "url_imagen" => $url,
+                    "texto_alt_SEO" => $textos[$i] ?? null
+                ];
+            }
+
+            $producto->imagenes()->delete();
+            $producto->imagenes()->createMany($imagenesProcesadas);
         }
 
         $producto->update([
@@ -573,11 +580,9 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? null,
         ]);
-        // $producto->imagenes()->delete();
-        // $producto->imagenes()->createMany($imagenesProcesadas);
         $producto->especificaciones()->delete();
         
-        $especificaciones = json_decode($datosValidados['especificaciones'], true);
+        $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
         if (is_array($especificaciones)) {
             foreach ($especificaciones as $clave => $valor) {
                 $producto->especificaciones()->create([

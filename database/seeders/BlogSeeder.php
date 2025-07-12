@@ -20,8 +20,8 @@ class BlogSeeder extends Seeder
                 'link' => '1',
                 'subtitulo1' => 'Panel de Fibra de Bambú: Sostenibilidad y Estética para la construcción moderna',
                 'subtitulo2' => 'Futuro verde en la construcción Beneficios del bambú',
-                
-                'imagen_principal' => 'https://i.imgur.com/bKisDUE.png',
+                'subtitulo3' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'miniatura' => 'https://i.imgur.com/bKisDUE.png',
                 'video_url' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
                 'video_titulo' => 'COMO UTILIZAR NUESTRO PRODUCTO',
                 'created_at' => Carbon::now(),
@@ -35,7 +35,7 @@ class BlogSeeder extends Seeder
               
                 'video_url' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
                 'video_titulo' => 'COMO UTILIZAR NUESTRO PRODUCTO',
-                'imagen_principal' => 'https://i.imgur.com/vgxpLns.png',
+                'miniatura' => 'https://i.imgur.com/vgxpLns.png',
                 'created_at' => Carbon::now(),
             ],
             [
@@ -45,8 +45,8 @@ class BlogSeeder extends Seeder
                 'link' => '3',
                 'subtitulo1' => 'Iluminación Inteligente: Optimizando Espacios de Trabajo',
                 'subtitulo2' => 'Explora las últimas tendencias en iluminación LED y sistemas de control',
-              
-                'imagen_principal' => 'https://i.imgur.com/ZfXUcxC.png',
+                'subtitulo3' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'miniatura' => 'https://i.imgur.com/ZfXUcxC.png',
                 'video_url' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
                 'video_titulo' => 'COMO UTILIZAR NUESTRO PRODUCTO',
                 'created_at' => Carbon::now(),
@@ -57,7 +57,8 @@ class BlogSeeder extends Seeder
                 'link' => '4',
                 'subtitulo1' => 'Acústica en Restaurantes: Diseño para una Experiencia Culinaria Óptima',
                 'subtitulo2' => 'Aprende sobre materiales y técnicas de diseño para crear ambientes acústicamente agradables',
-                'imagen_principal' => 'https://i.imgur.com/ZgElRO5.png',
+                'subtitulo3' => 'Futuro verde en la construcción  Beneficios del bambú',
+                'miniatura' => 'https://i.imgur.com/ZgElRO5.png',
                 'url_video' => 'http://www.rosenbaum.info/est-enim-perspiciatis-voluptatem-dolore-beatae-eligendi',
                 'titulo_video' => 'COMO UTILIZAR NUESTRO PRODUCTO',
                 'created_at' => Carbon::now(),

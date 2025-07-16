@@ -28,7 +28,7 @@ class BlogController extends Controller
                 return [
                     'id' => $blog->id,
                     'titulo' => $blog->titulo,
-                    'producto_id' => $blog->producto_id,
+                    'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
                     'link' => $blog->link,
                     'subtitulo1' => $blog->subtitulo1,
                     'subtitulo2' => $blog->subtitulo2,
@@ -304,7 +304,7 @@ class BlogController extends Controller
             $showBlog = [
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
-                'producto_id' => $blog->producto_id,
+                'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
                 'link' => $blog->link,
                 'subtitulo1' => $blog->subtitulo1,
                 'subtitulo2' => $blog->subtitulo2,
@@ -406,7 +406,7 @@ class BlogController extends Controller
             $showBlog = [
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
-                'producto_id' => $blog->producto_id,
+                'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
                 'link' => $blog->link,
                 'subtitulo1' => $blog->subtitulo1,
                 'subtitulo2' => $blog->subtitulo2,

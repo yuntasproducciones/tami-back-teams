@@ -78,6 +78,7 @@ class ProductoController extends Controller
     {
         //
         $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
+        dd(get_class($productos));
 
         // Para decodificar especificaciones
         $productos->getCollection()->transform(function ($producto) {
@@ -534,8 +535,6 @@ class ProductoController extends Controller
      */
     public function update(V2UpdateProductoRequest $request, string $id)
     {
-        //
-        // $producto = Producto::with("imagenes")->find($id);
         $producto = Producto::find($id);
         if ($producto == null) {
             return response()->json(["message"=>"Producto no encontrado"], status: 404);

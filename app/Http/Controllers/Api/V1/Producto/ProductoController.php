@@ -9,6 +9,8 @@ use App\Http\Requests\Producto\V2StoreProductoRequest;
 use App\Http\Requests\Producto\V2UpdateProductoRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Contains\HttpStatusCode;
 
 class ProductoController extends Controller
 {
@@ -81,7 +83,7 @@ class ProductoController extends Controller
         $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
 
         // Para decodificar especificaciones
-        $productos->getCollection()->transform(function ($producto) {
+        $productos->transform(function ($producto) {
             $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
             return $producto;
         });
@@ -535,63 +537,73 @@ class ProductoController extends Controller
      */
     public function update(V2UpdateProductoRequest $request, string $id)
     {
-        $producto = Producto::find($id);
-        if ($producto == null) {
-            return response()->json(["message"=>"Producto no encontrado"], status: 404);
-        }
-        
+        Log::info('PATCH Producto Request received:', ['request_all' => $request->all(), 'id' => $id]);
         $datosValidados = $request->validated();
-        $imagenes = $datosValidados["imagenes"] ?? [];
-        $textos = $datosValidados["textos_alt"] ?? [];
-        if (!empty($imagenes)) {
-            $imagenesArray = $producto->imagenes->toArray();
-            $productoImagenes = array_map(function ($x) {
-                $archivo = str_ireplace("/storage/imagenes/", "", $x["url_imagen"]);
-                return $archivo;
-            }, $imagenesArray);
-            foreach ($productoImagenes as $imagen) {
-                Storage::disk('public')->delete("imagenes/" . $imagen);
+        Log::info('Validated data:', ['datos_validados' => $datosValidados]);
+
+        DB::beginTransaction();
+        try {
+            $producto = Producto::findOrFail($id);
+
+            // Construir solo los campos que se van a actualizar
+            $camposActualizar = [];
+            foreach([
+                "nombre", "link", "titulo", "subtitulo", "stock", "precio",
+                "seccion", "lema", "descripcion", "meta_data"
+            ] as $campo) {
+                if (array_key_exists($campo, $datosValidados)) {
+                    $camposActualizar[$campo] = $datosValidados[$campo];
+                }
+            }
+            Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
+            $producto->update($camposActualizar);
+
+            // Eliminar imágenes antiguas si se envían nuevas
+            if (isset($datosValidados['imagenes'])) {
+                $rutasImagenesAntiguas = [];
+                foreach ($producto->imagenes as $imagen) {
+                    array_push($rutasImagenesAntiguas, str_replace('/storage/', '', $imagen['url_imagen']));
+                }
+                Storage::disk('public')->delete($rutasImagenesAntiguas);
+                $producto->imagenes()->delete();
+
+                $imagenes = $request->file("imagenes", []);
+                $altTexts = $datosValidados["textos_alt"] ?? [];
+
+                foreach ($imagenes as $i => $imagen) {
+                    $ruta = $this->guardarImagen($imagen);
+                    $producto->imagenes()->create([
+                        "url_imagen" => $ruta,
+                        "texto_alt_SEO" => $altTexts[$i] ?? null
+                    ]);
+                }
             }
 
-            // Guardar nuevas imágenes
-            $imagenesProcesadas = [];
-            foreach ($imagenes as $i => $img) {
-                $url = $this->guardarImagen($img);
-                $imagenesProcesadas[] = [
-                    "url_imagen" => $url,
-                    "texto_alt_SEO" => $textos[$i] ?? null
-                ];
+            // Actualizar especificaciones
+            if (isset($datosValidados['especificaciones'])) {
+                $producto->especificaciones()->delete();
+                $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
+                if (is_array($especificaciones)) {
+                    foreach ($especificaciones as $clave => $valor) {
+                        $producto->especificaciones()->create([
+                            'clave' => $clave,
+                            'valor' => $valor,
+                        ]);
+                    }
+                }
             }
 
-            $producto->imagenes()->delete();
-            $producto->imagenes()->createMany($imagenesProcesadas);
+            // Sincronizar productos relacionados
+            if (isset($datosValidados['relacionados'])) {
+                $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
+            }
+
+            DB::commit();
+            return response()->json(["message" => "Producto actualizado exitosamente"], HttpStatusCode::OK->value);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Error al actualizar el producto: ' . $e->getMessage()],  HttpStatusCode::INTERNAL_SERVER_ERROR->value);
         }
-
-        $producto->update([
-            "nombre" => $datosValidados["nombre"] ?? null,
-            "link" => $datosValidados["link"] ?? null,
-            "titulo" => $datosValidados["titulo"] ?? null,
-            "subtitulo" => $datosValidados["subtitulo"] ?? null,
-            "stock" => $datosValidados["stock"] ?? null,
-            "precio" => $datosValidados["precio"] ?? null,
-            "seccion" => $datosValidados["seccion"] ?? null,
-            "lema" => $datosValidados["lema"] ?? null,
-            "descripcion" => $datosValidados["descripcion"] ?? null,
-            "meta_data" => $datosValidados["meta_data"] ?? null,
-        ]);
-        $producto->especificaciones()->delete();
-        
-        $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
-        if (is_array($especificaciones)) {
-            foreach ($especificaciones as $clave => $valor) {
-                $producto->especificaciones()->create([
-                    'clave' => $clave,
-                    'valor' => $valor,
-                ]);
-            }
-        }
-        $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
-        return response()->json(["message"=>"Producto actualizado exitosamente"], 201);
     }
 
     /**

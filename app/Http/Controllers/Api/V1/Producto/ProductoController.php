@@ -81,7 +81,6 @@ class ProductoController extends Controller
     {
         //
         $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
-
         // Para decodificar especificaciones
         $productos->transform(function ($producto) {
             $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];

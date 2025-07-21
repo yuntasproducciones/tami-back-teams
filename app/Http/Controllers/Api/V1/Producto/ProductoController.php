@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Producto;
 
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\Producto\V2StoreProductoRequest;
 use App\Http\Requests\Producto\V2UpdateProductoRequest;
 use Illuminate\Support\Facades\Storage;
@@ -78,7 +79,6 @@ class ProductoController extends Controller
     {
         //
         $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
-        dd(get_class($productos));
 
         // Para decodificar especificaciones
         $productos->getCollection()->transform(function ($producto) {

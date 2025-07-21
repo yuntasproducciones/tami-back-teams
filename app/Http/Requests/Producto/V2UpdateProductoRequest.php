@@ -21,29 +21,31 @@ class V2UpdateProductoRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isPut = $this->isMethod('put');
+        $required = $isPut ? 'required' : 'sometimes';
         $productoId = $this->route('id');
 
         return [
-            //
-            'nombre' => ['string','max:255',Rule::unique('productos', 'nombre')->ignore($productoId)],
-            'link' => ['string','max:255',Rule::unique('productos', 'link')->ignore($productoId)],
-            'titulo' => "string|max:255",
-            'subtitulo' => "string|max:255",
-            'stock' => "integer|max:1000|min:0",
-            'precio' => "string|max:100000|min:0", // Considera cambiar a 'numeric' si es un valor decimal
-            'seccion' => "string|max:255",
-            'lema' => "string|max:255",
-            'descripcion' => "string|max:65535",
-            'meta_data' => 'array',
-            'meta_data.meta_titulo' => 'string|max:65535',
-            'meta_data.meta_descripcion' => 'string|max:65535',
-            'especificaciones' => "string|max:65535",
-            'imagenes' => "array|min:1|max:10",
-            'imagenes.*' => "file|image|max:2048",
-            'textos_alt' => "array|min:1|max:10",
-            'textos_alt.*' => "string|max:255",
-            'relacionados' => "sometimes|array",
-            'relacionados.*' => "integer|exists:productos,id",
+            'nombre' => [$required, 'string', 'max:255', Rule::unique('productos', 'nombre')->ignore($productoId)],
+            'link' => [$required, 'string', 'max:255', Rule::unique('productos', 'link')->ignore($productoId)],
+            'titulo' => [$required, 'string', 'max:255'],
+            'subtitulo' => [$required, 'string', 'max:255'],
+            'stock' => [$required, 'integer', 'max:1000', 'min:0'],
+            'precio' => [$required, 'numeric', 'min:0'],
+            'seccion' => [$required, 'string', 'max:255'],
+            'lema' => [$required, 'string', 'max:255'],
+            'descripcion' => [$required, 'string', 'max:65535'],
+            'meta_data' => [$required, 'array'],
+            'meta_data.meta_titulo' => ['sometimes', 'string', 'max:65535'],
+            'meta_data.meta_descripcion' => ['sometimes', 'string', 'max:65535'],
+            'especificaciones' => [$required, 'string', 'max:65535'],
+
+            'imagenes' => ['sometimes', 'array'],
+            'imagenes.*' => ['file', 'image', 'max:2048'],
+            'textos_alt' => ['sometimes', 'array'],
+            'textos_alt.*' => ['string', 'max:255'],
+            'relacionados' => ['sometimes', 'array'],
+            'relacionados.*' => ['integer', 'exists:productos,id'],
         ];
     }
 }

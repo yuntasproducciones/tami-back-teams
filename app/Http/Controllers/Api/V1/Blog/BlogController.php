@@ -445,11 +445,11 @@ class BlogController extends Controller
     /**
      * Actualizar un blog específico
      * 
-     * @OA\Post(
+     * @OA\Put(
      *     path="/api/v1/blogs/{id}",
-     *     summary="Actualiza un blog específico",
-     *     description="Actualiza los datos de un blog existente según su ID",
-     *     operationId="updateBlog",
+     *     summary="Actualiza un blog específico (PUT)",
+     *     description="Actualiza todos los datos de un blog existente según su ID",
+     *     operationId="updateBlogPut",
      *     tags={"Blogs"},
      *     @OA\Parameter(
      *         name="id",
@@ -460,22 +460,77 @@ class BlogController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
-     *             @OA\Property(property="link", type="string", example="Link a blog..."),
-     *             @OA\Property(property="parrafo", type="string", example="Contenido actualizado del blog..."),
-     *             @OA\Property(property="descripcion", type="string", example="Descripcion actualizado del blog..."),
-     *             @OA\Property(property="miniatura", type="string", example="https://example.com/nueva-imagen.jpg"),
-     *             @OA\Property(property="titulo_blog", type="string", example="Título del detalle actualizado"),
-     *             @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios actualizado"),
-     *             @OA\Property(property="imagenes", type="array", 
-     *                 @OA\Items(
-     *                     @OA\Property(property="url_imagen", type="string", example="https://example.com/nueva-imagen1.jpg"),
-     *                     @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen actualizada")
-     *                 )
-     *             ),
-     *             @OA\Property(property="url_video", type="string", example="https://example.com/nuevo-video.mp4"),
-     *             @OA\Property(property="titulo_video", type="string", example="Título del video actualizado")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={
+     *                     "titulo", 
+     *                     "producto_id",
+     *                     "link", 
+     *                     "subtitulo1", 
+     *                     "subtitulo2", 
+     *                     "video_url", 
+     *                     "video_titulo", 
+     *                     "miniatura",
+     *                     "parrafos",
+     *                     "text_alt"
+     *                 },
+     *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+     *                 @OA\Property(property="producto_id", type="integer", example=1),
+     *                 @OA\Property(property="link", type="string", example="Link a blog..."),
+     *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
+     *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
+     *                 @OA\Property(property="miniatura", type="string", format="binary", description="Archivo de imagen principal del blog"),
+     *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
+     *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
+     *                 @OA\Property(property="imagenes", type="array", 
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="imagen", type="string", format="binary", description="Archivo de imagen adicional"),
+     *                         @OA\Property(property="parrafo", type="string", description="Descripción de la imagen adicional", example="Parrafo de la imagen adicional")
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
+     *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+     *             )
+     *         )
+     *     ),
+     * @OA\Patch(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Actualiza parcialmente un blog específico (PATCH)",
+     *     description="Actualiza algunos datos de un blog existente según su ID",
+     *     operationId="updateBlogPatch",
+     *     tags={"Blogs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del blog a actualizar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+     *                 @OA\Property(property="producto_id", type="integer", example=1),
+     *                 @OA\Property(property="link", type="string", example="Link a blog..."),
+     *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
+     *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
+     *                 @OA\Property(property="miniatura", type="string", format="binary", description="Archivo de imagen principal del blog"),
+     *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
+     *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
+     *                 @OA\Property(property="imagenes", type="array", 
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="imagen", type="string", format="binary", description="Archivo de imagen adicional"),
+     *                         @OA\Property(property="parrafo", type="string", description="Descripción de la imagen adicional", example="Parrafo de la imagen adicional")
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
+     *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -509,44 +564,51 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         try {
-            $nuevaRutaImagenPrincipal = $blog->miniatura;
+            $camposActualizar = [];
+
+            foreach ([
+                "titulo",
+                "producto_id",
+                "link",
+                "subtitulo1",
+                "subtitulo2",
+                "video_url",
+                "video_titulo"
+            ] as $campo) {
+                if ($request->has($campo)) {
+                    $camposActualizar[$campo] = $datosValidados[$campo];
+                }
+            }
+
             if ($request->hasFile('miniatura')) {
                 if ($blog->miniatura) {
                     $rutaAnterior = str_replace('/storage/', '', $blog->miniatura);
                     Storage::disk('public')->delete($rutaAnterior);
                 }
-
-                $nuevaRutaImagenPrincipal = $this->guardarImagen($request->file('miniatura'));
+                $camposActualizar['miniatura'] = $this->guardarImagen($request->file('miniatura'));
+            } elseif ($request->has('miniatura') && $datosValidados['miniatura'] === null) {
+                if ($blog->miniatura) {
+                    $rutaAnterior = str_replace('/storage/', '', $blog->miniatura);
+                    Storage::disk('public')->delete($rutaAnterior);
+                }
+                $camposActualizar['miniatura'] = null;
             }
 
-            // Actualizar datos principales del blog
-            $blog->update([
-                "titulo" => $datosValidados["titulo"],
-                "producto_id" => $datosValidados["producto_id"],
-                "link" => $datosValidados["link"],
-                "subtitulo1" => $datosValidados["subtitulo1"],
-                "subtitulo2" => $datosValidados["subtitulo2"],
-                "video_url" => $datosValidados["video_url"],
-                "video_titulo" => $datosValidados["video_titulo"],
-                "miniatura" => $nuevaRutaImagenPrincipal,
-            ]);
+            $blog->update($camposActualizar);
 
-            // Eliminar imágenes anteriores del disco y base de datos
-            $rutasImagenes = [];
-            foreach ($blog->imagenes as $item) {
-                array_push($rutasImagenes, str_replace($item["ruta_imagen"], "storage/", ""));
-            }
-            Storage::delete($rutasImagenes);
-            $blog->imagenes()->delete();
+            if ($request->has('imagenes')) {
+                $rutasImagenesAntiguas = [];
+                foreach ($blog->imagenes as $imagen) {
+                    array_push($rutasImagenesAntiguas, str_replace('storage/', '', $imagen['ruta_imagen']));
+                }
+                Storage::disk('public')->delete($rutasImagenesAntiguas);
+                $blog->imagenes()->delete();
 
-            // Guardar nuevas imágenes solo si se envían
-            if (isset($datosValidados['imagenes'])) {
                 $imagenes = $request->file("imagenes", []);
                 $altTexts = $datosValidados["text_alt"] ?? [];
 
                 foreach ($imagenes as $i => $imagen) {
                     $ruta = $this->guardarImagen($imagen);
-
                     $blog->imagenes()->create([
                         "ruta_imagen" => $ruta,
                         "text_alt" => $altTexts[$i] ?? null
@@ -554,17 +616,17 @@ class BlogController extends Controller
                 }
             }
 
-            // Eliminar y guardar nuevos párrafos
-            $blog->parrafos()->delete(); // Eliminar párrafos existentes
-            $parrafos = $datosValidados["parrafos"];
-            foreach ($parrafos as $texto) {
-                $blog->parrafos()->create([
-                    "parrafo" => $texto
-                ]);
+            if ($request->has('parrafos')) {
+                $blog->parrafos()->delete();
+                foreach ($datosValidados["parrafos"] as $item) {
+                    $blog->parrafos()->create([
+                        "parrafo" => $item
+                    ]);
+                }
             }
 
             DB::commit();
-            return $this->apiResponse->successResponse($blog, 'Blog actualizado exitosamente', HttpStatusCode::OK);
+            return $this->apiResponse->successResponse($blog->fresh(), 'Blog actualizado exitosamente', HttpStatusCode::OK);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);

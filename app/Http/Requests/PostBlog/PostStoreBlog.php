@@ -25,13 +25,13 @@ class PostStoreBlog extends FormRequest
     {
         return [
             'titulo' => 'required|string|max:255',
-            'producto_id' => 'required|integer|exists:productos,id',
+            'producto_id' => 'integer|exists:productos,id',
             'link' => 'required|string|max:255|unique:blogs,link',
             'subtitulo1' => 'required|string|max:255',
             'subtitulo2' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:2000',
-            'miniatura' => 'required|file|image|max:2048',
+            'miniatura' => 'file|image|max:2048',
             'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
             'text_alt' => 'required|array',

@@ -30,7 +30,6 @@ class V2StoreProductoRequest extends FormRequest
             'stock' => "integer|max:1000|min:0",
             'precio' => "string|max:100000|min:0",
             'seccion' => "string|max:255",
-            'lema' => "string|max:255",
             'descripcion' => "string|max:65535",
             'meta_data' => 'array',
             'meta_data.meta_titulo' => 'string',

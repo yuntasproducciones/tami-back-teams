@@ -196,7 +196,6 @@ class ProductoController extends Controller
             "stock" => $datosValidados["stock"] ?? null,
             "precio" => $datosValidados["precio"] ?? null,
             "seccion" => $datosValidados["seccion"] ?? null,
-            "lema" => $datosValidados["lema"] ?? null,
             "descripcion" => $datosValidados["descripcion"] ?? null,
             "meta_data" => $datosValidados["meta_data"] ?? [],
         ]);
@@ -312,7 +311,6 @@ class ProductoController extends Controller
                 'link' => $producto->link,
                 'titulo' => $producto->titulo,
                 'subtitulo' => $producto->subtitulo,
-                'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
                 'meta_data' => $producto->meta_data ?? [],
                 'especificaciones' => $producto->especificaciones ?? [],
@@ -424,7 +422,6 @@ class ProductoController extends Controller
                 'link' => $producto->link,
                 'titulo' => $producto->titulo,
                 'subtitulo' => $producto->subtitulo,
-                'lema' => $producto->lema,
                 'descripcion' => $producto->descripcion,
                 'meta_data' => $producto->meta_data ?? [],
                 'especificaciones' => $producto->especificaciones ?? [],
@@ -548,7 +545,7 @@ class ProductoController extends Controller
             $camposActualizar = [];
             foreach([
                 "nombre", "link", "titulo", "subtitulo", "stock", "precio",
-                "seccion", "lema", "descripcion", "meta_data"
+                "seccion", "descripcion", "meta_data"
             ] as $campo) {
                 if (array_key_exists($campo, $datosValidados)) {
                     $camposActualizar[$campo] = $datosValidados[$campo];

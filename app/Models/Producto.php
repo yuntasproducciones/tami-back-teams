@@ -25,7 +25,6 @@ class Producto extends Model
         'stock',
         'precio',
         'seccion',
-        'lema',
         'descripcion',
         'meta_data',
         'especificaciones',

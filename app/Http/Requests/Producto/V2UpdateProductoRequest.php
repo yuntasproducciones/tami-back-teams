@@ -33,7 +33,6 @@ class V2UpdateProductoRequest extends FormRequest
             'stock' => [$required, 'integer', 'max:1000', 'min:0'],
             'precio' => [$required, 'numeric', 'min:0'],
             'seccion' => [$required, 'string', 'max:255'],
-            'lema' => [$required, 'string', 'max:255'],
             'descripcion' => [$required, 'string', 'max:65535'],
             'meta_data' => [$required, 'array'],
             'meta_data.meta_titulo' => ['sometimes', 'string', 'max:65535'],

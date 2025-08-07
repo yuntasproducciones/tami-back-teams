@@ -23,9 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users', UserController::class);
     });
 
-    Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-        Route::apiResource('clientes', ClienteController::class);
-    });
+    Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');

@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Producto\ProductoController;
-
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
@@ -27,7 +26,6 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
         Route::apiResource('clientes', ClienteController::class);
     });
-
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');

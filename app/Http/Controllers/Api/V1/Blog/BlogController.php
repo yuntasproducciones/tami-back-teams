@@ -442,120 +442,107 @@ class BlogController extends Controller
         }
     }
 
+   /**
+ * @OA\Put(
+ *     path="/api/v1/blogs/{id}",
+ *     summary="Actualiza un blog específico (PUT)",
+ *     description="Actualiza todos los datos de un blog existente según su ID",
+ *     operationId="updateBlogPut",
+ *     tags={"Blogs"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID del blog a actualizar",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={"titulo", "producto_id", "link", "subtitulo1", "subtitulo2", "video_url", "video_titulo", "miniatura", "parrafos", "text_alt"},
+ *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+ *                 @OA\Property(property="producto_id", type="integer", example=1),
+ *                 @OA\Property(property="link", type="string", example="Link a blog..."),
+ *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
+ *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
+ *                 @OA\Property(property="miniatura", type="string", format="binary"),
+ *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
+ *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
+ *                 @OA\Property(property="imagenes", type="array", 
+ *                     @OA\Items(
+ *                         type="object",
+ *                         @OA\Property(property="imagen", type="string", format="binary"),
+ *                         @OA\Property(property="parrafo", type="string", example="Parrafo de la imagen adicional")
+ *                     )
+ *                 ),
+ *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
+ *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Blog actualizado exitosamente",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="data", type="object"),
+ *             @OA\Property(property="message", type="string", example="Blog actualizado exitosamente")
+ *         )
+ *     ),
+ *     @OA\Response(response=404, description="Blog no encontrado"),
+ *     @OA\Response(response=422, description="Error de validación"),
+ *     @OA\Response(response=500, description="Error del servidor")
+ * )
+ */
+
     /**
-     * Actualizar un blog específico
-     * 
-     * @OA\Put(
-     *     path="/api/v1/blogs/{id}",
-     *     summary="Actualiza un blog específico (PUT)",
-     *     description="Actualiza todos los datos de un blog existente según su ID",
-     *     operationId="updateBlogPut",
-     *     tags={"Blogs"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del blog a actualizar",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 required={
-     *                     "titulo", 
-     *                     "producto_id",
-     *                     "link", 
-     *                     "subtitulo1", 
-     *                     "subtitulo2", 
-     *                     "video_url", 
-     *                     "video_titulo", 
-     *                     "miniatura",
-     *                     "parrafos",
-     *                     "text_alt"
-     *                 },
-     *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
-     *                 @OA\Property(property="producto_id", type="integer", example=1),
-     *                 @OA\Property(property="link", type="string", example="Link a blog..."),
-     *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
-     *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
-     *                 @OA\Property(property="miniatura", type="string", format="binary", description="Archivo de imagen principal del blog"),
-     *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
-     *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
-     *                 @OA\Property(property="imagenes", type="array", 
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="imagen", type="string", format="binary", description="Archivo de imagen adicional"),
-     *                         @OA\Property(property="parrafo", type="string", description="Descripción de la imagen adicional", example="Parrafo de la imagen adicional")
-     *                     )
-     *                 ),
-     *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
-     *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
-     *             )
-     *         )
-     *     ),
-     * @OA\Patch(
-     *     path="/api/v1/blogs/{id}",
-     *     summary="Actualiza parcialmente un blog específico (PATCH)",
-     *     description="Actualiza algunos datos de un blog existente según su ID",
-     *     operationId="updateBlogPatch",
-     *     tags={"Blogs"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del blog a actualizar",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
-     *                 @OA\Property(property="producto_id", type="integer", example=1),
-     *                 @OA\Property(property="link", type="string", example="Link a blog..."),
-     *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
-     *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
-     *                 @OA\Property(property="miniatura", type="string", format="binary", description="Archivo de imagen principal del blog"),
-     *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
-     *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
-     *                 @OA\Property(property="imagenes", type="array", 
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="imagen", type="string", format="binary", description="Archivo de imagen adicional"),
-     *                         @OA\Property(property="parrafo", type="string", description="Descripción de la imagen adicional", example="Parrafo de la imagen adicional")
-     *                     )
-     *                 ),
-     *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
-     *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Blog actualizado exitosamente",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object"),
-     *             @OA\Property(property="message", type="string", example="Blog actualizado exitosamente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Blog no encontrado"
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Error de validación"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error del servidor"
-     *     )
-     * )
-     */
+ * @OA\Patch(
+ *     path="/api/v1/blogs/{id}",
+ *     summary="Actualiza parcialmente un blog específico (PATCH)",
+ *     description="Actualiza algunos datos de un blog existente según su ID",
+ *     operationId="updateBlogPatch",
+ *     tags={"Blogs"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID del blog a actualizar",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
+ *                 @OA\Property(property="producto_id", type="integer", example=1),
+ *                 @OA\Property(property="link", type="string", example="Link a blog..."),
+ *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
+ *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
+ *                 @OA\Property(property="miniatura", type="string", format="binary"),
+ *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
+ *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
+ *                 @OA\Property(property="imagenes", type="array", 
+ *                     @OA\Items(
+ *                         type="object",
+ *                         @OA\Property(property="imagen", type="string", format="binary"),
+ *                         @OA\Property(property="parrafo", type="string", example="Parrafo de la imagen adicional")
+ *                     )
+ *                 ),
+ *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
+ *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Blog actualizado exitosamente"),
+ *     @OA\Response(response=404, description="Blog no encontrado"),
+ *     @OA\Response(response=422, description="Error de validación"),
+ *     @OA\Response(response=500, description="Error del servidor")
+ * )
+ */
+
 
     public function update(UpdateBlog $request, $id)
     {

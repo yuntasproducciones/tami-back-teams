@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Blog\BlogController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Producto\ProductoController;
-
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
@@ -20,26 +19,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', 'logout')->middleware(['auth:sanctum', 'role:ADMIN|USER']);
     });
 
-    Route::controller(UserController::class)->prefix('users')->group(function () {
-
-        Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
-            Route::post('/', 'store')->name('users.store');
-            Route::get('/', 'index')->name('users.index');
-            Route::get('/{id}', 'show');
-            Route::delete('/{id}', 'destroy')->name('users.destroy');
-            Route::put('/{id}', 'update')->name('users.update');
-        });
+    Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
+        Route::apiResource('users', UserController::class);
     });
 
-    Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
-       Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () { 
-            Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::post('/', 'store');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-            }); 
-        });
+    Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');

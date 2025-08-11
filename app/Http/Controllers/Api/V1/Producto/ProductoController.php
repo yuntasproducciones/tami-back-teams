@@ -21,7 +21,7 @@ class ProductoController extends Controller
      * Obtener listado de productos
      * 
      * @OA\Get(
-     *     path="/api/v2/productos",
+     *     path="/api/v1/productos",
      *     summary="Muestra un listado de todos los productos",
      *     description="Retorna un array con todos los productos y sus relaciones",
      *     operationId="indexProductos2",
@@ -80,7 +80,7 @@ class ProductoController extends Controller
     public function paginate()
     {
         //
-        $productos = Producto::with('imagenes', 'productosRelacionados')->paginate(10);
+        $productos = Producto::with('imagenes', 'productosRelacionados')->get();
         // Para decodificar especificaciones
         $productos->transform(function ($producto) {
             $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
@@ -105,7 +105,7 @@ class ProductoController extends Controller
  * Crear un nuevo producto
  * 
  * @OA\Post(
- *     path="/api/v2/productos",
+ *     path="/api/v1/productos",
  *     summary="Crear un nuevo producto (no funciona en Swagger)",
  *     description="Almacena un nuevo producto, guarda la imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
  *     operationId="storeProducto2",

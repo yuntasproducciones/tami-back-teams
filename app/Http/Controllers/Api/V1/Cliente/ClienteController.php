@@ -21,6 +21,73 @@ class ClienteController extends Controller
         $this->apiResponse = $apiResponse;
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/clientes",
+     *     summary="Listar clientes",
+     *     description="Obtiene la lista de todos los clientes registrados con sus datos básicos.",
+     *     operationId="getClientes",
+     *     tags={"Clientes"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de clientes obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="success"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Clientes obtenidos exitosamente"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Juan Pérez"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="email",
+     *                         type="string",
+     *                         format="email",
+     *                         example="juan.perez@example.com"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="celular",
+     *                         type="string",
+     *                         example="+51 987654321"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Error al obtener los clientes: mensaje del error"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
         try{

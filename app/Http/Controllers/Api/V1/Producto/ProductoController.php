@@ -172,7 +172,7 @@ class ProductoController extends Controller
         return "/storage/imagenes/" . $nombre;
     }
 
-    public function store(V2StoreProductoRequest $request)
+    public function store(v2StoreProductoRequest $request)
     {
         $datosValidados = $request->validated();
 
@@ -223,7 +223,7 @@ class ProductoController extends Controller
      * Obtener un producto por su ID
      * 
      * @OA\Get(
-     *     path="/api/v2/productos/{id}",
+     *     path="/api/v1/productos/{id}",
      *     summary="Muestra un producto por su ID",
      *     description="Retorna los datos completos de un producto según su ID",
      *     operationId="getProductoByIdV2",
@@ -337,7 +337,7 @@ class ProductoController extends Controller
      * Obtener un producto por su enlace único
      * 
      * @OA\Get(
-     *     path="/api/v2/productos/link/{link}",
+     *     path="/api/v1/productos/link/{link}",
      *     summary="Muestra un producto usando su enlace único",
      *     description="Retorna los datos de un producto identificado por su campo 'link'",
      *     operationId="getProductoByLink",
@@ -457,7 +457,7 @@ class ProductoController extends Controller
      * Actualizar un producto específico
      * 
      * @OA\Post(
-     *     path="/api/v2/productos/{id}",
+     *     path="/api/v1/productos/{id}",
      *     summary="Actualiza un producto específico (no funciona en Swagger)",
      *     description="Actualiza producto, elimina todas las antiguas imagenes y guarda las nuevas imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
      *     operationId="updateProducto2",
@@ -609,7 +609,7 @@ class ProductoController extends Controller
      * Eliminar un producto específico
      * 
      * @OA\Delete(
-     *     path="/api/v2/productos/{id}",
+     *     path="/api/v1/productos/{id}",
      *     summary="Elimina un producto específico",
      *     description="Elimina un producto existente según su ID",
      *     operationId="destroyProducto2",

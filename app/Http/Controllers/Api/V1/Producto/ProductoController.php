@@ -15,50 +15,80 @@ use App\Http\Contains\HttpStatusCode;
 class ProductoController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    /**
-     * Obtener listado de productos
-     * 
      * @OA\Get(
      *     path="/api/v1/productos",
-     *     summary="Muestra un listado de todos los productos",
-     *     description="Retorna un array con todos los productos y sus relaciones",
-     *     operationId="indexProductos2",
+     *     summary="Listar productos",
+     *     description="Obtiene la lista de productos con sus imágenes, especificaciones y productos relacionados.",
+     *     operationId="getProductos",
      *     tags={"Productos"},
      *     @OA\Response(
      *         response=200,
-     *         description="Operación exitosa",
+     *         description="Lista de productos",
      *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="titulo", type="string", example="Producto premium"),
-     *                     @OA\Property(property="nombre", type="string", example="Laptop"),
-     *                     @OA\Property(property="link", type="string", example="Link producto"),
-     *                     @OA\Property(property="subtitulo", type="string", example="Innovación y calidad"),
-     *                     @OA\Property(property="stock", type="integer"),
-     *                     @OA\Property(property="precio", type="number"),
-     *                     @OA\Property(property="seccion", type="string"),
-     *                     @OA\Property(property="lema", type="string"),
-     *                     @OA\Property(property="descripcion", type="string"),
-     *                     @OA\Property(property="especificaciones", type="string"),
-     *                     @OA\Property(property="mensaje_correo", type="string"),
-     *                     @OA\Property(property="created_at", type="string"),
-     *                     @OA\Property(property="updated_at", type="string"),
-     *                     @OA\Property(property="imagenes", type="object")
-     *                 )
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Productos obtenidos exitosamente")
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="titulo", type="string", example="Laptop Gamer"),
+     *                 @OA\Property(property="nombre", type="string", example="Laptop XYZ"),
+     *                 @OA\Property(property="link", type="string", example="/productos/laptop-xyz"),
+     *                 @OA\Property(property="subtitulo", type="string", example="Potencia y velocidad"),
+     *                 @OA\Property(property="stock", type="integer", example=12),
+     *                 @OA\Property(property="precio", type="number", format="float", example=2499.99),
+     *                 @OA\Property(property="seccion", type="string", example="Tecnología"),
+     *                 @OA\Property(property="descripcion", type="string", example="Laptop de alto rendimiento para gaming."),
+     *                 @OA\Property(property="meta_data", type="object", example={"color": "negro", "peso": "2kg"}),
+     *                 @OA\Property(
+     *                     property="especificaciones",
+     *                     type="object",
+     *                     example={
+     *                         "procesador": "Intel i7",
+     *                         "ram": "16GB"
+     *                     }
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imagenes",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="url_imagen", type="string", example="https://example.com/img1.jpg"),
+     *                         @OA\Property(property="texto_alt_SEO", type="string", example="Imagen de laptop gamer")
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="productos_relacionados",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id", type="integer", example=2),
+     *                         @OA\Property(property="nombre", type="string", example="Mouse Gamer"),
+     *                         @OA\Property(property="link", type="string", example="/productos/mouse-gamer"),
+     *                         @OA\Property(property="titulo", type="string", example="Mouse RGB"),
+     *                         @OA\Property(property="subtitulo", type="string", example="Alta precisión"),
+     *                         @OA\Property(property="stock", type="integer", example=50),
+     *                         @OA\Property(property="precio", type="number", format="float", example=49.99),
+     *                         @OA\Property(property="seccion", type="string", example="Accesorios"),
+     *                         @OA\Property(property="descripcion", type="string", example="Mouse gamer con retroiluminación RGB."),
+     *                         @OA\Property(
+     *                             property="imagenes",
+     *                             type="array",
+     *                             @OA\Items(
+     *                                 @OA\Property(property="url_imagen", type="string", example="https://example.com/mouse1.jpg"),
+     *                                 @OA\Property(property="texto_alt_SEO", type="string", example="Mouse gamer RGB")
+     *                             )
+     *                         )
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-12T10:15:30Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-12T10:15:30Z")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Error del servidor"
+     *         description="Error al obtener los productos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error al obtener los productos: error de base de datos")
+     *         )
      *     )
-     * ),
-     * security={}
+     * )
      */
     public function index()
     {

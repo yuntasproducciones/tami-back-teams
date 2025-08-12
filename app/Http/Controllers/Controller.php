@@ -18,7 +18,7 @@ use Illuminate\Routing\Controller as BaseController;
  *         description="API Server - Development"
  *     ),
  *     @OA\Server(
- *         url="https://apitami.tami-peru.com/",
+ *         url="https://apitami.tamimaquinarias.com/",
  *         description="API Server - Production"
  *     )
  * )

@@ -62,19 +62,65 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //
-        $productos = Producto::with(['imagenes'])
-            ->orderBy('created_at')
-            ->get();
+        try {
+            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes'])
+                ->orderBy('created_at')
+                ->get();
 
-        // Para decodificar especificaciones
-        $productos->transform(function ($producto) {
-            $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
-            $producto->unsetRelation('producto_Relacionado');
-            return $producto;
-        });
+            $showProductos = $productos->map(function ($producto) {
+                $especificacionesFormateadas = [];
+                foreach ($producto->especificaciones as $especificacion) {
+                    $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
+                }
 
-        return response()->json($productos);
+                return [
+                    'id' => $producto->id,
+                    'titulo' => $producto->titulo,
+                    'nombre' => $producto->nombre,
+                    'link' => $producto->link,
+                    'subtitulo' => $producto->subtitulo,
+                    'stock' => $producto->stock,
+                    'precio' => $producto->precio,
+                    'seccion' => $producto->seccion,
+                    'descripcion' => $producto->descripcion,
+                    'meta_data' => $producto->meta_data ?? [],
+                    'especificaciones' => $especificacionesFormateadas,
+                    'imagenes' => $producto->imagenes->map(function ($imagen) {
+                        return [
+                            'url_imagen' => $imagen->url_imagen,
+                            'texto_alt_SEO' => $imagen->texto_alt_SEO,
+                        ];
+                    }),
+                    'productos_relacionados' => $producto->productosRelacionados->map(function ($relacionado) {
+                        return [
+                            'id' => $relacionado->id,
+                            'nombre' => $relacionado->nombre,
+                            'link' => $relacionado->link,
+                            'titulo' => $relacionado->titulo,
+                            'subtitulo' => $relacionado->subtitulo,
+                            'stock' => $relacionado->stock,
+                            'precio' => $relacionado->precio,
+                            'seccion' => $relacionado->seccion,
+                            'descripcion' => $relacionado->descripcion,
+                            'imagenes' => $relacionado->imagenes->map(function ($imagen) {
+                                return [
+                                    'url_imagen' => $imagen->url_imagen,
+                                    'texto_alt_SEO' => $imagen->texto_alt_SEO,
+                                ];
+                            }),
+                        ];
+                    }),
+                    'created_at' => $producto->created_at,
+                    'updated_at' => $producto->updated_at
+                ];
+            });
+
+            return response()->json($showProductos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener los productos: ' . $e->getMessage()
+            ], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
+        }
     }
 
     public function paginate()

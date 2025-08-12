@@ -19,6 +19,70 @@ class BlogController extends Controller
     {
         $this->apiResponse = $apiResponse;
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/blogs",
+     *     summary="Listar blogs",
+     *     description="Obtiene la lista de todos los blogs con sus imágenes, párrafos y producto relacionado.",
+     *     operationId="getBlogs",
+     *     tags={"Blogs"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de blogs obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="titulo", type="string", example="Cómo cuidar tus plantas en invierno"),
+     *                     @OA\Property(property="nombre_producto", type="string", nullable=true, example="Maceta decorativa"),
+     *                     @OA\Property(property="link", type="string", example="https://mipagina.com/blog/cuidados-invierno"),
+     *                     @OA\Property(property="subtitulo1", type="string", example="Consejos prácticos"),
+     *                     @OA\Property(property="subtitulo2", type="string", example="Errores comunes"),
+     *                     @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
+     *                     @OA\Property(property="video_url", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+     *                     @OA\Property(property="video_titulo", type="string", example="Guía completa para cuidar tus plantas"),
+     *                     @OA\Property(property="miniatura", type="string", example="https://mipagina.com/images/miniatura.jpg"),
+     *                     @OA\Property(
+     *                         property="imagenes",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="ruta_imagen", type="string", example="https://mipagina.com/images/imagen1.jpg"),
+     *                             @OA\Property(property="text_alt", type="string", example="Maceta de barro color marrón")
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="parrafos",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="parrafo", type="string", example="Durante el invierno, las plantas requieren menos riego...")
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-11T10:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-11T10:30:00Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Error al obtener los blogs: mensaje del error")
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
         try {
@@ -681,7 +745,7 @@ class BlogController extends Controller
             DB::commit();
 
             return $this->apiResponse->successResponse(
-                $blog,
+                null,
                 'Blog eliminado exitosamente',
                 HttpStatusCode::OK
             );

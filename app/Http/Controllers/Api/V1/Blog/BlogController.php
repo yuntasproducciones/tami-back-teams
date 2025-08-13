@@ -143,7 +143,7 @@ class BlogController extends Controller
 
     /**
      * @OA\Post(
-     *     path="api/v1/blogs",
+     *     path="/api/v1/blogs",
      *     summary="Crear un nuevo blog",
      *     description="Crea un nuevo blog con miniatura, imágenes opcionales, párrafos y metadatos SEO",
      *     tags={"Blogs"},

@@ -142,118 +142,52 @@ class BlogController extends Controller
     }
 
     /**
-     * Crear un nuevo blog
-     * 
      * @OA\Post(
-     *     path="/api/v1/blogs",
+     *     path="api/v1/blogs",
      *     summary="Crear un nuevo blog",
-     *     description="Almacena un nuevo blog y retorna los datos creados",
-     *     operationId="storeBlog",
+     *     description="Crea un nuevo blog con miniatura, imágenes opcionales, párrafos y metadatos SEO",
      *     tags={"Blogs"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={
-     *                     "producto_id",  
-     *                     "titulo", 
-     *                     "link", 
-     *                     "parrafo", 
-     *                     "descripcion", 
-     *                     "miniatura", 
-     *                     "titulo_blog", 
-     *                     "subtitulo_beneficio", 
-     *                     "url_video", 
-     *                     "titulo_video"
-     *                 },
+     *                 required={"titulo","producto_id","link","subtitulo1","subtitulo2","video_url","video_titulo","miniatura","parrafos"},
+     *                 @OA\Property(property="titulo", type="string", example="Mi nuevo blog"),
+     *                 @OA\Property(property="producto_id", type="integer", example=1),
+     *                 @OA\Property(property="link", type="string", example="mi-blog"),
+     *                 @OA\Property(property="subtitulo1", type="string", example="Subtítulo inicial"),
+     *                 @OA\Property(property="subtitulo2", type="string", example="Subtítulo secundario"),
+     *                 @OA\Property(property="video_url", type="string", example="https://www.youtube.com/watch?v=abc123"),
+     *                 @OA\Property(property="video_titulo", type="string", example="Video demostrativo"),
+     *                 @OA\Property(property="miniatura", type="string", format="binary"),
+     *                 @OA\Property(property="meta_titulo", type="string", example="SEO Meta Título"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Descripción SEO"),
      *                 @OA\Property(
-     *                     property="titulo",
-     *                     type="string",
-     *                     example="Título del blog"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="link",
-     *                     type="string",
-     *                     example="Link a blog..."
-     *                 ),
-     *                 @OA\Property(
-     *                     property="parrafo",
-     *                     type="string",
-     *                     example="Contenido del blog..."
-     *                 ),
-     *                 @OA\Property(
-     *                     property="descripcion",
-     *                     type="string",
-     *                     example="Descripción del blog..."
-     *                 ),
-     *                 @OA\Property(
-     *                     property="miniatura",
-     *                     type="string",
-     *                     format="binary",
-     *                     description="Archivo de imagen principal del blog"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="titulo_blog",
-     *                     type="string",
-     *                     example="Título del detalle del blog"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="subtitulo_beneficio",
-     *                     type="string",
-     *                     example="Subtítulo de beneficios"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="url_video",
-     *                     type="string",
-     *                     example="https://example.com/video.mp4"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="titulo_video",
-     *                     type="string",
-     *                     example="Título del video"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="imagenes",
+     *                     property="imagenes[]",
      *                     type="array",
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(
-     *                             property="imagen",
-     *                             type="string",
-     *                             example="https://example.com/imagen-adicional.jpg",
-     *                             format="binary",
-     *                             description="Archivo de imagen adicional"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="parrafo",
-     *                             type="string",
-     *                             description="Descripción de la imagen adicional",
-     *                             example="Parrafo de la imagen adicional"
-     *                         )
-     *                     )
+     *                     @OA\Items(type="string", format="binary")
      *                 ),
-     *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
-     *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
+     *                 @OA\Property(
+     *                     property="text_alt[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Descripción de la imagen")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="parrafos[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Contenido del párrafo")
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Blog creado exitosamente",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object"),
-     *             @OA\Property(property="message", type="string", example="Blog creado exitosamente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Error de validación"
+     *         description="Blog creado con éxito"
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Error del servidor"
+     *         description="Error al crear el blog"
      *     )
      * )
      */

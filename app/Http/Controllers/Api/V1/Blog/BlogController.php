@@ -23,16 +23,15 @@ class BlogController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/blogs",
-     *     summary="Listar blogs",
-     *     description="Obtiene la lista de todos los blogs con sus imágenes, párrafos y producto relacionado.",
-     *     operationId="getBlogs",
+     *     summary="Obtener lista de blogs",
+     *     description="Devuelve todos los blogs con sus imágenes, párrafos, producto asociado y etiqueta.",
      *     tags={"Blogs"},
      *     @OA\Response(
      *         response=200,
-     *         description="Lista de blogs obtenida exitosamente",
+     *         description="Blogs obtenidos exitosamente",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Blogs obtenidos exitosamente"),
      *             @OA\Property(
      *                 property="data",
@@ -40,22 +39,22 @@ class BlogController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="titulo", type="string", example="Cómo cuidar tus plantas en invierno"),
-     *                     @OA\Property(property="nombre_producto", type="string", nullable=true, example="Maceta decorativa"),
-     *                     @OA\Property(property="link", type="string", example="https://mipagina.com/blog/cuidados-invierno"),
-     *                     @OA\Property(property="subtitulo1", type="string", example="Consejos prácticos"),
-     *                     @OA\Property(property="subtitulo2", type="string", example="Errores comunes"),
-     *                     @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
-     *                     @OA\Property(property="video_url", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
-     *                     @OA\Property(property="video_titulo", type="string", example="Guía completa para cuidar tus plantas"),
-     *                     @OA\Property(property="miniatura", type="string", example="https://mipagina.com/images/miniatura.jpg"),
+     *                     @OA\Property(property="titulo", type="string", example="Título del blog"),
+     *                     @OA\Property(property="nombre_producto", type="string", nullable=true, example="Producto ejemplo"),
+     *                     @OA\Property(property="link", type="string", example="https://midominio.com/blog/ejemplo"),
+     *                     @OA\Property(property="subtitulo1", type="string", example="Subtítulo 1"),
+     *                     @OA\Property(property="subtitulo2", type="string", example="Subtítulo 2"),
+     *                     @OA\Property(property="video_id", type="string", example="abc123xyz"),
+     *                     @OA\Property(property="video_url", type="string", example="https://youtube.com/watch?v=abc123xyz"),
+     *                     @OA\Property(property="video_titulo", type="string", example="Título del video"),
+     *                     @OA\Property(property="miniatura", type="string", example="https://midominio.com/imagenes/miniatura.jpg"),
      *                     @OA\Property(
      *                         property="imagenes",
      *                         type="array",
      *                         @OA\Items(
      *                             type="object",
-     *                             @OA\Property(property="ruta_imagen", type="string", example="https://mipagina.com/images/imagen1.jpg"),
-     *                             @OA\Property(property="text_alt", type="string", example="Maceta de barro color marrón")
+     *                             @OA\Property(property="ruta_imagen", type="string", example="https://midominio.com/imagenes/img1.jpg"),
+     *                             @OA\Property(property="text_alt", type="string", example="Texto alternativo")
      *                         )
      *                     ),
      *                     @OA\Property(
@@ -63,30 +62,39 @@ class BlogController extends Controller
      *                         type="array",
      *                         @OA\Items(
      *                             type="object",
-     *                             @OA\Property(property="parrafo", type="string", example="Durante el invierno, las plantas requieren menos riego...")
+     *                             @OA\Property(property="parrafo", type="string", example="Este es un párrafo de ejemplo.")
      *                         )
      *                     ),
-     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-11T10:00:00Z"),
-     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-11T10:30:00Z")
+     *                     @OA\Property(
+     *                         property="etiqueta",
+     *                         type="object",
+     *                         nullable=true,
+     *                         @OA\Property(property="meta_titulo", type="string", example="Meta título ejemplo"),
+     *                         @OA\Property(property="meta_descripcion", type="string", example="Descripción SEO del blog")
+     *                     ),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-13T15:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-13T15:00:00Z")
      *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Error interno del servidor",
+     *         description="Error al obtener los blogs",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="error", type="string", example="Error al obtener los blogs: mensaje del error")
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error al obtener los blogs: mensaje de error")
      *         )
      *     )
      * )
      */
 
+
     public function index()
     {
         try {
-            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])->get();
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])->get();
 
             $showBlog = $blog->map(function ($blog) {
                 return [
@@ -96,7 +104,7 @@ class BlogController extends Controller
                     'link' => $blog->link,
                     'subtitulo1' => $blog->subtitulo1,
                     'subtitulo2' => $blog->subtitulo2,
-                    'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
+                    'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
                     'video_url' => $blog->video_url,
                     'video_titulo' => $blog->video_titulo,
                     'miniatura' => $blog->miniatura,
@@ -111,6 +119,10 @@ class BlogController extends Controller
                             'parrafo' => $parrafo->parrafo,
                         ];
                     }),
+                    'etiqueta' => $blog->etiqueta ? [
+                        'meta_titulo' => $blog->etiqueta->meta_titulo,
+                        'meta_descripcion' => $blog->etiqueta->meta_descripcion,
+                    ] : null,
                     'created_at' => $blog->created_at,
                     'updated_at' => $blog->updated_at
                 ];
@@ -128,6 +140,7 @@ class BlogController extends Controller
             );
         }
     }
+
     /**
      * Crear un nuevo blog
      * 
@@ -219,7 +232,9 @@ class BlogController extends Controller
      *                             example="Parrafo de la imagen adicional"
      *                         )
      *                     )
-     *                 )
+     *                 ),
+     *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
      *             )
      *         )
      *     ),
@@ -274,6 +289,13 @@ class BlogController extends Controller
                 "video_titulo" => $datosValidados["video_titulo"],
                 "miniatura" => $rutaImagenPrincipal,
             ]);
+
+            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+                $blog->etiqueta()->create([
+                    'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                    'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                ]);
+            }
 
             // Guardar imágenes solo si se envían
             if (isset($datosValidados['imagenes'])) {
@@ -343,6 +365,10 @@ class BlogController extends Controller
      *                 ),
      *                 @OA\Property(property="url_video", type="string", example="https://example.com/video.mp4"),
      *                 @OA\Property(property="titulo_video", type="string", example="Título del video"),
+     *                 @OA\Property(property="etiqueta", type="object", nullable=true,
+     *                     @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
+     *                     @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
+     *                 ),
      *                 @OA\Property(property="created_at", type="string")
      *             ),
      *             @OA\Property(property="message", type="string", example="Blog encontrado exitosamente")
@@ -362,7 +388,7 @@ class BlogController extends Controller
     public function show(int $id)
     {
         try {
-            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])
                 ->findOrFail($id);
 
             $showBlog = [
@@ -387,6 +413,10 @@ class BlogController extends Controller
                         'parrafo' => $parrafo->parrafo,
                     ];
                 }),
+                'etiqueta' => $blog->etiqueta ? [
+                    'meta_titulo' => $blog->etiqueta->meta_titulo,
+                    'meta_descripcion' => $blog->etiqueta->meta_descripcion,
+                ] : null,
                 'created_at' => $blog->created_at,
                 'updated_at' => $blog->updated_at
             ];
@@ -444,6 +474,10 @@ class BlogController extends Controller
      *                 @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
      *                 @OA\Property(property="videoBlog", type="string", example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
      *                 @OA\Property(property="tituloVideoBlog", type="string", example="Título del video"),
+     *                 @OA\Property(property="etiqueta", type="object", nullable=true,
+     *                     @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
+     *                     @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
+     *                 ),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T12:00:00Z")
      *             ),
      *             @OA\Property(property="message", type="string", example="Blog obtenido exitosamente")
@@ -463,7 +497,7 @@ class BlogController extends Controller
     public function showLink(string $link)
     {
         try {
-            $blog = Blog::with(['imagenes', 'parrafos', 'producto'])
+            $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])
                 ->where('link', $link)
                 ->firstOrFail();
 
@@ -489,6 +523,10 @@ class BlogController extends Controller
                         'parrafo' => $parrafo->parrafo,
                     ];
                 }),
+                'etiqueta' => $blog->etiqueta ? [
+                    'meta_titulo' => $blog->etiqueta->meta_titulo,
+                    'meta_descripcion' => $blog->etiqueta->meta_descripcion,
+                ] : null,
                 'created_at' => $blog->created_at,
                 'updated_at' => $blog->updated_at
             ];
@@ -542,7 +580,9 @@ class BlogController extends Controller
  *                     )
  *                 ),
  *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
- *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+ *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo")),
+ *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
+ *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
  *             )
  *         )
  *     ),
@@ -596,7 +636,9 @@ class BlogController extends Controller
  *                     )
  *                 ),
  *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
- *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo"))
+ *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo")),
+ *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
+ *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
  *             )
  *         )
  *     ),
@@ -646,6 +688,19 @@ class BlogController extends Controller
             }
 
             $blog->update($camposActualizar);
+
+            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+                $blog->etiqueta()->updateOrCreate(
+                    ['blog_id' => $blog->id],
+                    [
+                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                    ]
+                );
+            } else if ($blog->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
+                $blog->etiqueta()->delete();
+            }
+
 
             if ($request->has('imagenes')) {
                 $rutasImagenesAntiguas = [];
@@ -735,6 +790,7 @@ class BlogController extends Controller
 
             $blog->imagenes()->delete();
             $blog->parrafos()->delete();
+            $blog->etiqueta()->delete();
 
             if (!empty($rutasImagenes)) {
                 Storage::delete($rutasImagenes);

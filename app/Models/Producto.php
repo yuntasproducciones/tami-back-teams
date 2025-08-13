@@ -10,11 +10,6 @@ use App\Http\Controllers\Api\V1\Blog\BlogController;
 
 class Producto extends Model
 {
-    protected $casts = [
-        'meta_data' => 'array',
-    ];
-
-
     protected $fillable = [
         'nombre',
         'link',
@@ -25,7 +20,6 @@ class Producto extends Model
         'precio',
         'seccion',
         'descripcion',
-        'meta_data',
         // 'imagenes'
     ];
 
@@ -55,4 +49,8 @@ class Producto extends Model
         return $this->hasMany(Especificacion::class, 'producto_id');
     }
 
+    public function etiqueta()
+    {
+        return $this->hasOne(ProductoEtiqueta::class);
+    }
 }

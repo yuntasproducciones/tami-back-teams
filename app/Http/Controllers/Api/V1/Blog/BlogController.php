@@ -168,18 +168,22 @@ class BlogController extends Controller
      *                 @OA\Property(property="meta_titulo", type="string"),
      *                 @OA\Property(property="meta_descripcion", type="string"),
      *                 @OA\Property(property="miniatura", type="string", format="binary"),
+     *
      *                 @OA\Property(
-     *                     property="imagenes",
+     *                     property="imagenes[]",
+     *                     description="Archivos de imágenes",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary")
      *                 ),
      *                 @OA\Property(
-     *                     property="text_alt",
+     *                     property="text_alt[]",
+     *                     description="Texto alternativo de cada imagen",
      *                     type="array",
      *                     @OA\Items(type="string")
      *                 ),
      *                 @OA\Property(
-     *                     property="parrafos",
+     *                     property="parrafos[]",
+     *                     description="Contenido de cada párrafo",
      *                     type="array",
      *                     @OA\Items(type="string")
      *                 )

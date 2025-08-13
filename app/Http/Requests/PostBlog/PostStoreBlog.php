@@ -8,19 +8,11 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostStoreBlog extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules()
     {
         return [
@@ -31,19 +23,21 @@ class PostStoreBlog extends FormRequest
             'subtitulo2' => 'required|string|max:255',
             'video_url' => 'required|url',
             'video_titulo' => 'required|string|max:2000',
+
+            'meta_titulo' => 'nullable|string|max:255',
+            'meta_descripcion' => 'nullable|string|max:500',
+
             'miniatura' => 'file|image|max:2048',
             'imagenes' => 'nullable|array',
             'imagenes.*' => 'required|image|max:2048',
+
             'text_alt' => 'required|array',
             'text_alt.*' => 'required|string|max:255',
+
             'parrafos' => 'required|array',
             'parrafos.*' => 'required|string|max:2047',
-            
-            'meta_titulo' => 'nullable|string|max:255',
-            'meta_descripcion' => 'nullable|string|max:500',
         ];
     }
-
 
     protected function failedValidation(Validator $validator)
     {

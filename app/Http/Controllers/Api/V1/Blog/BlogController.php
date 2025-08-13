@@ -141,42 +141,47 @@ class BlogController extends Controller
         }
     }
 
+    private function guardarImagen($archivo)
+    {
+        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+        $archivo->storeAs("imagenes", $nombre, "public");
+        return "/storage/imagenes/" . $nombre;
+    }
+
     /**
      * @OA\Post(
      *     path="/api/v1/blogs",
      *     summary="Crear un nuevo blog",
-     *     description="Crea un nuevo blog con miniatura, imágenes opcionales, párrafos y metadatos SEO",
      *     tags={"Blogs"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"titulo","producto_id","link","subtitulo1","subtitulo2","video_url","video_titulo","miniatura","parrafos"},
-     *                 @OA\Property(property="titulo", type="string", example="Mi nuevo blog"),
-     *                 @OA\Property(property="producto_id", type="integer", example=1),
-     *                 @OA\Property(property="link", type="string", example="mi-blog"),
-     *                 @OA\Property(property="subtitulo1", type="string", example="Subtítulo inicial"),
-     *                 @OA\Property(property="subtitulo2", type="string", example="Subtítulo secundario"),
-     *                 @OA\Property(property="video_url", type="string", example="https://www.youtube.com/watch?v=abc123"),
-     *                 @OA\Property(property="video_titulo", type="string", example="Video demostrativo"),
+     *                 @OA\Property(property="titulo", type="string"),
+     *                 @OA\Property(property="producto_id", type="integer"),
+     *                 @OA\Property(property="link", type="string"),
+     *                 @OA\Property(property="subtitulo1", type="string"),
+     *                 @OA\Property(property="subtitulo2", type="string"),
+     *                 @OA\Property(property="video_url", type="string", format="url"),
+     *                 @OA\Property(property="video_titulo", type="string"),
+     *                 @OA\Property(property="meta_titulo", type="string"),
+     *                 @OA\Property(property="meta_descripcion", type="string"),
      *                 @OA\Property(property="miniatura", type="string", format="binary"),
-     *                 @OA\Property(property="meta_titulo", type="string", example="SEO Meta Título"),
-     *                 @OA\Property(property="meta_descripcion", type="string", example="Descripción SEO"),
      *                 @OA\Property(
-     *                     property="imagenes[]",
+     *                     property="imagenes",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary")
      *                 ),
      *                 @OA\Property(
-     *                     property="text_alt[]",
+     *                     property="text_alt",
      *                     type="array",
-     *                     @OA\Items(type="string", example="Descripción de la imagen")
+     *                     @OA\Items(type="string")
      *                 ),
      *                 @OA\Property(
-     *                     property="parrafos[]",
+     *                     property="parrafos",
      *                     type="array",
-     *                     @OA\Items(type="string", example="Contenido del párrafo")
+     *                     @OA\Items(type="string")
      *                 )
      *             )
      *         )
@@ -186,20 +191,11 @@ class BlogController extends Controller
      *         description="Blog creado con éxito"
      *     ),
      *     @OA\Response(
-     *         response=500,
-     *         description="Error al crear el blog"
+     *         response=422,
+     *         description="Error de validación"
      *     )
      * )
      */
-
-    private function guardarImagen($archivo)
-    {
-        $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
-        $archivo->storeAs("imagenes", $nombre, "public");
-        return "/storage/imagenes/" . $nombre;
-    }
-
-
     public function store(PostStoreBlog $request)
     {
         $datosValidados = $request->validated();

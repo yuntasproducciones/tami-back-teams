@@ -1,0 +1,2964 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Swagger API",
+        "description": "Laravel Swagger API Documentation",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "API Server - Development"
+        },
+        {
+            "url": "https://apitami.tami-peru.com/",
+            "description": "API Server - Production"
+        },
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Iniciar sesión y generar token de acceso",
+                "operationId": "9d0bb5c770cbec19b0b9566606ef4adb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "device_name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "admin"
+                                    },
+                                    "device_name": {
+                                        "type": "string",
+                                        "example": "navegador",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Credenciales inválidas"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Cerrar sesión y revocar token",
+                "operationId": "3a27a9e02ceb521eb3f98c8d2394aef9",
+                "responses": {
+                    "200": {
+                        "description": "Sesión finalizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cierre de sesión exitoso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado para cerrar sesión"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al cerrar sesión"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/blogs": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Listar blogs",
+                "description": "Obtiene la lista de todos los blogs con sus imágenes, párrafos y producto relacionado.",
+                "operationId": "getBlogs",
+                "responses": {
+                    "200": {
+                        "description": "Lista de blogs obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blogs obtenidos exitosamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Cómo cuidar tus plantas en invierno"
+                                                    },
+                                                    "nombre_producto": {
+                                                        "type": "string",
+                                                        "example": "Maceta decorativa",
+                                                        "nullable": true
+                                                    },
+                                                    "link": {
+                                                        "type": "string",
+                                                        "example": "https://mipagina.com/blog/cuidados-invierno"
+                                                    },
+                                                    "subtitulo1": {
+                                                        "type": "string",
+                                                        "example": "Consejos prácticos"
+                                                    },
+                                                    "subtitulo2": {
+                                                        "type": "string",
+                                                        "example": "Errores comunes"
+                                                    },
+                                                    "video_id": {
+                                                        "type": "string",
+                                                        "example": "dQw4w9WgXcQ"
+                                                    },
+                                                    "video_url": {
+                                                        "type": "string",
+                                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                                    },
+                                                    "video_titulo": {
+                                                        "type": "string",
+                                                        "example": "Guía completa para cuidar tus plantas"
+                                                    },
+                                                    "miniatura": {
+                                                        "type": "string",
+                                                        "example": "https://mipagina.com/images/miniatura.jpg"
+                                                    },
+                                                    "imagenes": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "ruta_imagen": {
+                                                                    "type": "string",
+                                                                    "example": "https://mipagina.com/images/imagen1.jpg"
+                                                                },
+                                                                "text_alt": {
+                                                                    "type": "string",
+                                                                    "example": "Maceta de barro color marrón"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "parrafos": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "parrafo": {
+                                                                    "type": "string",
+                                                                    "example": "Durante el invierno, las plantas requieren menos riego..."
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-08-11T10:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-08-11T10:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al obtener los blogs: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Crear un nuevo blog",
+                "description": "Almacena un nuevo blog y retorna los datos creados",
+                "operationId": "storeBlog",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "producto_id",
+                                    "titulo",
+                                    "link",
+                                    "parrafo",
+                                    "descripcion",
+                                    "miniatura",
+                                    "titulo_blog",
+                                    "subtitulo_beneficio",
+                                    "url_video",
+                                    "titulo_video"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título del blog"
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "example": "Link a blog..."
+                                    },
+                                    "parrafo": {
+                                        "type": "string",
+                                        "example": "Contenido del blog..."
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción del blog..."
+                                    },
+                                    "miniatura": {
+                                        "description": "Archivo de imagen principal del blog",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "titulo_blog": {
+                                        "type": "string",
+                                        "example": "Título del detalle del blog"
+                                    },
+                                    "subtitulo_beneficio": {
+                                        "type": "string",
+                                        "example": "Subtítulo de beneficios"
+                                    },
+                                    "url_video": {
+                                        "type": "string",
+                                        "example": "https://example.com/video.mp4"
+                                    },
+                                    "titulo_video": {
+                                        "type": "string",
+                                        "example": "Título del video"
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "imagen": {
+                                                    "description": "Archivo de imagen adicional",
+                                                    "type": "string",
+                                                    "format": "binary",
+                                                    "example": "https://example.com/imagen-adicional.jpg"
+                                                },
+                                                "parrafo": {
+                                                    "description": "Descripción de la imagen adicional",
+                                                    "type": "string",
+                                                    "example": "Parrafo de la imagen adicional"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Blog creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/blogs/{id}": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Muestra un blog específico",
+                "description": "Retorna los datos de un blog según su ID",
+                "operationId": "showBlog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "producto_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Título del blog"
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "Link a blog..."
+                                                },
+                                                "parrafo": {
+                                                    "type": "string",
+                                                    "example": "Contenido del blog..."
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Descripcion del blog..."
+                                                },
+                                                "miniatura": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/imagen-principal.jpg"
+                                                },
+                                                "titulo_blog": {
+                                                    "type": "string",
+                                                    "example": "Título del detalle del blog"
+                                                },
+                                                "subtitulo_beneficio": {
+                                                    "type": "string",
+                                                    "example": "Subtítulo de beneficios"
+                                                },
+                                                "imagenes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url_imagen": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/imagen1.jpg"
+                                                            },
+                                                            "parrafo_imagen": {
+                                                                "type": "string",
+                                                                "example": "Descripción de la imagen"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "url_video": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/video.mp4"
+                                                },
+                                                "titulo_video": {
+                                                    "type": "string",
+                                                    "example": "Título del video"
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog encontrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Elimina un blog específico",
+                "description": "Elimina un blog existente según su ID",
+                "operationId": "destroyBlog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Actualiza parcialmente un blog específico (PATCH)",
+                "description": "Actualiza algunos datos de un blog existente según su ID",
+                "operationId": "updateBlogPatch",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título actualizado del blog"
+                                    },
+                                    "producto_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "example": "Link a blog..."
+                                    },
+                                    "subtitulo1": {
+                                        "type": "string",
+                                        "example": "Contenido actualizado del blog..."
+                                    },
+                                    "subtitulo2": {
+                                        "type": "string",
+                                        "example": "Descripcion actualizado del blog..."
+                                    },
+                                    "miniatura": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "video_url": {
+                                        "type": "string",
+                                        "example": "https://example.com/nuevo-video.mp4"
+                                    },
+                                    "video_titulo": {
+                                        "type": "string",
+                                        "example": "Título del video actualizado"
+                                    },
+                                    "imagenes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "imagen": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "parrafo": {
+                                                    "type": "string",
+                                                    "example": "Parrafo de la imagen adicional"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "text_alt": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Texto alternativo de la imagen"
+                                        }
+                                    },
+                                    "parrafos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Contenido del párrafo"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Blog actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/blogs/link/{link}": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Muestra un blog por su link",
+                "description": "Retorna los datos de un blog, incluyendo detalles, imágenes y video, según su campo link",
+                "operationId": "showBlogByLink",
+                "parameters": [
+                    {
+                        "name": "link",
+                        "in": "path",
+                        "description": "Link único del blog",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog obtenido exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "producto_id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Título del blog"
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "mi-blog-unico"
+                                                },
+                                                "parrafo": {
+                                                    "type": "string",
+                                                    "example": "Contenido introductorio del blog."
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Descripción completa del blog."
+                                                },
+                                                "imagenPrincipal": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/imagen-principal.jpg"
+                                                },
+                                                "tituloBlog": {
+                                                    "type": "string",
+                                                    "example": "Título del detalle del blog"
+                                                },
+                                                "subTituloBlog": {
+                                                    "type": "string",
+                                                    "example": "Subtítulo de beneficios"
+                                                },
+                                                "imagenesBlog": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/imagen1.jpg"
+                                                    }
+                                                },
+                                                "parrafoImagenesBlog": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Texto descriptivo de la imagen"
+                                                    }
+                                                },
+                                                "video_id": {
+                                                    "type": "string",
+                                                    "example": "dQw4w9WgXcQ"
+                                                },
+                                                "videoBlog": {
+                                                    "type": "string",
+                                                    "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                                },
+                                                "tituloVideoBlog": {
+                                                    "type": "string",
+                                                    "example": "Título del video"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-01-01T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog obtenido exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado"
+                    },
+                    "500": {
+                        "description": "Error al obtener el blog"
+                    }
+                }
+            }
+        },
+        "/api/v1/clientes": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Listar clientes",
+                "description": "Obtiene la lista de todos los clientes registrados con sus datos básicos.",
+                "operationId": "getClientes",
+                "responses": {
+                    "200": {
+                        "description": "Lista de clientes obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Clientes obtenidos exitosamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Juan Pérez"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "format": "email",
+                                                        "example": "juan.perez@example.com"
+                                                    },
+                                                    "celular": {
+                                                        "type": "string",
+                                                        "example": "+51 987654321"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al obtener los clientes: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Crear un nuevo cliente",
+                "description": "Crea un nuevo cliente con los datos proporcionados.",
+                "operationId": "createCliente",
+                "requestBody": {
+                    "description": "Datos del cliente a registrar",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "celular"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan.perez@example.com"
+                                    },
+                                    "celular": {
+                                        "type": "string",
+                                        "example": "987654321"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cliente creado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cliente creado con éxito."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "juan.perez@example.com"
+                                                },
+                                                "celular": {
+                                                    "type": "string",
+                                                    "example": "987654321"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al crear el cliente: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/clientes/{id}": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Obtener un cliente",
+                "description": "Obtiene la información de un cliente específico por su ID.",
+                "operationId": "getClienteById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del cliente a obtener",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente obtenido exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cliente obtenido exitosamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "juan.perez@example.com"
+                                                },
+                                                "celular": {
+                                                    "type": "string",
+                                                    "example": "+51 987654321"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cliente no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cliente no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al obtener el cliente: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Actualizar un cliente",
+                "description": "Actualiza la información de un cliente existente por su ID.",
+                "operationId": "updateCliente",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del cliente a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos para actualizar el cliente",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "celular"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan.perez@example.com"
+                                    },
+                                    "celular": {
+                                        "type": "string",
+                                        "example": "987654321"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente actualizado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cliente actualizado con éxito."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "juan.perez@example.com"
+                                                },
+                                                "celular": {
+                                                    "type": "string",
+                                                    "example": "987654321"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cliente no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cliente no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al actualizar el cliente: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Eliminar un cliente",
+                "description": "Elimina un cliente existente por su ID.",
+                "operationId": "deleteCliente",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del cliente a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cliente eliminado exitosamente"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cliente no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cliente no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al eliminar el cliente: mensaje del error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/emails": {
+            "post": {
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Enviar correo electrónico",
+                "description": "Envía un correo electrónico con asunto y mensaje a una dirección especificada",
+                "operationId": "sendEmail",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "to",
+                                    "subject",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "destinatario": {
+                                        "description": "Correo del destinatario",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "destinatario@gmail.com"
+                                    },
+                                    "asunto": {
+                                        "description": "Asunto del correo",
+                                        "type": "string",
+                                        "example": "Asunto del correo"
+                                    },
+                                    "mensaje": {
+                                        "description": "Contenido del mensaje",
+                                        "type": "string",
+                                        "example": "Este es el contenido del correo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Correo enviado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Correo enviado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación de datos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "to": [
+                                                    "The to field is required."
+                                                ],
+                                                "subject": [
+                                                    "The subject field is required."
+                                                ],
+                                                "message": [
+                                                    "The message field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al enviar el correo"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Listar productos",
+                "description": "Obtiene la lista de productos con sus imágenes, especificaciones y productos relacionados.",
+                "operationId": "getProductos",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "titulo": {
+                                                "type": "string",
+                                                "example": "Laptop Gamer"
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Laptop XYZ"
+                                            },
+                                            "link": {
+                                                "type": "string",
+                                                "example": "/productos/laptop-xyz"
+                                            },
+                                            "subtitulo": {
+                                                "type": "string",
+                                                "example": "Potencia y velocidad"
+                                            },
+                                            "stock": {
+                                                "type": "integer",
+                                                "example": 12
+                                            },
+                                            "precio": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 2499.99
+                                            },
+                                            "seccion": {
+                                                "type": "string",
+                                                "example": "Tecnología"
+                                            },
+                                            "descripcion": {
+                                                "type": "string",
+                                                "example": "Laptop de alto rendimiento para gaming."
+                                            },
+                                            "meta_data": {
+                                                "type": "object",
+                                                "example": {
+                                                    "color": "negro",
+                                                    "peso": "2kg"
+                                                }
+                                            },
+                                            "especificaciones": {
+                                                "type": "object",
+                                                "example": {
+                                                    "procesador": "Intel i7",
+                                                    "ram": "16GB"
+                                                }
+                                            },
+                                            "imagenes": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "url_imagen": {
+                                                            "type": "string",
+                                                            "example": "https://example.com/img1.jpg"
+                                                        },
+                                                        "texto_alt_SEO": {
+                                                            "type": "string",
+                                                            "example": "Imagen de laptop gamer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "productos_relacionados": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "nombre": {
+                                                            "type": "string",
+                                                            "example": "Mouse Gamer"
+                                                        },
+                                                        "link": {
+                                                            "type": "string",
+                                                            "example": "/productos/mouse-gamer"
+                                                        },
+                                                        "titulo": {
+                                                            "type": "string",
+                                                            "example": "Mouse RGB"
+                                                        },
+                                                        "subtitulo": {
+                                                            "type": "string",
+                                                            "example": "Alta precisión"
+                                                        },
+                                                        "stock": {
+                                                            "type": "integer",
+                                                            "example": 50
+                                                        },
+                                                        "precio": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 49.99
+                                                        },
+                                                        "seccion": {
+                                                            "type": "string",
+                                                            "example": "Accesorios"
+                                                        },
+                                                        "descripcion": {
+                                                            "type": "string",
+                                                            "example": "Mouse gamer con retroiluminación RGB."
+                                                        },
+                                                        "imagenes": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "url_imagen": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/mouse1.jpg"
+                                                                    },
+                                                                    "texto_alt_SEO": {
+                                                                        "type": "string",
+                                                                        "example": "Mouse gamer RGB"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-08-12T10:15:30Z"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-08-12T10:15:30Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener los productos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al obtener los productos: error de base de datos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Crear un nuevo producto (no funciona en Swagger)",
+                "description": "Almacena un nuevo producto, guarda la imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
+                "operationId": "storeProducto2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "titulo",
+                                    "subtitulo",
+                                    "stock",
+                                    "precio",
+                                    "seccion",
+                                    "lema",
+                                    "descripcion",
+                                    "especificaciones",
+                                    "imagenes",
+                                    "textos_alt",
+                                    "mensaje_correo"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Selladora"
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Titulo increíble"
+                                    },
+                                    "subtitulo": {
+                                        "type": "string",
+                                        "example": "Subtitulo increíble"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100.5
+                                    },
+                                    "seccion": {
+                                        "type": "string",
+                                        "example": "Decoración"
+                                    },
+                                    "lema": {
+                                        "type": "string",
+                                        "example": "Lema increíble"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción increíble"
+                                    },
+                                    "especificaciones": {
+                                        "type": "string",
+                                        "example": "Especificaciones increíbles"
+                                    },
+                                    "imagenes": {
+                                        "description": "Array de imágenes a subir",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "textos_alt": {
+                                        "description": "Array de textos alternativos para las imágenes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Texto ALT para la imagen"
+                                        }
+                                    },
+                                    "mensaje_correo": {
+                                        "type": "string",
+                                        "example": "Mensaje increíble"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/productos/{id}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Muestra un producto por su ID",
+                "description": "Retorna los datos completos de un producto según su ID",
+                "operationId": "getProductoByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto obtenido exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombreProducto": {
+                                                    "type": "string",
+                                                    "example": "Producto A"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
+                                                },
+                                                "subtitulo": {
+                                                    "type": "string",
+                                                    "example": "Calidad superior"
+                                                },
+                                                "tagline": {
+                                                    "type": "string",
+                                                    "example": "Innovación y excelencia"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Este producto destaca por su..."
+                                                },
+                                                "especificaciones": {
+                                                    "type": "string"
+                                                },
+                                                "dimensiones": {
+                                                    "type": "object"
+                                                },
+                                                "relatedProducts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "images": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url_imagen": {
+                                                                "type": "string",
+                                                                "format": "url",
+                                                                "example": "/storage/imagenes/neon.jpg"
+                                                            },
+                                                            "texto_alt_SEO": {
+                                                                "type": "string",
+                                                                "example": "Neón rojo personalizado"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "format": "url",
+                                                    "example": "/storage/imagenes/principal.jpg"
+                                                },
+                                                "stockProducto": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "precioProducto": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 99.99
+                                                },
+                                                "seccion": {
+                                                    "type": "string",
+                                                    "example": "Electrónica"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto encontrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hubo un error en el servidor"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualiza un producto específico (no funciona en Swagger)",
+                "description": "Actualiza producto, elimina todas las antiguas imagenes y guarda las nuevas imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
+                "operationId": "updateProducto2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "titulo",
+                                    "subtitulo",
+                                    "stock",
+                                    "precio",
+                                    "seccion",
+                                    "lema",
+                                    "descripcion",
+                                    "especificaciones",
+                                    "imagenes",
+                                    "textos_alt",
+                                    "mensaje_correo",
+                                    "_method"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Selladora"
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Titulo increíble"
+                                    },
+                                    "subtitulo": {
+                                        "type": "string",
+                                        "example": "Subtitulo increíble"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100.5
+                                    },
+                                    "seccion": {
+                                        "type": "string",
+                                        "example": "Decoración"
+                                    },
+                                    "lema": {
+                                        "type": "string",
+                                        "example": "Lema increíble"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción increíble"
+                                    },
+                                    "especificaciones": {
+                                        "type": "string",
+                                        "example": "Especificaciones increíbles"
+                                    },
+                                    "imagenes": {
+                                        "description": "Array de imágenes a subir",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "textos_alt": {
+                                        "description": "Array de textos alternativos para las imágenes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Texto ALT para la imagen"
+                                        }
+                                    },
+                                    "mensaje_correo": {
+                                        "type": "string",
+                                        "example": "Mensaje increíble"
+                                    },
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto actualizado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Elimina un producto específico",
+                "description": "Elimina un producto existente según su ID",
+                "operationId": "destroyProducto2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/v1/productos/link/{link}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Muestra un producto usando su enlace único",
+                "description": "Retorna los datos de un producto identificado por su campo 'link'",
+                "operationId": "getProductoByLink",
+                "parameters": [
+                    {
+                        "name": "link",
+                        "in": "path",
+                        "description": "Enlace único del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombreProducto": {
+                                                    "type": "string",
+                                                    "example": "Producto A"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Producto Premium"
+                                                },
+                                                "subtitulo": {
+                                                    "type": "string",
+                                                    "example": "Calidad superior"
+                                                },
+                                                "tagline": {
+                                                    "type": "string",
+                                                    "example": "Innovación y excelencia"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Este producto destaca por su..."
+                                                },
+                                                "especificaciones": {
+                                                    "type": "string"
+                                                },
+                                                "dimensiones": {
+                                                    "type": "object",
+                                                    "example": {
+                                                        "alto": "10cm",
+                                                        "ancho": "5cm"
+                                                    }
+                                                },
+                                                "relatedProducts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    },
+                                                    "example": [
+                                                        2,
+                                                        3,
+                                                        5
+                                                    ]
+                                                },
+                                                "images": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url_imagen": {
+                                                                "type": "string",
+                                                                "format": "url",
+                                                                "example": "/storage/imagenes/neon.jpg"
+                                                            },
+                                                            "texto_alt_SEO": {
+                                                                "type": "string",
+                                                                "example": "Neón rojo personalizado"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "format": "url",
+                                                    "example": "/storage/imagenes/principal.jpg"
+                                                },
+                                                "stockProducto": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "precioProducto": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 99.99
+                                                },
+                                                "seccion": {
+                                                    "type": "string",
+                                                    "example": "Electrónica"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto encontrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hubo un error en el servidor"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Listar todos los usuarios",
+                "description": "Obtiene una lista de todos los usuarios registrados con sus roles",
+                "operationId": "indexUsers",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuarios listados correctamente."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "johndoe@example.com"
+                                                    },
+                                                    "celular": {
+                                                        "type": "string",
+                                                        "example": "1234567890"
+                                                    },
+                                                    "fecha": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "1990-01-01"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "USER"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un problema al listar los usuarios"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Crear un nuevo usuario",
+                "description": "Crea un nuevo usuario y le asigna el rol USER",
+                "operationId": "storeUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "celular",
+                                    "fecha"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Nombre del usuario",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "Correo electrónico",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "Contraseña",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "celular": {
+                                        "description": "Número de celular",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "fecha": {
+                                        "description": "Fecha de nacimiento",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario creado correctamente"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados no son válidos"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al crear usuario"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener un usuario específico",
+                "description": "Retorna los datos de un usuario según su ID",
+                "operationId": "showUsuario",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a consultar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado o no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario encontrado."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john@example.com"
+                                                },
+                                                "celular": {
+                                                    "type": "string",
+                                                    "example": "999888777"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario no encontrado."
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un problema al procesar la solicitud. Detalles del error."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar usuario",
+                "description": "Actualiza los datos de un usuario existente",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nombre del usuario",
+                                        "type": "string",
+                                        "example": "John Doe Updated"
+                                    },
+                                    "email": {
+                                        "description": "Correo electrónico",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoeupdated@example.com"
+                                    },
+                                    "celular": {
+                                        "description": "Número de celular",
+                                        "type": "string",
+                                        "example": "0987654321"
+                                    },
+                                    "fecha": {
+                                        "description": "Fecha de nacimiento",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario actualizado correctamente."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Recurso no encontrado"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados no son válidos"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un problema al actualizar al usuario"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Eliminar usuario",
+                "description": "Elimina un usuario por su ID",
+                "operationId": "destroyUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario eliminado correctamente."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Recurso no encontrado"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un problema con la eliminación del usuario"
+                                        },
+                                        "errors": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permisos": {
+            "get": {
+                "tags": [
+                    "Roles y Permisos"
+                ],
+                "summary": "Muestra un listado de todos los permisos",
+                "description": "Retorna un array con todos los permisos",
+                "operationId": "indexPermisos",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Producto Premium"
+                                                    },
+                                                    "parrafo": {
+                                                        "type": "string",
+                                                        "example": "La mejor calidad"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Un producto elaborado por los mejores especialistas del país."
+                                                    },
+                                                    "imagenPrincipal": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/imagen.jpg"
+                                                    },
+                                                    "tituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del Blog"
+                                                    },
+                                                    "subTituloBlog": {
+                                                        "type": "string",
+                                                        "example": "Subtítulo del Blog"
+                                                    },
+                                                    "imagenesBlog": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "url": {
+                                                                    "type": "string",
+                                                                    "example": "https://example.com/imagen1.jpg"
+                                                                },
+                                                                "parrafo": {
+                                                                    "type": "string",
+                                                                    "example": "Descripción de la imagen"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "video_id": {
+                                                        "type": "string",
+                                                        "example": "CSqLojbONfw"
+                                                    },
+                                                    "videoBlog": {
+                                                        "type": "string",
+                                                        "example": "https://youtu.be/CSqLojbONfw"
+                                                    },
+                                                    "tituloVideoBlog": {
+                                                        "type": "string",
+                                                        "example": "Título del video"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-01T14:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Permisos obtenidos exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles y Permisos"
+                ],
+                "summary": "Crear un nuevo permiso",
+                "description": "Almacena un nuevo permiso",
+                "operationId": "storePermiso",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "CREAR BLOGS"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Permiso creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Permiso creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Bearer authentication with Sanctum",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación",
+            "description": "Operaciones de autenticación de usuarios"
+        },
+        {
+            "name": "Email",
+            "description": "API Endpoints de Email"
+        },
+        {
+            "name": "Usuarios",
+            "description": "API para gestión de usuarios"
+        },
+        {
+            "name": "Blogs",
+            "description": "Blogs"
+        },
+        {
+            "name": "Clientes",
+            "description": "Clientes"
+        },
+        {
+            "name": "Productos",
+            "description": "Productos"
+        },
+        {
+            "name": "Roles y Permisos",
+            "description": "Roles y Permisos"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}

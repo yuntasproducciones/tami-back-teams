@@ -42,5 +42,10 @@ class Blog extends Model
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id');
-    }   
+    }
+
+    public function etiqueta()
+    {
+        return $this->hasOne(BlogEtiqueta::class);
+    }
 }

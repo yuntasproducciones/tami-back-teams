@@ -18,7 +18,7 @@ class ProductoController extends Controller
      * @OA\Get(
      *     path="/api/v1/productos",
      *     summary="Listar productos",
-     *     description="Obtiene la lista de productos con sus imágenes, especificaciones y productos relacionados.",
+     *     description="Obtiene la lista de productos con sus imágenes, especificaciones, productos relacionados y etiquetas.",
      *     operationId="getProductos",
      *     tags={"Productos"},
      *     @OA\Response(
@@ -36,7 +36,6 @@ class ProductoController extends Controller
      *                 @OA\Property(property="precio", type="number", format="float", example=2499.99),
      *                 @OA\Property(property="seccion", type="string", example="Tecnología"),
      *                 @OA\Property(property="descripcion", type="string", example="Laptop de alto rendimiento para gaming."),
-     *                 @OA\Property(property="meta_data", type="object", example={"color": "negro", "peso": "2kg"}),
      *                 @OA\Property(
      *                     property="especificaciones",
      *                     type="object",
@@ -76,6 +75,13 @@ class ProductoController extends Controller
      *                         )
      *                     )
      *                 ),
+     *                 @OA\Property(
+     *                     property="etiqueta",
+     *                     type="object",
+     *                     nullable=true,
+     *                     @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+     *                     @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
+     *                 ),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-08-12T10:15:30Z"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-12T10:15:30Z")
      *             )
@@ -93,7 +99,7 @@ class ProductoController extends Controller
     public function index()
     {
         try {
-            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes'])
+            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta'])
                 ->orderBy('created_at')
                 ->get();
 
@@ -113,7 +119,6 @@ class ProductoController extends Controller
                     'precio' => $producto->precio,
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
-                    'meta_data' => $producto->meta_data ?? [],
                     'especificaciones' => $especificacionesFormateadas,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
@@ -140,6 +145,10 @@ class ProductoController extends Controller
                             }),
                         ];
                     }),
+                    'etiqueta' => $producto->etiqueta ? [
+                        'meta_titulo' => $producto->etiqueta->meta_titulo,
+                        'meta_descripcion' => $producto->etiqueta->meta_descripcion,
+                    ] : null,
                     'created_at' => $producto->created_at,
                     'updated_at' => $producto->updated_at
                 ];
@@ -193,7 +202,7 @@ class ProductoController extends Controller
  *             @OA\Schema(
  *                 required={
  *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
- *                     "seccion", "lema", "descripcion", "especificaciones",
+ *                     "seccion", "descripcion", "especificaciones",
  *                     "imagenes", "textos_alt", "mensaje_correo"
  *                 },
  *                 @OA\Property(property="nombre", type="string", example="Selladora"),
@@ -202,7 +211,6 @@ class ProductoController extends Controller
  *                 @OA\Property(property="stock", type="integer", example=20),
  *                 @OA\Property(property="precio", type="number", format="float", example=100.50),
  *                 @OA\Property(property="seccion", type="string", example="Decoración"),
- *                 @OA\Property(property="lema", type="string", example="Lema increíble"),
  *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
  *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
  *                 
@@ -220,7 +228,9 @@ class ProductoController extends Controller
  *                     description="Array de textos alternativos para las imágenes"
  *                 ),
  *                 
- *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble")
+ *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
+ *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+ *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
  *             )
  *         )
  *     ),
@@ -230,17 +240,17 @@ class ProductoController extends Controller
  *         @OA\JsonContent(
  *             @OA\Property(property="message", type="string", example="Producto creado exitosamente")
  *         )
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="Error de validación"
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Error del servidor"
- *     )
- * )
- */
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
     private function guardarImagen($archivo)
     {
         $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
@@ -273,8 +283,14 @@ class ProductoController extends Controller
             "precio" => $datosValidados["precio"] ?? null,
             "seccion" => $datosValidados["seccion"] ?? null,
             "descripcion" => $datosValidados["descripcion"] ?? null,
-            "meta_data" => $datosValidados["meta_data"] ?? [],
         ]);
+
+        if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            $producto->etiqueta()->create([
+                'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+            ]);
+        }
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
@@ -338,7 +354,11 @@ class ProductoController extends Controller
      *                 @OA\Property(property="image", type="string", format="url", example="/storage/imagenes/principal.jpg"),
      *                 @OA\Property(property="stockProducto", type="integer", example=10),
      *                 @OA\Property(property="precioProducto", type="number", format="float", example=99.99),
-     *                 @OA\Property(property="seccion", type="string", example="Electrónica")
+     *                 @OA\Property(property="seccion", type="string", example="Electrónica"),
+     *                 @OA\Property(property="etiqueta", type="object", nullable=true,
+     *                     @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+     *                     @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
+     *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="Producto encontrado exitosamente")
      *         )
@@ -366,7 +386,7 @@ class ProductoController extends Controller
     public function show(string $id)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados'])->find($id);
+            $producto = Producto::with(['imagenes', 'productosRelacionados', 'etiqueta'])->find($id);
 
             if ($producto === null) {
                 return response()->json([
@@ -388,13 +408,16 @@ class ProductoController extends Controller
                 'titulo' => $producto->titulo,
                 'subtitulo' => $producto->subtitulo,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => $producto->meta_data ?? [],
                 'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
                 'precio' => $producto->precio,
                 'seccion' => $producto->seccion,
+                'etiqueta' => $producto->etiqueta ? [
+                    'meta_titulo' => $producto->etiqueta->meta_titulo,
+                    'meta_descripcion' => $producto->etiqueta->meta_descripcion,
+                ] : null,
             ];
 
             return response()->json([
@@ -457,7 +480,11 @@ class ProductoController extends Controller
      *                 @OA\Property(property="image", type="string", format="url", example="/storage/imagenes/principal.jpg"),
      *                 @OA\Property(property="stockProducto", type="integer", example=10),
      *                 @OA\Property(property="precioProducto", type="number", format="float", example=99.99),
-     *                 @OA\Property(property="seccion", type="string", example="Electrónica")
+     *                 @OA\Property(property="seccion", type="string", example="Electrónica"),
+     *                 @OA\Property(property="etiqueta", type="object", nullable=true,
+     *                     @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+     *                     @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
+     *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="Producto encontrado exitosamente")
      *         )
@@ -477,7 +504,7 @@ class ProductoController extends Controller
     public function showByLink($link)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes'])
+            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes', 'etiqueta'])
                 ->where('link', $link)
                 ->first();
 
@@ -499,13 +526,16 @@ class ProductoController extends Controller
                 'titulo' => $producto->titulo,
                 'subtitulo' => $producto->subtitulo,
                 'descripcion' => $producto->descripcion,
-                'meta_data' => $producto->meta_data ?? [],
                 'especificaciones' => $producto->especificaciones ?? [],
                 'productos_relacionados' => $producto->productosRelacionados,
                 'imagenes' => $imagenes->toArray(),
                 'stock' => $producto->stock,
                 'precio' => $producto->precio,
                 'seccion' => $producto->seccion,
+                'etiqueta' => $producto->etiqueta ? [
+                    'meta_titulo' => $producto->etiqueta->meta_titulo,
+                    'meta_descripcion' => $producto->etiqueta->meta_descripcion,
+                ] : null,
             ];
 
             return response()->json([
@@ -552,7 +582,7 @@ class ProductoController extends Controller
      *             @OA\Schema(
      *                 required={
      *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
-     *                     "seccion", "lema", "descripcion", "especificaciones",
+     *                     "seccion", "descripcion", "especificaciones",
      *                      "imagenes", "textos_alt", "mensaje_correo", "_method"
      *                 },
      *                 @OA\Property(property="nombre", type="string", example="Selladora"),
@@ -561,7 +591,6 @@ class ProductoController extends Controller
      *                 @OA\Property(property="stock", type="integer", example=20),
      *                 @OA\Property(property="precio", type="number", format="float", example=100.50),
      *                 @OA\Property(property="seccion", type="string", example="Decoración"),
-     *                 @OA\Property(property="lema", type="string", example="Lema increíble"),
      *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
      *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
      *                 
@@ -580,7 +609,9 @@ class ProductoController extends Controller
      *                 ),
      *                 
      *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
-     *                 @OA\Property(property="_method", type="string", example="PUT")
+     *                 @OA\Property(property="_method", type="string", example="PUT"),
+     *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
      *             )
      *         )
      *     ),
@@ -621,7 +652,7 @@ class ProductoController extends Controller
             $camposActualizar = [];
             foreach([
                 "nombre", "link", "titulo", "subtitulo", "stock", "precio",
-                "seccion", "descripcion", "meta_data"
+                "seccion", "descripcion"
             ] as $campo) {
                 if (array_key_exists($campo, $datosValidados)) {
                     $camposActualizar[$campo] = $datosValidados[$campo];
@@ -629,6 +660,18 @@ class ProductoController extends Controller
             }
             Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
             $producto->update($camposActualizar);
+
+            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+                $producto->etiqueta()->updateOrCreate(
+                    ['producto_id' => $producto->id],
+                    [
+                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                    ]
+                );
+            } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
+                $producto->etiqueta()->delete();
+            }
 
             // Eliminar imágenes antiguas si se envían nuevas
             if (isset($datosValidados['imagenes'])) {
@@ -721,7 +764,7 @@ class ProductoController extends Controller
         //
         DB::beginTransaction();
         try {
-             $producto = Producto::with(['imagenes', 'especificaciones'])->find($id);
+             $producto = Producto::with(['imagenes', 'especificaciones', 'etiqueta'])->find($id);
             if ($producto == null) {
                 return response()->json(["message" => "Producto no encontrado"], status: 404);
             }
@@ -735,6 +778,7 @@ class ProductoController extends Controller
             }
 
             $producto->especificaciones()->delete(); 
+            $producto->etiqueta()->delete();
 
             $producto->delete();
             DB::commit();

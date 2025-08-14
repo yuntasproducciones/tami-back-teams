@@ -109,6 +109,7 @@ class ProductoController extends Controller
                     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
                 }
 
+                Log::info('Producto ID: ' . $producto->id . ' - Etiqueta antes del mapeo: ', ['etiqueta' => $producto->etiqueta]);
                 return [
                     'id' => $producto->id,
                     'titulo' => $producto->titulo,

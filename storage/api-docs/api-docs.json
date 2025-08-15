@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://my-default-host.com",
+            "url": "http://localhost:8000",
             "description": "API Server - Development"
         },
         {
@@ -1587,16 +1587,14 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/v2/productos": {
+            },
             "post": {
                 "tags": [
                     "Productos"
                 ],
                 "summary": "Crear un nuevo producto",
                 "description": "Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones",
-                "operationId": "2eb8761e9a4f82729865336aac05d51e",
+                "operationId": "468de9e11abd99c66494dcce5d785b15",
                 "requestBody": {
                     "required": true,
                     "content": {

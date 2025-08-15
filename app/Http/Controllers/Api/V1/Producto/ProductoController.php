@@ -186,7 +186,7 @@ class ProductoController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v2/productos",
+     *     path="/api/v1/productos",
      *     summary="Crear un nuevo producto",
      *     description="Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones",
      *     tags={"Productos"},

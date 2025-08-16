@@ -197,6 +197,7 @@ class ProductoController extends Controller
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={"nombre", "precio", "imagenes[]"},
+     *                 
      *                 @OA\Property(property="nombre", type="string", example="Camiseta deportiva"),
      *                 @OA\Property(property="link", type="string", example="camiseta-deportiva"),
      *                 @OA\Property(property="titulo", type="string", example="Camiseta DryFit Hombre"),
@@ -205,7 +206,7 @@ class ProductoController extends Controller
      *                 @OA\Property(property="precio", type="number", format="float", example=89.90),
      *                 @OA\Property(property="seccion", type="string", example="Ropa Deportiva"),
      *                 @OA\Property(property="descripcion", type="string", example="Camiseta ligera y transpirable."),
-     *
+     * 
      *                 @OA\Property(
      *                     property="etiquetas[meta_titulo]",
      *                     type="string",
@@ -216,25 +217,25 @@ class ProductoController extends Controller
      *                     type="string",
      *                     example="Compra la mejor camiseta deportiva para hombre."
      *                 ),
-     *
+     * 
      *                 @OA\Property(
      *                     property="relacionados[]",
      *                     type="array",
      *                     @OA\Items(type="integer", example=2)
      *                 ),
-     *
+     * 
      *                 @OA\Property(
      *                     property="imagenes[]",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary")
      *                 ),
-     *
+     * 
      *                 @OA\Property(
      *                     property="textos_alt[]",
      *                     type="array",
      *                     @OA\Items(type="string", example="Camiseta azul vista frontal")
      *                 ),
-     *
+     * 
      *                 @OA\Property(
      *                     property="especificaciones_clave[]",
      *                     type="array",
@@ -311,11 +312,19 @@ class ProductoController extends Controller
         $claves = $datosValidados["especificaciones_clave"] ?? [];
         $valores = $datosValidados["especificaciones_valor"] ?? [];
 
+        // Si las claves o valores llegan como un array con una única cadena separada por comas, divídelos
+        if (is_array($claves) && count($claves) === 1 && is_string($claves[0]) && str_contains($claves[0], ',')) {
+            $claves = explode(',', $claves[0]);
+        }
+        if (is_array($valores) && count($valores) === 1 && is_string($valores[0]) && str_contains($valores[0], ',')) {
+            $valores = explode(',', $valores[0]);
+        }
+
         $especificacionesProcesadas = [];
         foreach ($claves as $i => $clave) {
             $especificacionesProcesadas[] = [
-                'clave' => $clave,
-                'valor' => $valores[$i] ?? null
+                'clave' => trim($clave), // Eliminar espacios en blanco alrededor de la clave
+                'valor' => trim($valores[$i] ?? null) // Eliminar espacios en blanco alrededor del valor
             ];
         }
 

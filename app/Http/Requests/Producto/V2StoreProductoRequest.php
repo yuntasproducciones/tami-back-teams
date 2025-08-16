@@ -15,6 +15,18 @@ class V2StoreProductoRequest extends FormRequest
     }
 
     /**
+     * Convert values before validation.
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->has('relacionados') && is_array($this->relacionados)) {
+            $this->merge([
+                'relacionados' => array_map('intval', $this->relacionados)
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

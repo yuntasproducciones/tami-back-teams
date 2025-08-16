@@ -35,6 +35,9 @@ class UpdateBlog extends FormRequest
             'video_url' => [$required, 'url'],
             'video_titulo' => [$required, 'string', 'max:255'],
 
+            'meta_titulo' => 'nullable|string|max:255',
+            'meta_descripcion' => 'nullable|string|max:500',
+
             'miniatura' => ['sometimes', 'image', 'max:2048'],
             'imagenes' => ['sometimes', 'array'],
             'imagenes.*' => ['sometimes', 'image', 'max:2048'],

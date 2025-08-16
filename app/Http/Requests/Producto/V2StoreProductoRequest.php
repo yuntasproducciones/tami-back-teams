@@ -44,7 +44,7 @@ class V2StoreProductoRequest extends FormRequest
             'descripcion' => "nullable|string|max:65535",
 
             // Etiquetas SEO
-            'meta_titulo' => 'nullable|string|min:50|max:60',
+            'meta_titulo' => 'nullable|string|min:10|max:60',
             'meta_descripcion' => 'nullable|string|min:40|max:160',
 
             // Especificaciones

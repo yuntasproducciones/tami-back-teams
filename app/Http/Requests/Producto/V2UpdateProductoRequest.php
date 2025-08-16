@@ -35,7 +35,7 @@ class V2UpdateProductoRequest extends FormRequest
             'seccion' => [$required, 'string', 'max:255'],
             'descripcion' => [$required, 'string', 'max:65535'],
             'meta_titulo' => 'nullable|string|min:10|max:60',
-            'meta_descripcion' => 'nullable|string|min:10|max:160',
+            'meta_descripcion' => 'nullable|string|min:40|max:160',
             'especificaciones' => [$required, 'string', 'max:65535'],
 
             'imagenes' => ['sometimes', 'array'],

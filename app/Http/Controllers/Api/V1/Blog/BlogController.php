@@ -158,34 +158,84 @@ class BlogController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 @OA\Property(property="titulo", type="string"),
-     *                 @OA\Property(property="producto_id", type="integer"),
-     *                 @OA\Property(property="link", type="string"),
-     *                 @OA\Property(property="subtitulo1", type="string"),
-     *                 @OA\Property(property="subtitulo2", type="string"),
-     *                 @OA\Property(property="video_url", type="string", format="url"),
-     *                 @OA\Property(property="video_titulo", type="string"),
-     *                 @OA\Property(property="meta_titulo", type="string"),
-     *                 @OA\Property(property="meta_descripcion", type="string"),
-     *                 @OA\Property(property="miniatura", type="string", format="binary"),
-     *
+     *                 @OA\Property(
+     *                     property="titulo",
+     *                     type="string",
+     *                     example="Cómo cuidar tu piel en verano"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="producto_id",
+     *                     type="integer",
+     *                     example=5
+     *                 ),
+     *                 @OA\Property(
+     *                     property="link",
+     *                     type="string",
+     *                     example="como-cuidar-tu-piel-verano"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="subtitulo1",
+     *                     type="string",
+     *                     example="La importancia de la protección solar"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="subtitulo2",
+     *                     type="string",
+     *                     example="Consejos prácticos para tu rutina diaria"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="video_url",
+     *                     type="string",
+     *                     format="url",
+     *                     example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="video_titulo",
+     *                     type="string",
+     *                     example="Guía completa de protección solar"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="meta_titulo",
+     *                     type="string",
+     *                     example="Tips para cuidar la piel en verano"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="meta_descripcion",
+     *                     type="string",
+     *                     example="Aprende a proteger tu piel del sol con estos consejos prácticos y efectivos."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="miniatura",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Imagen de portada del blog"
+     *                 ),
      *                 @OA\Property(
      *                     property="imagenes[]",
      *                     description="Archivos de imágenes",
      *                     type="array",
-     *                     @OA\Items(type="string", format="binary")
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="binary"
+     *                     )
      *                 ),
      *                 @OA\Property(
      *                     property="text_alt[]",
      *                     description="Texto alternativo de cada imagen",
      *                     type="array",
-     *                     @OA\Items(type="string")
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="Persona aplicando protector solar"
+     *                     )
      *                 ),
      *                 @OA\Property(
      *                     property="parrafos[]",
      *                     description="Contenido de cada párrafo",
      *                     type="array",
-     *                     @OA\Items(type="string")
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="El uso de protector solar es fundamental para prevenir el envejecimiento prematuro."
+     *                     )
      *                 )
      *             )
      *         )
@@ -478,112 +528,85 @@ class BlogController extends Controller
         }
     }
 
-   /**
- * @OA\Put(
- *     path="/api/v1/blogs/{id}",
- *     summary="Actualiza un blog específico (PUT)",
- *     description="Actualiza todos los datos de un blog existente según su ID",
- *     operationId="updateBlogPut",
- *     tags={"Blogs"},
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         description="ID del blog a actualizar",
- *         required=true,
- *         @OA\Schema(type="integer")
- *     ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 required={"titulo", "producto_id", "link", "subtitulo1", "subtitulo2", "video_url", "video_titulo", "miniatura", "parrafos", "text_alt"},
- *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
- *                 @OA\Property(property="producto_id", type="integer", example=1),
- *                 @OA\Property(property="link", type="string", example="Link a blog..."),
- *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
- *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
- *                 @OA\Property(property="miniatura", type="string", format="binary"),
- *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
- *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
- *                 @OA\Property(property="imagenes", type="array", 
- *                     @OA\Items(
- *                         type="object",
- *                         @OA\Property(property="imagen", type="string", format="binary"),
- *                         @OA\Property(property="parrafo", type="string", example="Parrafo de la imagen adicional")
- *                     )
- *                 ),
- *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
- *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo")),
- *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
- *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Blog actualizado exitosamente",
- *         @OA\JsonContent(
- *             @OA\Property(property="success", type="boolean", example=true),
- *             @OA\Property(property="data", type="object"),
- *             @OA\Property(property="message", type="string", example="Blog actualizado exitosamente")
- *         )
- *     ),
- *     @OA\Response(response=404, description="Blog no encontrado"),
- *     @OA\Response(response=422, description="Error de validación"),
- *     @OA\Response(response=500, description="Error del servidor")
- * )
- */
-
     /**
- * @OA\Patch(
- *     path="/api/v1/blogs/{id}",
- *     summary="Actualiza parcialmente un blog específico (PATCH)",
- *     description="Actualiza algunos datos de un blog existente según su ID",
- *     operationId="updateBlogPatch",
- *     tags={"Blogs"},
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         description="ID del blog a actualizar",
- *         required=true,
- *         @OA\Schema(type="integer")
- *     ),
- *     @OA\RequestBody(
- *         required=false,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 @OA\Property(property="titulo", type="string", example="Título actualizado del blog"),
- *                 @OA\Property(property="producto_id", type="integer", example=1),
- *                 @OA\Property(property="link", type="string", example="Link a blog..."),
- *                 @OA\Property(property="subtitulo1", type="string", example="Contenido actualizado del blog..."),
- *                 @OA\Property(property="subtitulo2", type="string", example="Descripcion actualizado del blog..."),
- *                 @OA\Property(property="miniatura", type="string", format="binary"),
- *                 @OA\Property(property="video_url", type="string", example="https://example.com/nuevo-video.mp4"),
- *                 @OA\Property(property="video_titulo", type="string", example="Título del video actualizado"),
- *                 @OA\Property(property="imagenes", type="array", 
- *                     @OA\Items(
- *                         type="object",
- *                         @OA\Property(property="imagen", type="string", format="binary"),
- *                         @OA\Property(property="parrafo", type="string", example="Parrafo de la imagen adicional")
- *                     )
- *                 ),
- *                 @OA\Property(property="text_alt", type="array", @OA\Items(type="string", example="Texto alternativo de la imagen")),
- *                 @OA\Property(property="parrafos", type="array", @OA\Items(type="string", example="Contenido del párrafo")),
- *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del blog"),
- *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del blog")
- *             )
- *         )
- *     ),
- *     @OA\Response(response=200, description="Blog actualizado exitosamente"),
- *     @OA\Response(response=404, description="Blog no encontrado"),
- *     @OA\Response(response=422, description="Error de validación"),
- *     @OA\Response(response=500, description="Error del servidor")
- * )
- */
-
-
+     * @OA\Post(
+     *     path="/api/v1/blogs/{id}",
+     *     summary="Actualizar un blog (con archivos) usando method override",
+     *     tags={"Blogs"},
+     *     description="Usa POST con _method=PUT porque PHP no parsea multipart/form-data en PUT. Laravel hará el override a PUT internamente.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del blog a actualizar",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="_method",
+     *                     type="string",
+     *                     example="PUT",
+     *                     description="Override de método para que Laravel trate la petición como PUT"
+     *                 ),
+     *                 @OA\Property(property="titulo", type="string", example="Cómo cuidar tu piel en invierno"),
+     *                 @OA\Property(property="producto_id", type="integer", example=8),
+     *                 @OA\Property(property="link", type="string", example="como-cuidar-tu-piel-invierno"),
+     *                 @OA\Property(property="subtitulo1", type="string", example="Protección contra el frío extremo"),
+     *                 @OA\Property(property="subtitulo2", type="string", example="Rutina de hidratación recomendada"),
+     *                 @OA\Property(property="video_url", type="string", format="url", example="https://www.youtube.com/watch?v=abcd1234"),
+     *                 @OA\Property(property="video_titulo", type="string", example="Guía completa de cuidado de la piel en invierno"),
+     *                 @OA\Property(property="meta_titulo", type="string", example="Consejos para cuidar tu piel en invierno"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Descubre cómo proteger tu piel del frío y mantenerla saludable."),
+     *
+     *                 @OA\Property(
+     *                     property="miniatura",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Imagen de miniatura. No se puede enviar null en binary; usa eliminar_miniatura=1 para borrarla."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="eliminar_miniatura",
+     *                     type="boolean",
+     *                     example=false,
+     *                     description="Envia true/1 para eliminar la miniatura existente si no subirás una nueva."
+     *                 ),
+     *
+     *                 @OA\Property(
+     *                     property="imagenes[]",
+     *                     description="Imágenes del blog (reemplaza todas si se envía)",
+     *                     type="array",
+     *                     @OA\Items(type="string", format="binary")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="text_alt[]",
+     *                     description="Texto alternativo alineado por índice con 'imagenes[]'",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Persona aplicando crema hidratante")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="parrafos[]",
+     *                     description="Contenido de párrafos (reemplaza todos si se envía)",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas.")
+     *                 )
+     *             ),
+     *             @OA\Encoding(name="miniatura", contentType="application/octet-stream"),
+     *             @OA\Encoding(name="imagenes[]", explode=true, contentType="application/octet-stream")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Blog actualizado exitosamente"
+     *     ),
+     *     @OA\Response(response=404, description="Blog no encontrado"),
+     *     @OA\Response(response=422, description="Error de validación"),
+     *     @OA\Response(response=500, description="Error interno del servidor")
+     * )
+     */
     public function update(UpdateBlog $request, $id)
     {
         $datosValidados = $request->validated();
@@ -674,41 +697,40 @@ class BlogController extends Controller
     }
 
     /**
-     * Eliminar un blog específico
-     * 
      * @OA\Delete(
      *     path="/api/v1/blogs/{id}",
-     *     summary="Elimina un blog específico",
-     *     description="Elimina un blog existente según su ID",
-     *     operationId="destroyBlog",
+     *     summary="Eliminar un blog",
      *     tags={"Blogs"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID del blog a eliminar",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         description="ID del blog a eliminar",
+     *         @OA\Schema(type="integer", example=12)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Blog eliminado exitosamente",
      *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="null"),
      *             @OA\Property(property="message", type="string", example="Blog eliminado exitosamente")
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Blog no encontrado"
+     *         description="Blog no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No se encontró el blog con el ID proporcionado")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Error del servidor"
+     *         description="Error interno al intentar eliminar el blog",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error al eliminar el blog: error inesperado")
+     *         )
      *     )
      * )
      */
-
     public function destroy($id)
     {
         DB::beginTransaction();

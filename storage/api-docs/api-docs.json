@@ -1620,7 +1620,7 @@
                     "Productos"
                 ],
                 "summary": "Crear un nuevo producto",
-                "description": "Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones",
+                "description": "Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones (en formato JSON).",
                 "operationId": "468de9e11abd99c66494dcce5d785b15",
                 "requestBody": {
                     "required": true,
@@ -1695,19 +1695,10 @@
                                             "example": "Camiseta azul vista frontal"
                                         }
                                     },
-                                    "especificaciones_clave[]": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "example": "Color"
-                                        }
-                                    },
-                                    "especificaciones_valor[]": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "example": "Azul"
-                                        }
+                                    "especificaciones": {
+                                        "description": "JSON con pares clave-valor de especificaciones",
+                                        "type": "string",
+                                        "example": "{\"Color\":\"Azul\", \"Talla\":\"M\", \"Material\":\"Poliéster\"}"
                                     }
                                 },
                                 "type": "object"

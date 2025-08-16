@@ -188,9 +188,9 @@ class ProductoController extends Controller
      * @OA\Post(
      *     path="/api/v1/productos",
      *     summary="Crear un nuevo producto",
-     *     description="Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones",
+     *     description="Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones (en formato JSON).",
      *     tags={"Productos"},
-     *     security={{"sanctum": {}}},
+     *     security={{"sanctum": {}}}, 
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
@@ -237,14 +237,10 @@ class ProductoController extends Controller
      *                 ),
      * 
      *                 @OA\Property(
-     *                     property="especificaciones_clave[]",
-     *                     type="array",
-     *                     @OA\Items(type="string", example="Color")
-     *                 ),
-     *                 @OA\Property(
-     *                     property="especificaciones_valor[]",
-     *                     type="array",
-     *                     @OA\Items(type="string", example="Azul")
+     *                     property="especificaciones",
+     *                     type="string",
+     *                     description="JSON con pares clave-valor de especificaciones",
+     *                     example="{""Color"":""Azul"", ""Talla"":""M"", ""Material"":""Poliéster""}"
      *                 )
      *             )
      *         )
@@ -300,36 +296,26 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
         ]);
 
-        $producto->etiqueta()->create([
-            'producto_id' => $producto->id,
-            'meta_titulo' => $datosValidados['etiquetas']['meta_titulo'] ?? null,
-            'meta_descripcion' => $datosValidados['etiquetas']['meta_descripcion'] ?? null,
-        ]);
+        if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            $producto->etiqueta()->create([
+                'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+            ]);
+        }
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
 
-        $claves = $datosValidados["especificaciones_clave"] ?? [];
-        $valores = $datosValidados["especificaciones_valor"] ?? [];
+        // Aquí solo este bloque basta
+        $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
 
-        // Si las claves o valores llegan como un array con una única cadena separada por comas, divídelos
-        if (is_array($claves) && count($claves) === 1 && is_string($claves[0]) && str_contains($claves[0], ',')) {
-            $claves = explode(',', $claves[0]);
-        }
-        if (is_array($valores) && count($valores) === 1 && is_string($valores[0]) && str_contains($valores[0], ',')) {
-            $valores = explode(',', $valores[0]);
-        }
-
-        $especificacionesProcesadas = [];
-        foreach ($claves as $i => $clave) {
-            $especificacionesProcesadas[] = [
-                'clave' => trim($clave), // Eliminar espacios en blanco alrededor de la clave
-                'valor' => trim($valores[$i] ?? null) // Eliminar espacios en blanco alrededor del valor
-            ];
-        }
-
-        if (!empty($especificacionesProcesadas)) {
-            $producto->especificaciones()->createMany($especificacionesProcesadas);
+        if (is_array($especificaciones)) {
+            foreach ($especificaciones as $clave => $valor) {
+                $producto->especificaciones()->create([
+                    'clave' => $clave,
+                    'valor' => $valor,
+                ]);
+            }
         }
 
         return response()->json(["message" => "Producto insertado exitosamente"], 201);

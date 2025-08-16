@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "https://apitami.tamimaquinarias.com",
             "description": "API Server - Development"
         },
         {
@@ -321,34 +321,44 @@
                             "schema": {
                                 "properties": {
                                     "titulo": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Cómo cuidar tu piel en verano"
                                     },
                                     "producto_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 5
                                     },
                                     "link": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "como-cuidar-tu-piel-verano"
                                     },
                                     "subtitulo1": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "La importancia de la protección solar"
                                     },
                                     "subtitulo2": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Consejos prácticos para tu rutina diaria"
                                     },
                                     "video_url": {
                                         "type": "string",
-                                        "format": "url"
+                                        "format": "url",
+                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
                                     },
                                     "video_titulo": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Guía completa de protección solar"
                                     },
                                     "meta_titulo": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Tips para cuidar la piel en verano"
                                     },
                                     "meta_descripcion": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Aprende a proteger tu piel del sol con estos consejos prácticos y efectivos."
                                     },
                                     "miniatura": {
+                                        "description": "Imagen de portada del blog",
                                         "type": "string",
                                         "format": "binary"
                                     },
@@ -364,14 +374,16 @@
                                         "description": "Texto alternativo de cada imagen",
                                         "type": "array",
                                         "items": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "Persona aplicando protector solar"
                                         }
                                     },
                                     "parrafos[]": {
                                         "description": "Contenido de cada párrafo",
                                         "type": "array",
                                         "items": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "El uso de protector solar es fundamental para prevenir el envejecimiento prematuro."
                                         }
                                     }
                                 },
@@ -520,63 +532,12 @@
                     }
                 }
             },
-            "delete": {
+            "put": {
                 "tags": [
                     "Blogs"
                 ],
-                "summary": "Elimina un blog específico",
-                "description": "Elimina un blog existente según su ID",
-                "operationId": "destroyBlog",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del blog a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Blog eliminado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "null"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Blog eliminado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Blog no encontrado"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Blogs"
-                ],
-                "summary": "Actualiza parcialmente un blog específico (PATCH)",
-                "description": "Actualiza algunos datos de un blog existente según su ID",
-                "operationId": "updateBlogPatch",
+                "summary": "Actualizar un blog existente",
+                "operationId": "66af4f5c12d93646d611d3f1ee54307f",
                 "parameters": [
                     {
                         "name": "id",
@@ -584,85 +545,82 @@
                         "description": "ID del blog a actualizar",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     }
                 ],
                 "requestBody": {
-                    "required": false,
+                    "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
                                     "titulo": {
                                         "type": "string",
-                                        "example": "Título actualizado del blog"
+                                        "example": "Cómo cuidar tu piel en invierno"
                                     },
                                     "producto_id": {
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 8
                                     },
                                     "link": {
                                         "type": "string",
-                                        "example": "Link a blog..."
+                                        "example": "como-cuidar-tu-piel-invierno"
                                     },
                                     "subtitulo1": {
                                         "type": "string",
-                                        "example": "Contenido actualizado del blog..."
+                                        "example": "Protección contra el frío extremo"
                                     },
                                     "subtitulo2": {
                                         "type": "string",
-                                        "example": "Descripcion actualizado del blog..."
-                                    },
-                                    "miniatura": {
-                                        "type": "string",
-                                        "format": "binary"
+                                        "example": "Rutina de hidratación recomendada"
                                     },
                                     "video_url": {
                                         "type": "string",
-                                        "example": "https://example.com/nuevo-video.mp4"
+                                        "format": "url",
+                                        "example": "https://www.youtube.com/watch?v=abcd1234"
                                     },
                                     "video_titulo": {
                                         "type": "string",
-                                        "example": "Título del video actualizado"
-                                    },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "imagen": {
-                                                    "type": "string",
-                                                    "format": "binary"
-                                                },
-                                                "parrafo": {
-                                                    "type": "string",
-                                                    "example": "Parrafo de la imagen adicional"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "text_alt": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "example": "Texto alternativo de la imagen"
-                                        }
-                                    },
-                                    "parrafos": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "example": "Contenido del párrafo"
-                                        }
+                                        "example": "Guía completa de cuidado de la piel en invierno"
                                     },
                                     "meta_titulo": {
                                         "type": "string",
-                                        "example": "Meta título del blog"
+                                        "example": "Consejos para cuidar tu piel en invierno"
                                     },
                                     "meta_descripcion": {
                                         "type": "string",
-                                        "example": "Meta descripción del blog"
+                                        "example": "Descubre cómo proteger tu piel del frío y mantenerla saludable."
+                                    },
+                                    "miniatura": {
+                                        "description": "Imagen de miniatura (puede ser null para eliminar)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "imagenes[]": {
+                                        "description": "Archivos de imágenes del blog",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "text_alt[]": {
+                                        "description": "Texto alternativo de cada imagen",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Persona aplicando crema hidratante"
+                                        }
+                                    },
+                                    "parrafos[]": {
+                                        "description": "Contenido de los párrafos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas."
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -681,7 +639,76 @@
                         "description": "Error de validación"
                     },
                     "500": {
-                        "description": "Error del servidor"
+                        "description": "Error interno del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Eliminar un blog",
+                "operationId": "abb396e8d2706f20cac51e39eef0b913",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se encontró el blog con el ID proporcionado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al intentar eliminar el blog",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al eliminar el blog: error inesperado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

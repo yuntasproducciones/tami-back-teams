@@ -250,7 +250,6 @@ class BlogController extends Controller
      *     )
      * )
      */
-
     public function store(PostStoreBlog $request)
     {
         $datosValidados = $request->validated();
@@ -530,10 +529,11 @@ class BlogController extends Controller
     }
 
     /**
-     * @OA\Put(
+     * @OA\Post(
      *     path="/api/v1/blogs/{id}",
-     *     summary="Actualizar un blog existente",
+     *     summary="Actualizar un blog (con archivos) usando method override",
      *     tags={"Blogs"},
+     *     description="Usa POST con _method=PUT porque PHP no parsea multipart/form-data en PUT. Laravel hará el override a PUT internamente.",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -542,105 +542,69 @@ class BlogController extends Controller
      *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\RequestBody(
-     *         required=true,
+     *         required=false,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="titulo",
+     *                     property="_method",
      *                     type="string",
-     *                     example="Cómo cuidar tu piel en invierno"
+     *                     example="PUT",
+     *                     description="Override de método para que Laravel trate la petición como PUT"
      *                 ),
-     *                 @OA\Property(
-     *                     property="producto_id",
-     *                     type="integer",
-     *                     example=8
-     *                 ),
-     *                 @OA\Property(
-     *                     property="link",
-     *                     type="string",
-     *                     example="como-cuidar-tu-piel-invierno"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="subtitulo1",
-     *                     type="string",
-     *                     example="Protección contra el frío extremo"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="subtitulo2",
-     *                     type="string",
-     *                     example="Rutina de hidratación recomendada"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="video_url",
-     *                     type="string",
-     *                     format="url",
-     *                     example="https://www.youtube.com/watch?v=abcd1234"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="video_titulo",
-     *                     type="string",
-     *                     example="Guía completa de cuidado de la piel en invierno"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="meta_titulo",
-     *                     type="string",
-     *                     example="Consejos para cuidar tu piel en invierno"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="meta_descripcion",
-     *                     type="string",
-     *                     example="Descubre cómo proteger tu piel del frío y mantenerla saludable."
-     *                 ),
+     *                 @OA\Property(property="titulo", type="string", example="Cómo cuidar tu piel en invierno"),
+     *                 @OA\Property(property="producto_id", type="integer", example=8),
+     *                 @OA\Property(property="link", type="string", example="como-cuidar-tu-piel-invierno"),
+     *                 @OA\Property(property="subtitulo1", type="string", example="Protección contra el frío extremo"),
+     *                 @OA\Property(property="subtitulo2", type="string", example="Rutina de hidratación recomendada"),
+     *                 @OA\Property(property="video_url", type="string", format="url", example="https://www.youtube.com/watch?v=abcd1234"),
+     *                 @OA\Property(property="video_titulo", type="string", example="Guía completa de cuidado de la piel en invierno"),
+     *                 @OA\Property(property="meta_titulo", type="string", example="Consejos para cuidar tu piel en invierno"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Descubre cómo proteger tu piel del frío y mantenerla saludable."),
+     *
      *                 @OA\Property(
      *                     property="miniatura",
      *                     type="string",
      *                     format="binary",
-     *                     description="Imagen de miniatura (puede ser null para eliminar)"
+     *                     description="Imagen de miniatura. No se puede enviar null en binary; usa eliminar_miniatura=1 para borrarla."
      *                 ),
      *                 @OA\Property(
+     *                     property="eliminar_miniatura",
+     *                     type="boolean",
+     *                     example=false,
+     *                     description="Envia true/1 para eliminar la miniatura existente si no subirás una nueva."
+     *                 ),
+     *
+     *                 @OA\Property(
      *                     property="imagenes[]",
-     *                     description="Archivos de imágenes del blog",
+     *                     description="Imágenes del blog (reemplaza todas si se envía)",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary")
      *                 ),
      *                 @OA\Property(
      *                     property="text_alt[]",
-     *                     description="Texto alternativo de cada imagen",
+     *                     description="Texto alternativo alineado por índice con 'imagenes[]'",
      *                     type="array",
-     *                     @OA\Items(
-     *                         type="string",
-     *                         example="Persona aplicando crema hidratante"
-     *                     )
+     *                     @OA\Items(type="string", example="Persona aplicando crema hidratante")
      *                 ),
      *                 @OA\Property(
      *                     property="parrafos[]",
-     *                     description="Contenido de los párrafos",
+     *                     description="Contenido de párrafos (reemplaza todos si se envía)",
      *                     type="array",
-     *                     @OA\Items(
-     *                         type="string",
-     *                         example="Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas."
-     *                     )
+     *                     @OA\Items(type="string", example="Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas.")
      *                 )
-     *             )
+     *             ),
+     *             @OA\Encoding(name="miniatura", contentType="application/octet-stream"),
+     *             @OA\Encoding(name="imagenes[]", explode=true, contentType="application/octet-stream")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Blog actualizado exitosamente"
      *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Blog no encontrado"
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Error de validación"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error interno del servidor"
-     *     )
+     *     @OA\Response(response=404, description="Blog no encontrado"),
+     *     @OA\Response(response=422, description="Error de validación"),
+     *     @OA\Response(response=500, description="Error interno del servidor")
      * )
      */
     public function update(UpdateBlog $request, $id)

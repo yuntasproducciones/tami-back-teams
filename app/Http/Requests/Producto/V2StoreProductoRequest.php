@@ -45,14 +45,11 @@ class V2StoreProductoRequest extends FormRequest
 
             // Etiquetas SEO
             'etiquetas' => "nullable|array",
-            'etiquetas.meta_titulo' => "nullable|string|max:255",
-            'etiquetas.meta_descripcion' => "nullable|string|max:255",
+            'etiquetas.meta_titulo' => "nullable|string|max:60",
+            'etiquetas.meta_descripcion' => "nullable|string|max:160",
 
             // Especificaciones
-            'especificaciones_clave' => 'nullable|array',
-            'especificaciones_clave.*' => 'nullable|string|max:255',
-            'especificaciones_valor' => 'nullable|array',
-            'especificaciones_valor.*' => 'nullable|string|max:65535',
+            'especificaciones' => "string|max:65535",
 
             // Imágenes y textos_alt
             'imagenes' => "array|min:1|max:10",

@@ -185,73 +185,87 @@ class ProductoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    /**
- * Crear un nuevo producto
- * 
- * @OA\Post(
- *     path="/api/v1/productos",
- *     summary="Crear un nuevo producto (no funciona en Swagger)",
- *     description="Almacena un nuevo producto, guarda la imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
- *     operationId="storeProducto2",
- *     tags={"Productos"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 required={
- *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
- *                     "seccion", "descripcion", "especificaciones",
- *                     "imagenes", "textos_alt", "mensaje_correo"
- *                 },
- *                 @OA\Property(property="nombre", type="string", example="Selladora"),
- *                 @OA\Property(property="titulo", type="string", example="Titulo increíble"),
- *                 @OA\Property(property="subtitulo", type="string", example="Subtitulo increíble"),
- *                 @OA\Property(property="stock", type="integer", example=20),
- *                 @OA\Property(property="precio", type="number", format="float", example=100.50),
- *                 @OA\Property(property="seccion", type="string", example="Decoración"),
- *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
- *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
- *                 
- *                 @OA\Property(
- *                     property="imagenes",
- *                     type="array",
- *                     @OA\Items(type="string", format="binary"),
- *                     description="Array de imágenes a subir"
- *                 ),
- *                 
- *                 @OA\Property(
- *                     property="textos_alt",
- *                     type="array",
- *                     @OA\Items(type="string", example="Texto ALT para la imagen"),
- *                     description="Array de textos alternativos para las imágenes"
- *                 ),
- *                 
- *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
- *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
- *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=201,
- *         description="Producto creado exitosamente",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Producto creado exitosamente")
- *         )
+     * @OA\Post(
+     *     path="/api/v1/productos",
+     *     summary="Crear un nuevo producto",
+     *     description="Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones",
+     *     tags={"Productos"},
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"nombre", "precio", "imagenes[]"},
+     *                 
+     *                 @OA\Property(property="nombre", type="string", example="Camiseta deportiva"),
+     *                 @OA\Property(property="link", type="string", example="camiseta-deportiva"),
+     *                 @OA\Property(property="titulo", type="string", example="Camiseta DryFit Hombre"),
+     *                 @OA\Property(property="subtitulo", type="string", example="Ideal para entrenamiento"),
+     *                 @OA\Property(property="stock", type="integer", example=50),
+     *                 @OA\Property(property="precio", type="number", format="float", example=89.90),
+     *                 @OA\Property(property="seccion", type="string", example="Ropa Deportiva"),
+     *                 @OA\Property(property="descripcion", type="string", example="Camiseta ligera y transpirable."),
+     * 
+     *                 @OA\Property(
+     *                     property="etiquetas[meta_titulo]",
+     *                     type="string",
+     *                     example="Camiseta deportiva hombre"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="etiquetas[meta_descripcion]",
+     *                     type="string",
+     *                     example="Compra la mejor camiseta deportiva para hombre."
+     *                 ),
+     * 
+     *                 @OA\Property(
+     *                     property="relacionados[]",
+     *                     type="array",
+     *                     @OA\Items(type="integer", example=2)
+     *                 ),
+     * 
+     *                 @OA\Property(
+     *                     property="imagenes[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", format="binary")
+     *                 ),
+     * 
+     *                 @OA\Property(
+     *                     property="textos_alt[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Camiseta azul vista frontal")
+     *                 ),
+     * 
+     *                 @OA\Property(
+     *                     property="especificaciones_clave[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Color")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="especificaciones_valor[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Azul")
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Error de validación"
+     *         response=201,
+     *         description="Producto insertado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto insertado exitosamente")
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=500,
-     *         description="Error del servidor"
+     *         response=401,
+     *         description="No autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
      *     )
      * )
      */
+
     private function guardarImagen($archivo)
     {
         $nombre = uniqid() . '_' . time() . '.' . $archivo->getClientOriginalExtension();
@@ -271,13 +285,13 @@ class ProductoController extends Controller
             $url = $this->guardarImagen($img);
             $imagenesProcesadas[] = [
                 "url_imagen" => $url,
-                "texto_alt_SEO" => $textos[$i]
+                "texto_alt_SEO" => $textos[$i] ?? null
             ];
         }
 
         $producto = Producto::create([
             "nombre" => $datosValidados["nombre"] ?? null,
-            "link" => $datosValidados["link"] ?? null, 
+            "link" => $datosValidados["link"] ?? null,
             "titulo" => $datosValidados["titulo"] ?? null,
             "subtitulo" => $datosValidados["subtitulo"] ?? null,
             "stock" => $datosValidados["stock"] ?? null,
@@ -286,26 +300,36 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
         ]);
 
-        if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
-            $producto->etiqueta()->create([
-                'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
-            ]);
-        }
+        $producto->etiqueta()->create([
+            'producto_id' => $producto->id,
+            'meta_titulo' => $datosValidados['etiquetas']['meta_titulo'] ?? null,
+            'meta_descripcion' => $datosValidados['etiquetas']['meta_descripcion'] ?? null,
+        ]);
 
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
 
-        // Aquí solo este bloque basta
-        $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
+        $claves = $datosValidados["especificaciones_clave"] ?? [];
+        $valores = $datosValidados["especificaciones_valor"] ?? [];
 
-        if (is_array($especificaciones)) {
-            foreach ($especificaciones as $clave => $valor) {
-                $producto->especificaciones()->create([
-                    'clave' => $clave,
-                    'valor' => $valor,
-                ]);
-            }
+        // Si las claves o valores llegan como un array con una única cadena separada por comas, divídelos
+        if (is_array($claves) && count($claves) === 1 && is_string($claves[0]) && str_contains($claves[0], ',')) {
+            $claves = explode(',', $claves[0]);
+        }
+        if (is_array($valores) && count($valores) === 1 && is_string($valores[0]) && str_contains($valores[0], ',')) {
+            $valores = explode(',', $valores[0]);
+        }
+
+        $especificacionesProcesadas = [];
+        foreach ($claves as $i => $clave) {
+            $especificacionesProcesadas[] = [
+                'clave' => trim($clave), // Eliminar espacios en blanco alrededor de la clave
+                'valor' => trim($valores[$i] ?? null) // Eliminar espacios en blanco alrededor del valor
+            ];
+        }
+
+        if (!empty($especificacionesProcesadas)) {
+            $producto->especificaciones()->createMany($especificacionesProcesadas);
         }
 
         return response()->json(["message" => "Producto insertado exitosamente"], 201);
@@ -425,7 +449,6 @@ class ProductoController extends Controller
                 'message' => 'Producto encontrado exitosamente',
                 'data' => $formattedProducto
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Hubo un error en el servidor'
@@ -543,7 +566,6 @@ class ProductoController extends Controller
                 'message' => 'Producto encontrado exitosamente',
                 'data' => $formattedProducto
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json(["message" => "Hubo un error en el servidor"], 500);
         }
@@ -651,10 +673,18 @@ class ProductoController extends Controller
 
             // Construir solo los campos que se van a actualizar
             $camposActualizar = [];
-            foreach([
-                "nombre", "link", "titulo", "subtitulo", "stock", "precio",
-                "seccion", "descripcion"
-            ] as $campo) {
+            foreach (
+                [
+                    "nombre",
+                    "link",
+                    "titulo",
+                    "subtitulo",
+                    "stock",
+                    "precio",
+                    "seccion",
+                    "descripcion"
+                ] as $campo
+            ) {
                 if (array_key_exists($campo, $datosValidados)) {
                     $camposActualizar[$campo] = $datosValidados[$campo];
                 }
@@ -765,7 +795,7 @@ class ProductoController extends Controller
         //
         DB::beginTransaction();
         try {
-             $producto = Producto::with(['imagenes', 'especificaciones', 'etiqueta'])->find($id);
+            $producto = Producto::with(['imagenes', 'especificaciones', 'etiqueta'])->find($id);
             if ($producto == null) {
                 return response()->json(["message" => "Producto no encontrado"], status: 404);
             }
@@ -778,7 +808,7 @@ class ProductoController extends Controller
                 Storage::delete("imagenes/" . $imagen);
             }
 
-            $producto->especificaciones()->delete(); 
+            $producto->especificaciones()->delete();
             $producto->etiqueta()->delete();
 
             $producto->delete();
@@ -786,7 +816,7 @@ class ProductoController extends Controller
             return response()->json(["message" => "Producto eliminado exitosamente"], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(["message"=>"Hubo un error en el servidor"], 500);
+            return response()->json(["message" => "Hubo un error en el servidor"], 500);
         }
     }
 }

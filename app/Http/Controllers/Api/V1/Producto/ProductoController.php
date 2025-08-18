@@ -296,10 +296,16 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
         ]);
 
-        if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+        // if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+        //     $producto->etiqueta()->create([
+        //         'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+        //         'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+        //     ]);
+        // }
+        if ($request->has('etiqueta')) {
             $producto->etiqueta()->create([
-                'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
+                'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
             ]);
         }
 
@@ -678,16 +684,26 @@ class ProductoController extends Controller
             Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
             $producto->update($camposActualizar);
 
-            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            // if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            //     $producto->etiqueta()->updateOrCreate(
+            //         ['producto_id' => $producto->id],
+            //         [
+            //             'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+            //             'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+            //         ]
+            //     );
+            // } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
+            //     $producto->etiqueta()->delete();
+            // }
+            // traer desde etiqueta
+            if ($request->has('etiqueta')) {
                 $producto->etiqueta()->updateOrCreate(
                     ['producto_id' => $producto->id],
                     [
-                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                        'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
+                        'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
                     ]
                 );
-            } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
-                $producto->etiqueta()->delete();
             }
 
             // Eliminar imágenes antiguas si se envían nuevas

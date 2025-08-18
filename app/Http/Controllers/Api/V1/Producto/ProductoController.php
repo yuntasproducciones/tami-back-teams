@@ -99,7 +99,7 @@ class ProductoController extends Controller
     public function index()
     {
         try {
-            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta'])
+            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta', 'dimensiones'])
                 ->orderBy('created_at')
                 ->get();
 
@@ -121,6 +121,7 @@ class ProductoController extends Controller
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
                     'especificaciones' => $producto->especificaciones,
+                    'dimensiones' => $producto->dimensiones,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
                             'url_imagen' => $imagen->url_imagen,
@@ -322,6 +323,15 @@ class ProductoController extends Controller
                     'valor' => $valor,
                 ]);
             }
+        }
+
+        // Dimensiones
+        if (isset($datosValidados['dimensiones']) && is_array($datosValidados['dimensiones'])) {
+            $producto->dimensiones()->create([
+                'alto'  => $datosValidados['dimensiones']['alto'] ?? null,
+                'largo' => $datosValidados['dimensiones']['largo'] ?? null,
+                'ancho' => $datosValidados['dimensiones']['ancho'] ?? null,
+            ]);
         }
 
         return response()->json(["message" => "Producto insertado exitosamente"], 201);
@@ -739,6 +749,14 @@ class ProductoController extends Controller
                         ]);
                     }
                 }
+            }
+
+            // Actualizar dimensiones
+            if (isset($datosValidados['dimensiones'])) {
+                $producto->dimensiones()->updateOrCreate(
+                    ['id_producto' => $producto->id],
+                    $datosValidados['dimensiones']
+                );
             }
 
             // Sincronizar productos relacionados

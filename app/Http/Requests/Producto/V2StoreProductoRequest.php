@@ -15,6 +15,18 @@ class V2StoreProductoRequest extends FormRequest
     }
 
     /**
+     * Convert values before validation.
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->has('relacionados') && is_array($this->relacionados)) {
+            $this->merge([
+                'relacionados' => array_map('intval', $this->relacionados)
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -22,24 +34,29 @@ class V2StoreProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'titulo' => "required|string|max:255",
             'nombre' => "required|string|max:255|unique:productos,nombre",
             'link' => 'required|string|unique:productos,link|max:255',
-            'subtitulo' => "string|max:255",
-            'stock' => "integer|max:1000|min:0",
-            'precio' => "string|max:100000|min:0",
-            'seccion' => "string|max:255",
-            'descripcion' => "string|max:65535",
-            'meta_data' => 'array',
-            'meta_data.meta_titulo' => 'string',
-            'meta_data.meta_descripcion' => 'string',
+            'subtitulo' => "nullable|string|max:255",
+            'stock' => "nullable|integer|max:1000|min:0",
+            'precio' => "nullable|string|max:100000|min:0",
+            'seccion' => "nullable|string|max:255",
+            'descripcion' => "nullable|string|max:65535",
+
+            // Etiquetas SEO
+            'meta_titulo' => 'nullable|string|min:10|max:60',
+            'meta_descripcion' => 'nullable|string|min:40|max:160',
+
+            // Especificaciones
             'especificaciones' => "string|max:65535",
-            'especificaciones' => "string|max:65535",
+
+            // Imágenes y textos_alt
             'imagenes' => "array|min:1|max:10",
             'imagenes.*' => "file|image|max:2048",
             'textos_alt' => "array|min:1|max:10",
             'textos_alt.*' => "string|max:255",
+
+            // Productos relacionados
             'relacionados' => "sometimes|array",
             'relacionados.*' => "integer|exists:productos,id",
         ];

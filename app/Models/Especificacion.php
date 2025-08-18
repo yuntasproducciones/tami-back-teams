@@ -9,8 +9,7 @@ class Especificacion extends Model
     protected $table = 'especificaciones';
     
     protected $fillable = [
-        'id_producto',
-        'clave',
+        'producto_id',
         'valor'
     ];
 
@@ -18,6 +17,6 @@ class Especificacion extends Model
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'id_producto');
+        return $this->belongsTo(Producto::class, 'producto_id');
     }
 }

@@ -7,15 +7,12 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "https://apitami.tamimaquinarias.com",
             "description": "API Server - Development"
         },
         {
-            "url": "https://apitami.tami-peru.com/",
+            "url": "https://apitami.tamimaquinarias.com/",
             "description": "API Server - Production"
-        },
-        {
-            "url": "/api"
         }
     ],
     "paths": {
@@ -164,19 +161,19 @@
                 "tags": [
                     "Blogs"
                 ],
-                "summary": "Listar blogs",
-                "description": "Obtiene la lista de todos los blogs con sus imágenes, párrafos y producto relacionado.",
-                "operationId": "getBlogs",
+                "summary": "Obtener lista de blogs",
+                "description": "Devuelve todos los blogs con sus imágenes, párrafos, producto asociado y etiqueta.",
+                "operationId": "11dfb7e338bc4ae5d1e4e25f7b4f746d",
                 "responses": {
                     "200": {
-                        "description": "Lista de blogs obtenida exitosamente",
+                        "description": "Blogs obtenidos exitosamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
                                         "message": {
                                             "type": "string",
@@ -192,40 +189,40 @@
                                                     },
                                                     "titulo": {
                                                         "type": "string",
-                                                        "example": "Cómo cuidar tus plantas en invierno"
+                                                        "example": "Título del blog"
                                                     },
                                                     "nombre_producto": {
                                                         "type": "string",
-                                                        "example": "Maceta decorativa",
+                                                        "example": "Producto ejemplo",
                                                         "nullable": true
                                                     },
                                                     "link": {
                                                         "type": "string",
-                                                        "example": "https://mipagina.com/blog/cuidados-invierno"
+                                                        "example": "https://midominio.com/blog/ejemplo"
                                                     },
                                                     "subtitulo1": {
                                                         "type": "string",
-                                                        "example": "Consejos prácticos"
+                                                        "example": "Subtítulo 1"
                                                     },
                                                     "subtitulo2": {
                                                         "type": "string",
-                                                        "example": "Errores comunes"
+                                                        "example": "Subtítulo 2"
                                                     },
                                                     "video_id": {
                                                         "type": "string",
-                                                        "example": "dQw4w9WgXcQ"
+                                                        "example": "abc123xyz"
                                                     },
                                                     "video_url": {
                                                         "type": "string",
-                                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                                        "example": "https://youtube.com/watch?v=abc123xyz"
                                                     },
                                                     "video_titulo": {
                                                         "type": "string",
-                                                        "example": "Guía completa para cuidar tus plantas"
+                                                        "example": "Título del video"
                                                     },
                                                     "miniatura": {
                                                         "type": "string",
-                                                        "example": "https://mipagina.com/images/miniatura.jpg"
+                                                        "example": "https://midominio.com/imagenes/miniatura.jpg"
                                                     },
                                                     "imagenes": {
                                                         "type": "array",
@@ -233,11 +230,11 @@
                                                             "properties": {
                                                                 "ruta_imagen": {
                                                                     "type": "string",
-                                                                    "example": "https://mipagina.com/images/imagen1.jpg"
+                                                                    "example": "https://midominio.com/imagenes/img1.jpg"
                                                                 },
                                                                 "text_alt": {
                                                                     "type": "string",
-                                                                    "example": "Maceta de barro color marrón"
+                                                                    "example": "Texto alternativo"
                                                                 }
                                                             },
                                                             "type": "object"
@@ -249,21 +246,35 @@
                                                             "properties": {
                                                                 "parrafo": {
                                                                     "type": "string",
-                                                                    "example": "Durante el invierno, las plantas requieren menos riego..."
+                                                                    "example": "Este es un párrafo de ejemplo."
                                                                 }
                                                             },
                                                             "type": "object"
                                                         }
                                                     },
+                                                    "etiqueta": {
+                                                        "properties": {
+                                                            "meta_titulo": {
+                                                                "type": "string",
+                                                                "example": "Meta título ejemplo"
+                                                            },
+                                                            "meta_descripcion": {
+                                                                "type": "string",
+                                                                "example": "Descripción SEO del blog"
+                                                            }
+                                                        },
+                                                        "type": "object",
+                                                        "nullable": true
+                                                    },
                                                     "created_at": {
                                                         "type": "string",
                                                         "format": "date-time",
-                                                        "example": "2025-08-11T10:00:00Z"
+                                                        "example": "2025-08-13T15:00:00Z"
                                                     },
                                                     "updated_at": {
                                                         "type": "string",
                                                         "format": "date-time",
-                                                        "example": "2025-08-11T10:30:00Z"
+                                                        "example": "2025-08-13T15:00:00Z"
                                                     }
                                                 },
                                                 "type": "object"
@@ -276,14 +287,18 @@
                         }
                     },
                     "500": {
-                        "description": "Error interno del servidor",
+                        "description": "Error al obtener los blogs",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
                                             "type": "string",
-                                            "example": "Error al obtener los blogs: mensaje del error"
+                                            "example": "Error al obtener los blogs: mensaje de error"
                                         }
                                     },
                                     "type": "object"
@@ -298,80 +313,77 @@
                     "Blogs"
                 ],
                 "summary": "Crear un nuevo blog",
-                "description": "Almacena un nuevo blog y retorna los datos creados",
-                "operationId": "storeBlog",
+                "operationId": "c1957bad5fb7ce42a51bf4e4284c9815",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "producto_id",
-                                    "titulo",
-                                    "link",
-                                    "parrafo",
-                                    "descripcion",
-                                    "miniatura",
-                                    "titulo_blog",
-                                    "subtitulo_beneficio",
-                                    "url_video",
-                                    "titulo_video"
-                                ],
                                 "properties": {
                                     "titulo": {
                                         "type": "string",
-                                        "example": "Título del blog"
+                                        "example": "Cómo cuidar tu piel en verano"
+                                    },
+                                    "producto_id": {
+                                        "type": "integer",
+                                        "example": 5
                                     },
                                     "link": {
                                         "type": "string",
-                                        "example": "Link a blog..."
+                                        "example": "como-cuidar-tu-piel-verano"
                                     },
-                                    "parrafo": {
+                                    "subtitulo1": {
                                         "type": "string",
-                                        "example": "Contenido del blog..."
+                                        "example": "La importancia de la protección solar"
                                     },
-                                    "descripcion": {
+                                    "subtitulo2": {
                                         "type": "string",
-                                        "example": "Descripción del blog..."
+                                        "example": "Consejos prácticos para tu rutina diaria"
+                                    },
+                                    "video_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                    },
+                                    "video_titulo": {
+                                        "type": "string",
+                                        "example": "Guía completa de protección solar"
+                                    },
+                                    "meta_titulo": {
+                                        "type": "string",
+                                        "example": "Tips para cuidar la piel en verano"
+                                    },
+                                    "meta_descripcion": {
+                                        "type": "string",
+                                        "example": "Aprende a proteger tu piel del sol con estos consejos prácticos y efectivos."
                                     },
                                     "miniatura": {
-                                        "description": "Archivo de imagen principal del blog",
+                                        "description": "Imagen de portada del blog",
                                         "type": "string",
                                         "format": "binary"
                                     },
-                                    "titulo_blog": {
-                                        "type": "string",
-                                        "example": "Título del detalle del blog"
-                                    },
-                                    "subtitulo_beneficio": {
-                                        "type": "string",
-                                        "example": "Subtítulo de beneficios"
-                                    },
-                                    "url_video": {
-                                        "type": "string",
-                                        "example": "https://example.com/video.mp4"
-                                    },
-                                    "titulo_video": {
-                                        "type": "string",
-                                        "example": "Título del video"
-                                    },
-                                    "imagenes": {
+                                    "imagenes[]": {
+                                        "description": "Archivos de imágenes",
                                         "type": "array",
                                         "items": {
-                                            "properties": {
-                                                "imagen": {
-                                                    "description": "Archivo de imagen adicional",
-                                                    "type": "string",
-                                                    "format": "binary",
-                                                    "example": "https://example.com/imagen-adicional.jpg"
-                                                },
-                                                "parrafo": {
-                                                    "description": "Descripción de la imagen adicional",
-                                                    "type": "string",
-                                                    "example": "Parrafo de la imagen adicional"
-                                                }
-                                            },
-                                            "type": "object"
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "text_alt[]": {
+                                        "description": "Texto alternativo de cada imagen",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Persona aplicando protector solar"
+                                        }
+                                    },
+                                    "parrafos[]": {
+                                        "description": "Contenido de cada párrafo",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "El uso de protector solar es fundamental para prevenir el envejecimiento prematuro."
                                         }
                                     }
                                 },
@@ -382,33 +394,10 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Blog creado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Blog creado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Blog creado con éxito"
                     },
-                    "400": {
+                    "422": {
                         "description": "Error de validación"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
                     }
                 }
             }
@@ -505,6 +494,20 @@
                                                     "type": "string",
                                                     "example": "Título del video"
                                                 },
+                                                "etiqueta": {
+                                                    "properties": {
+                                                        "meta_titulo": {
+                                                            "type": "string",
+                                                            "example": "Meta título del blog"
+                                                        },
+                                                        "meta_descripcion": {
+                                                            "type": "string",
+                                                            "example": "Meta descripción del blog"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
                                                 "created_at": {
                                                     "type": "string"
                                                 }
@@ -529,63 +532,12 @@
                     }
                 }
             },
-            "delete": {
+            "put": {
                 "tags": [
                     "Blogs"
                 ],
-                "summary": "Elimina un blog específico",
-                "description": "Elimina un blog existente según su ID",
-                "operationId": "destroyBlog",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del blog a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Blog eliminado exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "null"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Blog eliminado exitosamente"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Blog no encontrado"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Blogs"
-                ],
-                "summary": "Actualiza parcialmente un blog específico (PATCH)",
-                "description": "Actualiza algunos datos de un blog existente según su ID",
-                "operationId": "updateBlogPatch",
+                "summary": "Actualizar un blog existente",
+                "operationId": "66af4f5c12d93646d611d3f1ee54307f",
                 "parameters": [
                     {
                         "name": "id",
@@ -593,76 +545,81 @@
                         "description": "ID del blog a actualizar",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     }
                 ],
                 "requestBody": {
-                    "required": false,
+                    "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
                                     "titulo": {
                                         "type": "string",
-                                        "example": "Título actualizado del blog"
+                                        "example": "Cómo cuidar tu piel en invierno"
                                     },
                                     "producto_id": {
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 8
                                     },
                                     "link": {
                                         "type": "string",
-                                        "example": "Link a blog..."
+                                        "example": "como-cuidar-tu-piel-invierno"
                                     },
                                     "subtitulo1": {
                                         "type": "string",
-                                        "example": "Contenido actualizado del blog..."
+                                        "example": "Protección contra el frío extremo"
                                     },
                                     "subtitulo2": {
                                         "type": "string",
-                                        "example": "Descripcion actualizado del blog..."
-                                    },
-                                    "miniatura": {
-                                        "type": "string",
-                                        "format": "binary"
+                                        "example": "Rutina de hidratación recomendada"
                                     },
                                     "video_url": {
                                         "type": "string",
-                                        "example": "https://example.com/nuevo-video.mp4"
+                                        "format": "url",
+                                        "example": "https://www.youtube.com/watch?v=abcd1234"
                                     },
                                     "video_titulo": {
                                         "type": "string",
-                                        "example": "Título del video actualizado"
+                                        "example": "Guía completa de cuidado de la piel en invierno"
                                     },
-                                    "imagenes": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "imagen": {
-                                                    "type": "string",
-                                                    "format": "binary"
-                                                },
-                                                "parrafo": {
-                                                    "type": "string",
-                                                    "example": "Parrafo de la imagen adicional"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
+                                    "meta_titulo": {
+                                        "type": "string",
+                                        "example": "Consejos para cuidar tu piel en invierno"
                                     },
-                                    "text_alt": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "example": "Texto alternativo de la imagen"
-                                        }
+                                    "meta_descripcion": {
+                                        "type": "string",
+                                        "example": "Descubre cómo proteger tu piel del frío y mantenerla saludable."
                                     },
-                                    "parrafos": {
+                                    "miniatura": {
+                                        "description": "Imagen de miniatura (puede ser null para eliminar)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "imagenes[]": {
+                                        "description": "Archivos de imágenes del blog",
                                         "type": "array",
                                         "items": {
                                             "type": "string",
-                                            "example": "Contenido del párrafo"
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "text_alt[]": {
+                                        "description": "Texto alternativo de cada imagen",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Persona aplicando crema hidratante"
+                                        }
+                                    },
+                                    "parrafos[]": {
+                                        "description": "Contenido de los párrafos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas."
                                         }
                                     }
                                 },
@@ -682,7 +639,76 @@
                         "description": "Error de validación"
                     },
                     "500": {
-                        "description": "Error del servidor"
+                        "description": "Error interno del servidor"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Eliminar un blog",
+                "operationId": "abb396e8d2706f20cac51e39eef0b913",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del blog a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blog eliminado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se encontró el blog con el ID proporcionado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al intentar eliminar el blog",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al eliminar el blog: error inesperado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -780,6 +806,20 @@
                                                 "tituloVideoBlog": {
                                                     "type": "string",
                                                     "example": "Título del video"
+                                                },
+                                                "etiqueta": {
+                                                    "properties": {
+                                                        "meta_titulo": {
+                                                            "type": "string",
+                                                            "example": "Meta título del blog"
+                                                        },
+                                                        "meta_descripcion": {
+                                                            "type": "string",
+                                                            "example": "Meta descripción del blog"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
                                                 },
                                                 "created_at": {
                                                     "type": "string",
@@ -1394,7 +1434,7 @@
                     "Productos"
                 ],
                 "summary": "Listar productos",
-                "description": "Obtiene la lista de productos con sus imágenes, especificaciones y productos relacionados.",
+                "description": "Obtiene la lista de productos con sus imágenes, especificaciones, productos relacionados y etiquetas.",
                 "operationId": "getProductos",
                 "responses": {
                     "200": {
@@ -1441,13 +1481,6 @@
                                             "descripcion": {
                                                 "type": "string",
                                                 "example": "Laptop de alto rendimiento para gaming."
-                                            },
-                                            "meta_data": {
-                                                "type": "object",
-                                                "example": {
-                                                    "color": "negro",
-                                                    "peso": "2kg"
-                                                }
                                             },
                                             "especificaciones": {
                                                 "type": "object",
@@ -1533,6 +1566,20 @@
                                                     "type": "object"
                                                 }
                                             },
+                                            "etiqueta": {
+                                                "properties": {
+                                                    "meta_titulo": {
+                                                        "type": "string",
+                                                        "example": "Meta título del producto"
+                                                    },
+                                                    "meta_descripcion": {
+                                                        "type": "string",
+                                                        "example": "Meta descripción del producto"
+                                                    }
+                                                },
+                                                "type": "object",
+                                                "nullable": true
+                                            },
                                             "created_at": {
                                                 "type": "string",
                                                 "format": "date-time",
@@ -1572,9 +1619,9 @@
                 "tags": [
                     "Productos"
                 ],
-                "summary": "Crear un nuevo producto (no funciona en Swagger)",
-                "description": "Almacena un nuevo producto, guarda la imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
-                "operationId": "storeProducto2",
+                "summary": "Crear un nuevo producto",
+                "description": "Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones (en formato JSON).",
+                "operationId": "468de9e11abd99c66494dcce5d785b15",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1582,75 +1629,76 @@
                             "schema": {
                                 "required": [
                                     "nombre",
-                                    "titulo",
-                                    "subtitulo",
-                                    "stock",
                                     "precio",
-                                    "seccion",
-                                    "lema",
-                                    "descripcion",
-                                    "especificaciones",
-                                    "imagenes",
-                                    "textos_alt",
-                                    "mensaje_correo"
+                                    "imagenes[]"
                                 ],
                                 "properties": {
                                     "nombre": {
                                         "type": "string",
-                                        "example": "Selladora"
+                                        "example": "Camiseta deportiva"
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "example": "camiseta-deportiva"
                                     },
                                     "titulo": {
                                         "type": "string",
-                                        "example": "Titulo increíble"
+                                        "example": "Camiseta DryFit Hombre"
                                     },
                                     "subtitulo": {
                                         "type": "string",
-                                        "example": "Subtitulo increíble"
+                                        "example": "Ideal para entrenamiento"
                                     },
                                     "stock": {
                                         "type": "integer",
-                                        "example": 20
+                                        "example": 50
                                     },
                                     "precio": {
                                         "type": "number",
                                         "format": "float",
-                                        "example": 100.5
+                                        "example": 89.9
                                     },
                                     "seccion": {
                                         "type": "string",
-                                        "example": "Decoración"
-                                    },
-                                    "lema": {
-                                        "type": "string",
-                                        "example": "Lema increíble"
+                                        "example": "Ropa Deportiva"
                                     },
                                     "descripcion": {
                                         "type": "string",
-                                        "example": "Descripción increíble"
+                                        "example": "Camiseta ligera y transpirable."
                                     },
-                                    "especificaciones": {
+                                    "etiquetas[meta_titulo]": {
                                         "type": "string",
-                                        "example": "Especificaciones increíbles"
+                                        "example": "Camiseta deportiva hombre"
                                     },
-                                    "imagenes": {
-                                        "description": "Array de imágenes a subir",
+                                    "etiquetas[meta_descripcion]": {
+                                        "type": "string",
+                                        "example": "Compra la mejor camiseta deportiva para hombre."
+                                    },
+                                    "relacionados[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "imagenes[]": {
                                         "type": "array",
                                         "items": {
                                             "type": "string",
                                             "format": "binary"
                                         }
                                     },
-                                    "textos_alt": {
-                                        "description": "Array de textos alternativos para las imágenes",
+                                    "textos_alt[]": {
                                         "type": "array",
                                         "items": {
                                             "type": "string",
-                                            "example": "Texto ALT para la imagen"
+                                            "example": "Camiseta azul vista frontal"
                                         }
                                     },
-                                    "mensaje_correo": {
+                                    "especificaciones": {
+                                        "description": "JSON con pares clave-valor de especificaciones",
                                         "type": "string",
-                                        "example": "Mensaje increíble"
+                                        "example": "{\"Color\":\"Azul\", \"Talla\":\"M\", \"Material\":\"Poliéster\"}"
                                     }
                                 },
                                 "type": "object"
@@ -1660,14 +1708,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Producto creado exitosamente",
+                        "description": "Producto insertado exitosamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Producto creado exitosamente"
+                                            "example": "Producto insertado exitosamente"
                                         }
                                     },
                                     "type": "object"
@@ -1675,13 +1723,28 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Error de validación"
-                    },
-                    "500": {
-                        "description": "Error del servidor"
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/productos/{id}": {
@@ -1786,6 +1849,20 @@
                                                 "seccion": {
                                                     "type": "string",
                                                     "example": "Electrónica"
+                                                },
+                                                "etiqueta": {
+                                                    "properties": {
+                                                        "meta_titulo": {
+                                                            "type": "string",
+                                                            "example": "Meta título del producto"
+                                                        },
+                                                        "meta_descripcion": {
+                                                            "type": "string",
+                                                            "example": "Meta descripción del producto"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"
@@ -1873,7 +1950,6 @@
                                     "stock",
                                     "precio",
                                     "seccion",
-                                    "lema",
                                     "descripcion",
                                     "especificaciones",
                                     "imagenes",
@@ -1907,10 +1983,6 @@
                                         "type": "string",
                                         "example": "Decoración"
                                     },
-                                    "lema": {
-                                        "type": "string",
-                                        "example": "Lema increíble"
-                                    },
                                     "descripcion": {
                                         "type": "string",
                                         "example": "Descripción increíble"
@@ -1942,6 +2014,14 @@
                                     "_method": {
                                         "type": "string",
                                         "example": "PUT"
+                                    },
+                                    "meta_titulo": {
+                                        "type": "string",
+                                        "example": "Meta título del producto"
+                                    },
+                                    "meta_descripcion": {
+                                        "type": "string",
+                                        "example": "Meta descripción del producto"
                                     }
                                 },
                                 "type": "object"
@@ -2146,6 +2226,20 @@
                                                 "seccion": {
                                                     "type": "string",
                                                     "example": "Electrónica"
+                                                },
+                                                "etiqueta": {
+                                                    "properties": {
+                                                        "meta_titulo": {
+                                                            "type": "string",
+                                                            "example": "Meta título del producto"
+                                                        },
+                                                        "meta_descripcion": {
+                                                            "type": "string",
+                                                            "example": "Meta descripción del producto"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"

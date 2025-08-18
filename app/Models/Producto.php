@@ -26,7 +26,7 @@ class Producto extends Model
 
     public function dimensiones()
     {
-        return $this->hasMany(Dimension::class, 'id_producto');
+        return $this->hasOne(Dimension::class, 'id_producto');
     }
 
     public function imagenes()

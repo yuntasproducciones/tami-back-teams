@@ -10,7 +10,6 @@ class Especificacion extends Model
     
     protected $fillable = [
         'producto_id',
-        'clave',
         'valor'
     ];
 

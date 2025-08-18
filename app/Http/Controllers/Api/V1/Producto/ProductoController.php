@@ -104,10 +104,10 @@ class ProductoController extends Controller
                 ->get();
 
             $showProductos = $productos->map(function ($producto) {
-                $especificacionesFormateadas = [];
-                foreach ($producto->especificaciones as $especificacion) {
-                    $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
-                }
+                // $especificacionesFormateadas = [];
+                // foreach ($producto->especificaciones as $especificacion) {
+                //     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
+                // }
 
                 Log::info('Producto ID: ' . $producto->id . ' - Etiqueta antes del mapeo: ', ['etiqueta' => $producto->etiqueta]);
                 return [
@@ -120,7 +120,7 @@ class ProductoController extends Controller
                     'precio' => $producto->precio,
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
-                    'especificaciones' => $especificacionesFormateadas,
+                    'especificaciones' => $producto->especificaciones,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
                             'url_imagen' => $imagen->url_imagen,
@@ -310,9 +310,9 @@ class ProductoController extends Controller
         $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
 
         if (is_array($especificaciones)) {
-            foreach ($especificaciones as $clave => $valor) {
+            foreach ($especificaciones as $valor) {
                 $producto->especificaciones()->create([
-                    'clave' => $clave,
+                    // 'clave' => $clave,
                     'valor' => $valor,
                 ]);
             }
@@ -716,9 +716,9 @@ class ProductoController extends Controller
                 $producto->especificaciones()->delete();
                 $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
                 if (is_array($especificaciones)) {
-                    foreach ($especificaciones as $clave => $valor) {
+                    foreach ($especificaciones as $valor) {
                         $producto->especificaciones()->create([
-                            'clave' => $clave,
+                            // 'clave' => $clave,
                             'valor' => $valor,
                         ]);
                     }

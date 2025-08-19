@@ -334,6 +334,197 @@ class ProductoController extends Controller
         ], 201);
     }
 
+    /**
+     * Actualizar un producto específico
+     * 
+     * @OA\Post(
+     *     path="/api/v1/productos/{id}",
+     *     summary="Actualiza un producto específico (no funciona en Swagger)",
+     *     description="Actualiza producto, elimina todas las antiguas imagenes y guarda las nuevas imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
+     *     operationId="updateProducto2",
+     *     tags={"Productos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID del producto a actualizar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={
+     *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
+     *                     "seccion", "descripcion", "especificaciones",
+     *                      "imagenes", "textos_alt", "mensaje_correo", "_method"
+     *                 },
+     *                 @OA\Property(property="nombre", type="string", example="Selladora"),
+     *                 @OA\Property(property="titulo", type="string", example="Titulo increíble"),
+     *                 @OA\Property(property="subtitulo", type="string", example="Subtitulo increíble"),
+     *                 @OA\Property(property="stock", type="integer", example=20),
+     *                 @OA\Property(property="precio", type="number", format="float", example=100.50),
+     *                 @OA\Property(property="seccion", type="string", example="Decoración"),
+     *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
+     *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
+     *                 
+     *                 @OA\Property(
+     *                     property="imagenes",
+     *                     type="array",
+     *                     @OA\Items(type="string", format="binary"),
+     *                     description="Array de imágenes a subir"
+     *                 ),
+     *                 
+     *                 @OA\Property(
+     *                     property="textos_alt",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="Texto ALT para la imagen"),
+     *                     description="Array de textos alternativos para las imágenes"
+     *                 ),
+     *                 
+     *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
+     *                 @OA\Property(property="_method", type="string", example="PUT"),
+     *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
+     *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Producto actualizado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Producto actualizado exitosamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Producto no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
+    public function update(V2UpdateProductoRequest $request, string $id)
+    {
+        Log::info('PATCH Producto Request received:', ['request_all' => $request->all(), 'id' => $id]);
+        $datosValidados = $request->validated();
+        Log::info('Validated data:', ['datos_validados' => $datosValidados]);
+
+        DB::beginTransaction();
+        try {
+            $producto = Producto::findOrFail($id);
+
+            // Construir solo los campos que se van a actualizar
+            $camposActualizar = [];
+            foreach (
+                [
+                    "nombre",
+                    "link",
+                    "titulo",
+                    "subtitulo",
+                    "stock",
+                    "precio",
+                    "seccion",
+                    "descripcion"
+                ] as $campo
+            ) {
+                if (array_key_exists($campo, $datosValidados)) {
+                    $camposActualizar[$campo] = $datosValidados[$campo];
+                }
+            }
+            Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
+            $producto->update($camposActualizar);
+
+            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+                $producto->etiqueta()->updateOrCreate(
+                    ['producto_id' => $producto->id],
+                    [
+                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                    ]
+                );
+            } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
+                $producto->etiqueta()->delete();
+            }
+
+            // Eliminar imágenes antiguas si se envían nuevas
+            if (isset($datosValidados['imagenes'])) {
+                $rutasImagenesAntiguas = [];
+                foreach ($producto->imagenes as $imagen) {
+                    array_push($rutasImagenesAntiguas, str_replace('/storage/', '', $imagen['url_imagen']));
+                }
+                Storage::disk('public')->delete($rutasImagenesAntiguas);
+                $producto->imagenes()->delete();
+
+                $imagenes = $request->file("imagenes", []);
+                $altTexts = $datosValidados["textos_alt"] ?? [];
+
+                foreach ($imagenes as $i => $imagen) {
+                    $ruta = $this->guardarImagen($imagen);
+                    $producto->imagenes()->create([
+                        "url_imagen" => $ruta,
+                        "texto_alt_SEO" => $altTexts[$i] ?? null
+                    ]);
+                }
+            }
+
+            // Actualizar especificaciones
+            if (isset($datosValidados['especificaciones'])) {
+                $producto->especificaciones()->delete();
+                $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
+
+                if (is_array($especificaciones)) {
+                    foreach ($especificaciones as $clave => $valor) {
+                        // Caso 1: Solo texto
+                        if (is_int($clave)) {
+                            $producto->especificaciones()->create([
+                                'clave' => null,
+                                'valor' => null,
+                                'texto' => $valor,
+                            ]);
+                        }
+                        // Caso 2: Clave - Valor
+                        else {
+                            $producto->especificaciones()->create([
+                                'clave' => $clave,
+                                'valor' => $valor,
+                                'texto' => null,
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Sincronizar productos relacionados
+            if (isset($datosValidados['relacionados'])) {
+                $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
+            }
+
+            DB::commit();
+            return response()->json([
+                "message" => "Producto actualizado exitosamente",
+                "data" => $producto->load([
+                    "imagenes",
+                    "etiqueta",
+                    "productosRelacionados",
+                    "especificaciones"
+                ])
+            ], HttpStatusCode::OK->value);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Error al actualizar el producto: ' . $e->getMessage()],  HttpStatusCode::INTERNAL_SERVER_ERROR->value);
+        }
+    }
 
     /**
      * Obtener un producto por su ID
@@ -570,190 +761,7 @@ class ProductoController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    /**
-     * Actualizar un producto específico
-     * 
-     * @OA\Post(
-     *     path="/api/v1/productos/{id}",
-     *     summary="Actualiza un producto específico (no funciona en Swagger)",
-     *     description="Actualiza producto, elimina todas las antiguas imagenes y guarda las nuevas imagen en el servidor. Si lo intentas usar en Swagger no funcionará, pero si lo pruebas desde Postman si funciona. Los campos a enviar ya sea o desde Postman o desde un frontend son los mismos listados a continuación.",
-     *     operationId="updateProducto2",
-     *     tags={"Productos"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del producto a actualizar",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 required={
-     *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
-     *                     "seccion", "descripcion", "especificaciones",
-     *                      "imagenes", "textos_alt", "mensaje_correo", "_method"
-     *                 },
-     *                 @OA\Property(property="nombre", type="string", example="Selladora"),
-     *                 @OA\Property(property="titulo", type="string", example="Titulo increíble"),
-     *                 @OA\Property(property="subtitulo", type="string", example="Subtitulo increíble"),
-     *                 @OA\Property(property="stock", type="integer", example=20),
-     *                 @OA\Property(property="precio", type="number", format="float", example=100.50),
-     *                 @OA\Property(property="seccion", type="string", example="Decoración"),
-     *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
-     *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
-     *                 
-     *                 @OA\Property(
-     *                     property="imagenes",
-     *                     type="array",
-     *                     @OA\Items(type="string", format="binary"),
-     *                     description="Array de imágenes a subir"
-     *                 ),
-     *                 
-     *                 @OA\Property(
-     *                     property="textos_alt",
-     *                     type="array",
-     *                     @OA\Items(type="string", example="Texto ALT para la imagen"),
-     *                     description="Array de textos alternativos para las imágenes"
-     *                 ),
-     *                 
-     *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
-     *                 @OA\Property(property="_method", type="string", example="PUT"),
-     *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
-     *                 @OA\Property(property="meta_descripcion", type="string", example="Meta descripción del producto")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Producto actualizado exitosamente",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object"),
-     *             @OA\Property(property="message", type="string", example="Producto actualizado exitosamente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Producto no encontrado"
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Error de validación"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error del servidor"
-     *     )
-     * )
-     */
-    public function update(V2UpdateProductoRequest $request, string $id)
-    {
-        Log::info('PATCH Producto Request received:', ['request_all' => $request->all(), 'id' => $id]);
-        $datosValidados = $request->validated();
-        Log::info('Validated data:', ['datos_validados' => $datosValidados]);
-
-        DB::beginTransaction();
-        try {
-            $producto = Producto::findOrFail($id);
-
-            // Construir solo los campos que se van a actualizar
-            $camposActualizar = [];
-            foreach (
-                [
-                    "nombre",
-                    "link",
-                    "titulo",
-                    "subtitulo",
-                    "stock",
-                    "precio",
-                    "seccion",
-                    "descripcion"
-                ] as $campo
-            ) {
-                if (array_key_exists($campo, $datosValidados)) {
-                    $camposActualizar[$campo] = $datosValidados[$campo];
-                }
-            }
-            Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
-            $producto->update($camposActualizar);
-
-            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
-                $producto->etiqueta()->updateOrCreate(
-                    ['producto_id' => $producto->id],
-                    [
-                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
-                    ]
-                );
-            } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
-                $producto->etiqueta()->delete();
-            }
-
-            // Eliminar imágenes antiguas si se envían nuevas
-            if (isset($datosValidados['imagenes'])) {
-                $rutasImagenesAntiguas = [];
-                foreach ($producto->imagenes as $imagen) {
-                    array_push($rutasImagenesAntiguas, str_replace('/storage/', '', $imagen['url_imagen']));
-                }
-                Storage::disk('public')->delete($rutasImagenesAntiguas);
-                $producto->imagenes()->delete();
-
-                $imagenes = $request->file("imagenes", []);
-                $altTexts = $datosValidados["textos_alt"] ?? [];
-
-                foreach ($imagenes as $i => $imagen) {
-                    $ruta = $this->guardarImagen($imagen);
-                    $producto->imagenes()->create([
-                        "url_imagen" => $ruta,
-                        "texto_alt_SEO" => $altTexts[$i] ?? null
-                    ]);
-                }
-            }
-
-            // Actualizar especificaciones
-            if (isset($datosValidados['especificaciones'])) {
-                $producto->especificaciones()->delete();
-                $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
-                if (is_array($especificaciones)) {
-                    foreach ($especificaciones as $clave => $valor) {
-                        $producto->especificaciones()->create([
-                            'clave' => $clave,
-                            'valor' => $valor,
-                        ]);
-                    }
-                }
-            }
-
-            // Sincronizar productos relacionados
-            if (isset($datosValidados['relacionados'])) {
-                $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
-            }
-
-            DB::commit();
-            return response()->json(["message" => "Producto actualizado exitosamente"], HttpStatusCode::OK->value);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Error al actualizar el producto: ' . $e->getMessage()],  HttpStatusCode::INTERNAL_SERVER_ERROR->value);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     /**
      * Eliminar un producto específico
      * 

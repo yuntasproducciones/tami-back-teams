@@ -177,14 +177,6 @@ class ProductoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * @OA\Post(
      *     path="/api/v1/productos",
      *     summary="Crear un nuevo producto",
@@ -306,19 +298,40 @@ class ProductoController extends Controller
         $producto->productosRelacionados()->sync($datosValidados['relacionados'] ?? []);
         $producto->imagenes()->createMany($imagenesProcesadas);
 
-        // Aquí solo este bloque basta
-        $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
+        // Manejo de especificaciones clave:valor - solo texto
+
+        $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
 
         if (is_array($especificaciones)) {
             foreach ($especificaciones as $clave => $valor) {
-                $producto->especificaciones()->create([
-                    'clave' => $clave,
-                    'valor' => $valor,
-                ]);
+                // 1 Caso: Solo texto 
+                if (is_int($clave)) {
+                    $producto->especificaciones()->create([
+                        'clave' => null,
+                        'valor' => null,
+                        'texto' => $valor,
+                    ]);
+
+                    // 2 Caso: Clave - Valor
+                } else {
+                    $producto->especificaciones()->create([
+                        'clave' => $clave,
+                        'valor' => $valor,
+                        'texto' => null,
+                    ]);
+                }
             }
         }
 
-        return response()->json(["message" => "Producto insertado exitosamente"], 201);
+        return response()->json([
+            "message" => "Producto insertado exitosamente",
+            "data" => $producto->load([
+                "imagenes",
+                "etiqueta",
+                "productosRelacionados",
+                "especificaciones"
+            ])
+        ], 201);
     }
 
 

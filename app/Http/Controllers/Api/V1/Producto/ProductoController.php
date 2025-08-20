@@ -99,15 +99,15 @@ class ProductoController extends Controller
     public function index()
     {
         try {
-            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta'])
+            $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta', 'dimensiones'])
                 ->orderBy('created_at')
                 ->get();
 
             $showProductos = $productos->map(function ($producto) {
-                $especificacionesFormateadas = [];
-                foreach ($producto->especificaciones as $especificacion) {
-                    $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
-                }
+                // $especificacionesFormateadas = [];
+                // foreach ($producto->especificaciones as $especificacion) {
+                //     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
+                // }
 
                 Log::info('Producto ID: ' . $producto->id . ' - Etiqueta antes del mapeo: ', ['etiqueta' => $producto->etiqueta]);
                 return [
@@ -120,7 +120,8 @@ class ProductoController extends Controller
                     'precio' => $producto->precio,
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
-                    'especificaciones' => $especificacionesFormateadas,
+                    'especificaciones' => $producto->especificaciones,
+                    'dimensiones' => $producto->dimensiones,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
                             'url_imagen' => $imagen->url_imagen,
@@ -296,10 +297,16 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
         ]);
 
-        if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+        // if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+        //     $producto->etiqueta()->create([
+        //         'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+        //         'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+        //     ]);
+        // }
+        if ($request->has('etiqueta')) {
             $producto->etiqueta()->create([
-                'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
+                'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
             ]);
         }
 
@@ -310,12 +317,21 @@ class ProductoController extends Controller
         $especificaciones = json_decode($datosValidados['especificaciones'] ?? null, true);
 
         if (is_array($especificaciones)) {
-            foreach ($especificaciones as $clave => $valor) {
+            foreach ($especificaciones as $valor) {
                 $producto->especificaciones()->create([
-                    'clave' => $clave,
+                    // 'clave' => $clave,
                     'valor' => $valor,
                 ]);
             }
+        }
+
+        // Dimensiones
+        if (isset($datosValidados['dimensiones']) && is_array($datosValidados['dimensiones'])) {
+            $producto->dimensiones()->create([
+                'alto'  => $datosValidados['dimensiones']['alto'] ?? null,
+                'largo' => $datosValidados['dimensiones']['largo'] ?? null,
+                'ancho' => $datosValidados['dimensiones']['ancho'] ?? null,
+            ]);
         }
 
         return response()->json(["message" => "Producto insertado exitosamente"], 201);
@@ -678,16 +694,26 @@ class ProductoController extends Controller
             Log::info('Fields to update:', ['campos_actualizar' => $camposActualizar]);
             $producto->update($camposActualizar);
 
-            if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            // if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
+            //     $producto->etiqueta()->updateOrCreate(
+            //         ['producto_id' => $producto->id],
+            //         [
+            //             'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
+            //             'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+            //         ]
+            //     );
+            // } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
+            //     $producto->etiqueta()->delete();
+            // }
+            // traer desde etiqueta
+            if ($request->has('etiqueta')) {
                 $producto->etiqueta()->updateOrCreate(
                     ['producto_id' => $producto->id],
                     [
-                        'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-                        'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
+                        'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
+                        'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
                     ]
                 );
-            } else if ($producto->etiqueta && (!isset($datosValidados['meta_titulo']) && !isset($datosValidados['meta_descripcion']))) {
-                $producto->etiqueta()->delete();
             }
 
             // Eliminar imágenes antiguas si se envían nuevas
@@ -716,13 +742,21 @@ class ProductoController extends Controller
                 $producto->especificaciones()->delete();
                 $especificaciones = json_decode($datosValidados['especificaciones'] ?? '[]', true);
                 if (is_array($especificaciones)) {
-                    foreach ($especificaciones as $clave => $valor) {
+                    foreach ($especificaciones as $valor) {
                         $producto->especificaciones()->create([
-                            'clave' => $clave,
+                            // 'clave' => $clave,
                             'valor' => $valor,
                         ]);
                     }
                 }
+            }
+
+            // Actualizar dimensiones
+            if (isset($datosValidados['dimensiones'])) {
+                $producto->dimensiones()->updateOrCreate(
+                    ['id_producto' => $producto->id],
+                    $datosValidados['dimensiones']
+                );
             }
 
             // Sincronizar productos relacionados

@@ -50,6 +50,12 @@ class V2StoreProductoRequest extends FormRequest
             // Especificaciones
             'especificaciones' => "string|max:65535",
 
+            // Dimensiones
+            'dimensiones' => 'array',
+            'dimensiones.alto' => "nullable|numeric|min:0",
+            'dimensiones.largo' => "nullable|numeric|min:0",
+            'dimensiones.ancho' => "nullable|numeric|min:0",
+
             // Imágenes y textos_alt
             'imagenes' => "array|min:1|max:10",
             'imagenes.*' => "file|image|max:2048",

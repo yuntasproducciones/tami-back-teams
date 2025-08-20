@@ -8,8 +8,9 @@ class Dimension extends Model
 {
     protected $fillable = [
         'id_producto',
-        'tipo',
-        'valor'
+        'alto',
+        'largo',
+        'ancho'
     ];
 
     public $timestamps = true;

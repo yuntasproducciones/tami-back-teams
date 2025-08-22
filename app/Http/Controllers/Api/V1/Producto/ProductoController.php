@@ -121,7 +121,11 @@ class ProductoController extends Controller
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
                     'especificaciones' => $producto->especificaciones,
-                    'dimensiones' => $producto->dimensiones,
+                    'dimensiones' => $producto->dimensiones ? [
+                        'alto' => $producto->dimensiones->alto,
+                        'largo' => $producto->dimensiones->largo,
+                        'ancho' => $producto->dimensiones->ancho,
+                    ] : null,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
                             'url_imagen' => $imagen->url_imagen,
@@ -413,7 +417,7 @@ class ProductoController extends Controller
     public function show(string $id)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados', 'etiqueta'])->find($id);
+            $producto = Producto::with(['imagenes', 'productosRelacionados', 'etiqueta', 'dimensiones'])->find($id);
 
             if ($producto === null) {
                 return response()->json([
@@ -444,6 +448,11 @@ class ProductoController extends Controller
                 'etiqueta' => $producto->etiqueta ? [
                     'meta_titulo' => $producto->etiqueta->meta_titulo,
                     'meta_descripcion' => $producto->etiqueta->meta_descripcion,
+                ] : null,
+                'dimensiones' => $producto->dimensiones ? [
+                    'alto' => $producto->dimensiones->alto,
+                    'largo' => $producto->dimensiones->largo,
+                    'ancho' => $producto->dimensiones->ancho,
                 ] : null,
             ];
 
@@ -530,7 +539,7 @@ class ProductoController extends Controller
     public function showByLink($link)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes', 'etiqueta'])
+            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes', 'etiqueta', 'dimensiones'])
                 ->where('link', $link)
                 ->first();
 
@@ -561,6 +570,11 @@ class ProductoController extends Controller
                 'etiqueta' => $producto->etiqueta ? [
                     'meta_titulo' => $producto->etiqueta->meta_titulo,
                     'meta_descripcion' => $producto->etiqueta->meta_descripcion,
+                ] : null,
+                'dimensiones' => $producto->dimensiones ? [
+                    'alto' => $producto->dimensiones->alto,
+                    'largo' => $producto->dimensiones->largo,
+                    'ancho' => $producto->dimensiones->ancho,
                 ] : null,
             ];
 

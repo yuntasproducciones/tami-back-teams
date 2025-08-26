@@ -9,8 +9,10 @@ use App\Models\Cliente;
 use App\Services\ApiResponseService;
 use Illuminate\Http\Response;
 use App\Http\Contains\HttpStatusCode;
+use App\Mail\ClientRegistrationMail;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ClienteController extends Controller
 {
@@ -111,7 +113,7 @@ class ClienteController extends Controller
         catch(\Exception $e){
             return response()->json(['error' => 'Error al obtener los clientes: ' . $e->getMessage()], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
         }
-        
+
     }
 
     /**
@@ -185,6 +187,8 @@ class ClienteController extends Controller
                 'celular' => $datosValidados['celular']
             ]
             );
+
+            Mail::to($request->email)->send(new ClientRegistrationMail($request->only('name', 'email', 'celular')));
 
             DB::commit();
             return $this->apiResponse->successResponse($cliente->fresh(), 'Cliente creado con éxito.', HttpStatusCode::CREATED);
@@ -405,7 +409,7 @@ class ClienteController extends Controller
             DB::commit();
             return $this->apiResponse->successResponse($cliente->fresh(), 'Cliente actualizado con éxito.', HttpStatusCode::OK);
         }
-        catch (\Exception $e) { 
+        catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Error al actualizar el cliente: ' . $e->getMessage()], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
         }

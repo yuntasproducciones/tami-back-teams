@@ -7,6 +7,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductoResource extends JsonResource
 {
+    private bool $withRelacionados;
+
+    public function __construct($resource, $withRelacionados = true)
+    {
+        parent::__construct($resource);
+        $this->withRelacionados = $withRelacionados;
+    }
+
     public function toArray(Request $request): array
     {
         return [
@@ -26,7 +34,7 @@ class ProductoResource extends JsonResource
                 'ancho' => $this->dimensiones->ancho,
             ] : null,
             'imagenes' => ImagenResource::collection($this->imagenes),
-            'productos_relacionados' => ProductoRelacionadoResource::collection($this->productosRelacionados),
+            'productos_relacionados' => $this->withRelacionados ? ProductoRelacionadoResource::collection($this->productosRelacionados) : $this->productosRelacionados,
             'etiqueta' => $this->etiqueta ? [
                 'meta_titulo' => $this->etiqueta->meta_titulo,
                 'meta_descripcion' => $this->etiqueta->meta_descripcion,

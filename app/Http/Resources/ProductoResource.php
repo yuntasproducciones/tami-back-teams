@@ -33,7 +33,7 @@ class ProductoResource extends JsonResource
                 'largo' => $this->dimensiones->largo,
                 'ancho' => $this->dimensiones->ancho,
             ] : null,
-            'imagenes' => ImagenResource::collection($this->imagenes),
+            'imagenes' => ProductoImagenResource::collection($this->imagenes),
             'productos_relacionados' => $this->withRelacionados ? ProductoRelacionadoResource::collection($this->productosRelacionados) : $this->productosRelacionados,
             'etiqueta' => $this->etiqueta ? [
                 'meta_titulo' => $this->etiqueta->meta_titulo,

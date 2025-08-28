@@ -9,6 +9,7 @@ use App\Services\ApiResponseService;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
 use App\Http\Contains\HttpStatusCode;
+use App\Http\Resources\BlogResource;
 use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
@@ -96,7 +97,7 @@ class BlogController extends Controller
         try {
             $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])->get();
 
-            $showBlog = $blog->map(function ($blog) {
+            /* $showBlog = $blog->map(function ($blog) {
                 return [
                     'id' => $blog->id,
                     'titulo' => $blog->titulo,
@@ -126,10 +127,11 @@ class BlogController extends Controller
                     'created_at' => $blog->created_at,
                     'updated_at' => $blog->updated_at
                 ];
-            });
+            }); */
 
             return $this->apiResponse->successResponse(
-                $showBlog,
+                //$showBlog,
+                BlogResource::collection($blog),
                 'Blogs obtenidos exitosamente',
                 HttpStatusCode::OK
             );
@@ -312,7 +314,7 @@ class BlogController extends Controller
     }
     /**
      * Mostrar un blog específico
-     * 
+     *
      * @OA\Get(
      *     path="/api/v1/blogs/{id}",
      *     summary="Muestra un blog específico",
@@ -341,7 +343,7 @@ class BlogController extends Controller
      *                 @OA\Property(property="miniatura", type="string", example="https://example.com/imagen-principal.jpg"),
      *                 @OA\Property(property="titulo_blog", type="string", example="Título del detalle del blog"),
      *                 @OA\Property(property="subtitulo_beneficio", type="string", example="Subtítulo de beneficios"),
-     *                 @OA\Property(property="imagenes", type="array", 
+     *                 @OA\Property(property="imagenes", type="array",
      *                     @OA\Items(
      *                         @OA\Property(property="url_imagen", type="string", example="https://example.com/imagen1.jpg"),
      *                         @OA\Property(property="parrafo_imagen", type="string", example="Descripción de la imagen")
@@ -375,7 +377,7 @@ class BlogController extends Controller
             $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])
                 ->findOrFail($id);
 
-            $showBlog = [
+            /* $showBlog = [
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
                 'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
@@ -403,10 +405,11 @@ class BlogController extends Controller
                 ] : null,
                 'created_at' => $blog->created_at,
                 'updated_at' => $blog->updated_at
-            ];
+            ]; */
 
             return $this->apiResponse->successResponse(
-                $showBlog,
+                //$showBlog,
+                new BlogResource($blog),
                 'Blog obtenido exitosamente',
                 HttpStatusCode::OK
             );
@@ -420,7 +423,7 @@ class BlogController extends Controller
 
     /**
      * Mostrar un blog por su link
-     * 
+     *
      * @OA\Get(
      *     path="/api/v1/blogs/link/{link}",
      *     summary="Muestra un blog por su link",
@@ -449,10 +452,10 @@ class BlogController extends Controller
      *                 @OA\Property(property="imagenPrincipal", type="string", example="https://example.com/imagen-principal.jpg"),
      *                 @OA\Property(property="tituloBlog", type="string", example="Título del detalle del blog"),
      *                 @OA\Property(property="subTituloBlog", type="string", example="Subtítulo de beneficios"),
-     *                 @OA\Property(property="imagenesBlog", type="array", 
+     *                 @OA\Property(property="imagenesBlog", type="array",
      *                     @OA\Items(type="string", example="https://example.com/imagen1.jpg")
      *                 ),
-     *                 @OA\Property(property="parrafoImagenesBlog", type="array", 
+     *                 @OA\Property(property="parrafoImagenesBlog", type="array",
      *                     @OA\Items(type="string", example="Texto descriptivo de la imagen")
      *                 ),
      *                 @OA\Property(property="video_id", type="string", example="dQw4w9WgXcQ"),
@@ -485,7 +488,7 @@ class BlogController extends Controller
                 ->where('link', $link)
                 ->firstOrFail();
 
-            $showBlog = [
+            /* $showBlog = [
                 'id' => $blog->id,
                 'titulo' => $blog->titulo,
                 'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
@@ -513,10 +516,11 @@ class BlogController extends Controller
                 ] : null,
                 'created_at' => $blog->created_at,
                 'updated_at' => $blog->updated_at
-            ];
+            ]; */
 
             return $this->apiResponse->successResponse(
-                $showBlog,
+                //$showBlog,
+                new BlogResource($blog),
                 'Blog obtenido exitosamente',
                 HttpStatusCode::OK
             );
@@ -770,12 +774,12 @@ class BlogController extends Controller
         }
     }
 
-    private function obtenerIdVideoYoutube($url)
+    /* private function obtenerIdVideoYoutube($url)
     {
         $pattern = '%(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([^\s&?]+)%';
         if (preg_match($pattern, $url, $matches)) {
             return $matches[1];
         }
         return null;
-    }
+    } */
 }

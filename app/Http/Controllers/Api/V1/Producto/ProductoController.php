@@ -103,7 +103,7 @@ class ProductoController extends Controller
                 ->orderBy('created_at')
                 ->get();
 
-            $showProductos = $productos->map(function ($producto) {
+            /* $showProductos = $productos->map(function ($producto) {
                 // $especificacionesFormateadas = [];
                 // foreach ($producto->especificaciones as $especificacion) {
                 //     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
@@ -160,9 +160,9 @@ class ProductoController extends Controller
                 ];
             });
 
-            return response()->json($showProductos);
+            return response()->json($showProductos); */
 
-            //return ProductoResource::collection($productos);
+            return ProductoResource::collection($productos)->resolve();
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al obtener los productos: ' . $e->getMessage()
@@ -427,7 +427,7 @@ class ProductoController extends Controller
                 ], 404);
             }
 
-            $imagenes = $producto->imagenes->map(function ($imagen) {
+            /* $imagenes = $producto->imagenes->map(function ($imagen) {
                 return [
                     'url_imagen' => $imagen->url_imagen,
                     'texto_alt_SEO' => $imagen->texto_alt_SEO,
@@ -456,12 +456,12 @@ class ProductoController extends Controller
                     'largo' => $producto->dimensiones->largo,
                     'ancho' => $producto->dimensiones->ancho,
                 ] : null,
-            ];
-
+            ]; */
+            //Con el argumento false indicamos que no use el ProductoRelacionadoResource de esta manera no mapea datos innecesarios
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                'data' => $formattedProducto
-                //'data' => new ProductoResource($producto)
+                //'data' => $formattedProducto
+                'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -550,7 +550,7 @@ class ProductoController extends Controller
                 return response()->json(["message" => "Producto no encontrado"], 404);
             }
 
-            $imagenes = $producto->imagenes->map(function ($imagen) {
+            /* $imagenes = $producto->imagenes->map(function ($imagen) {
                 return [
                     'url_imagen' => $imagen->url_imagen,
                     'texto_alt_SEO' => $imagen->texto_alt_SEO,
@@ -579,12 +579,12 @@ class ProductoController extends Controller
                     'largo' => $producto->dimensiones->largo,
                     'ancho' => $producto->dimensiones->ancho,
                 ] : null,
-            ];
+            ]; */
 
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                'data' => $formattedProducto
-                //'data' => new ProductoResource($producto)
+                //'data' => $formattedProducto
+                'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
             return response()->json(["message" => "Hubo un error en el servidor"], 500);

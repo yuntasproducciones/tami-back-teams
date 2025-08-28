@@ -19,7 +19,7 @@ class ProductoRelacionadoResource extends JsonResource
             'precio' => $this->precio,
             'seccion' => $this->seccion,
             'descripcion' => $this->descripcion,
-            'imagenes' => ImagenResource::collection($this->imagenes),
+            'imagenes' => ProductoImagenResource::collection($this->imagenes),
         ];
     }
 }

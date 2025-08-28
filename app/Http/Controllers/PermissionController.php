@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePermissionRequest;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\RoleResource;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
@@ -13,7 +15,7 @@ class PermissionController extends Controller
 {
     /**
      * Obtener listado de permisos
-     * 
+     *
      * @OA\Get(
      *     path="/api/v1/permisos",
      *     summary="Muestra un listado de todos los permisos",
@@ -69,7 +71,7 @@ class PermissionController extends Controller
 
     /**
      * Crear un nuevo permiso
-     * 
+     *
      * @OA\Post(
      *     path="/api/v1/permisos",
      *     summary="Crear un nuevo permiso",
@@ -82,7 +84,7 @@ class PermissionController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 required={
-     *                     "nombre", 
+     *                     "nombre",
      *                 },
      *                 @OA\Property(
      *                     property="nombre",
@@ -172,37 +174,39 @@ class PermissionController extends Controller
         ]);
     }
 
-public function assignPermissionToRole(Request $request){
-    $request->validate([
-        'role_id' => 'required|exists:roles,id',
-        'permissions' => 'required|array',
-        'permissions.*' => 'exists:permissions,id',
-    ]);
+    public function assignPermissionToRole(Request $request){
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
 
-    $role = Role::findOrFail($request->role_id);
-    $role->syncPermissions($request->permissions);
+        $role = Role::findOrFail($request->role_id);
+        $role->syncPermissions($request->permissions);
 
-    $role->load('permissions');
+        $role->load('permissions');
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Permisos asignados al rol exitosamente',
-        'data' => [
-            'role' => [
-                'id' => $role->id,
-                'name' => $role->name,
-                'guard_name' => $role->guard_name,
-            ],
-            'permissions' => $role->permissions->map(function($permission) {
-                return [
-                    'id' => $permission->id,
-                    'name' => $permission->name,
-                    'guard_name' => $permission->guard_name,
-                ];
-            })
-        ]
-    ], 200);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Permisos asignados al rol exitosamente',
+            'data' => [
+                /* 'role' => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'guard_name' => $role->guard_name,
+                ],
+                'permissions' => $role->permissions->map(function($permission) {
+                    return [
+                        'id' => $permission->id,
+                        'name' => $permission->name,
+                        'guard_name' => $permission->guard_name,
+                    ];
+                }) */
+               'role' => new RoleResource($role),
+               'permissions' => PermissionResource::collection($role->permissions)
+            ]
+        ], 200);
+    }
 
     public function removePermissionFromRole(Request $request)
     {
@@ -223,21 +227,22 @@ public function assignPermissionToRole(Request $request){
 
     public function getRolePermissions($roleId)
     {
-        $role = Role::with('permissions')->findOrFail($roleId); 
+        $role = Role::with('permissions')->findOrFail($roleId);
 
-        $permissions = $role->permissions->map(function ($permission) {
+        /* $permissions = $role->permissions->map(function ($permission) {
             return [
                 'id' => $permission->id,
                 'name' => $permission->name,
                 'guard_name' => $permission->guard_name,
             ];
-        });
+        }); */
 
         return response()->json([
             'success' => true,
             'role_id' => $role->id,
             'role_name' => $role->name,
-            'permissions' => $permissions,
+            //'permissions' => $permissions,
+            'permissions' => PermissionResource::collection($role->permissions),
             'message' => 'Permisos del rol obtenidos exitosamente'
         ]);
     }

@@ -598,8 +598,6 @@ class BlogController extends Controller
      *                     @OA\Items(type="string", example="Durante el invierno la piel tiende a resecarse, por lo que es esencial usar cremas nutritivas.")
      *                 )
      *             ),
-     *             @OA\Encoding(name="miniatura", contentType="application/octet-stream"),
-     *             @OA\Encoding(name="imagenes[]", explode=true, contentType="application/octet-stream")
      *         )
      *     ),
      *     @OA\Response(

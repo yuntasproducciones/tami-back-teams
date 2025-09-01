@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Producto\ProductoController;
 use App\Http\Controllers\Api\V1\Cliente\ClienteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Api\V1\Email\EmailController;
+use App\Http\Controllers\Api\V1\WhatsApp\WhatsAppController;
 use App\Http\Controllers\RoleController;
 
 
@@ -53,6 +54,13 @@ Route::prefix('v1')->group(function () {
         Route::delete('/{id}', 'destroy');
         Route::get('/link/{link}', 'showByLink');
     });
+
+    Route::prefix('whatsapp')->group(function () {
+        Route::post('/send', [WhatsAppController::class, 'sendMessage']);
+        Route::post('/loginWhatsApp', [WhatsAppController::class, 'loginWhatsApp']);
+        Route::post('/requestNewQr', [WhatsAppController::class, 'requestNewQr']);
+        Route::post('/sendMessageAccept', [WhatsAppController::class, 'sendMessageAccept']);
+    });
 });
 
 
@@ -66,7 +74,7 @@ Route::prefix('v1')->group(function () {
 //             Route::delete("/{id}", "destroy");
 //         });
 //     });
-    
+
     // Route::controller(V2ProductoController::class)->prefix('productos')->group(function(){
     //     Route::get('/', 'paginate');
     //     Route::get('/all', 'index');

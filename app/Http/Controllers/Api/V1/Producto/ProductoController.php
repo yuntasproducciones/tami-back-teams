@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Contains\HttpStatusCode;
 use App\Http\Resources\ProductoResource;
+use Illuminate\Http\Request;
+
 class ProductoController extends Controller
 {
     /**
@@ -167,6 +169,25 @@ class ProductoController extends Controller
             return response()->json([
                 'message' => 'Error al obtener los productos: ' . $e->getMessage()
             ], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
+        }
+    }
+
+    /**
+     * Get all related products by id
+     */
+    public function related($id)
+    {
+        try {
+            $producto = Producto::with(['productosRelacionados'])->findOrFail($id);
+
+            return response()->json([
+                'producto' => $producto->nombre,
+                'relacionados' => $producto->productosRelacionados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener productos relacionados: ' . $e->getMessage()
+            ], 500);
         }
     }
 

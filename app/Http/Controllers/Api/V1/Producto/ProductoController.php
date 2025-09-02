@@ -191,17 +191,34 @@ class ProductoController extends Controller
         }
     }
 
-    public function paginate()
+    /**
+     * 
+     * Permit only two params: `perPage` and `page`:
+     * 
+     * - `perPage`: It is a range of products.
+     * - `page`: The initial position of a specific group of products.
+     */
+    public function paginate(Request $request)
     {
-        //
+        $perPage = $request->get('perPage', 10);
+        $page = $request->get('page', 1);
+
         $productos = Producto::with('imagenes', 'productosRelacionados')->get();
-        // Para decodificar especificaciones
+
         $productos->transform(function ($producto) {
             $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
             return $producto;
         });
 
-        return response()->json($productos);
+        $items = $productos->forPage($page, $perPage);
+
+        return response()->json([
+            'data' => $items->values(),
+            'current_page' => $page,
+            'per_page' => $perPage,
+            'total' => $productos->count(),
+            'last_page' => ceil($productos->count() / $perPage),
+        ]);
     }
 
     /**

@@ -43,10 +43,10 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){
         Route::get('/', 'index');
+        Route::get('/paginate', 'paginate');
         Route::get('/{id}', 'show');
 
         Route::get('/{id}/related', 'related');
-        //Route::get('/paginate', 'paginate');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {});
 

@@ -203,21 +203,10 @@ class ProductoController extends Controller
         $perPage = $request->get('perPage', 10);
         $page = $request->get('page', 1);
 
-        $productos = Producto::with('imagenes', 'productosRelacionados')->get();
-
-        $productos->transform(function ($producto) {
-            $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
-            return $producto;
-        });
-
-        $items = $productos->forPage($page, $perPage);
+        $productos = Producto::paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
-            'data' => $items->values(),
-            'current_page' => $page,
-            'per_page' => $perPage,
-            'total' => $productos->count(),
-            'last_page' => ceil($productos->count() / $perPage),
+            'data'=> $productos->items()
         ]);
     }
 

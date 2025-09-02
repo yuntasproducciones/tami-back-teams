@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Contains\HttpStatusCode;
-
+use App\Http\Resources\ProductoResource;
 class ProductoController extends Controller
 {
     /**
@@ -103,7 +103,7 @@ class ProductoController extends Controller
                 ->orderBy('created_at')
                 ->get();
 
-            $showProductos = $productos->map(function ($producto) {
+            /* $showProductos = $productos->map(function ($producto) {
                 // $especificacionesFormateadas = [];
                 // foreach ($producto->especificaciones as $especificacion) {
                 //     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
@@ -121,7 +121,11 @@ class ProductoController extends Controller
                     'seccion' => $producto->seccion,
                     'descripcion' => $producto->descripcion,
                     'especificaciones' => $producto->especificaciones,
-                    'dimensiones' => $producto->dimensiones,
+                    'dimensiones' => $producto->dimensiones ? [
+                        'alto' => $producto->dimensiones->alto,
+                        'largo' => $producto->dimensiones->largo,
+                        'ancho' => $producto->dimensiones->ancho,
+                    ] : null,
                     'imagenes' => $producto->imagenes->map(function ($imagen) {
                         return [
                             'url_imagen' => $imagen->url_imagen,
@@ -156,7 +160,9 @@ class ProductoController extends Controller
                 ];
             });
 
-            return response()->json($showProductos);
+            return response()->json($showProductos); */
+
+            return ProductoResource::collection($productos)->resolve();
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al obtener los productos: ' . $e->getMessage()
@@ -191,14 +197,14 @@ class ProductoController extends Controller
      *     summary="Crear un nuevo producto",
      *     description="Crea un nuevo producto con imágenes, etiquetas, productos relacionados y especificaciones (en formato JSON).",
      *     tags={"Productos"},
-     *     security={{"sanctum": {}}}, 
+     *     security={{"sanctum": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={"nombre", "precio", "imagenes[]"},
-     *                 
+     *
      *                 @OA\Property(property="nombre", type="string", example="Camiseta deportiva"),
      *                 @OA\Property(property="link", type="string", example="camiseta-deportiva"),
      *                 @OA\Property(property="titulo", type="string", example="Camiseta DryFit Hombre"),
@@ -207,7 +213,7 @@ class ProductoController extends Controller
      *                 @OA\Property(property="precio", type="number", format="float", example=89.90),
      *                 @OA\Property(property="seccion", type="string", example="Ropa Deportiva"),
      *                 @OA\Property(property="descripcion", type="string", example="Camiseta ligera y transpirable."),
-     * 
+     *
      *                 @OA\Property(
      *                     property="etiquetas[meta_titulo]",
      *                     type="string",
@@ -218,25 +224,25 @@ class ProductoController extends Controller
      *                     type="string",
      *                     example="Compra la mejor camiseta deportiva para hombre."
      *                 ),
-     * 
+     *
      *                 @OA\Property(
      *                     property="relacionados[]",
      *                     type="array",
      *                     @OA\Items(type="integer", example=2)
      *                 ),
-     * 
+     *
      *                 @OA\Property(
      *                     property="imagenes[]",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary")
      *                 ),
-     * 
+     *
      *                 @OA\Property(
      *                     property="textos_alt[]",
      *                     type="array",
      *                     @OA\Items(type="string", example="Camiseta azul vista frontal")
      *                 ),
-     * 
+     *
      *                 @OA\Property(
      *                     property="especificaciones",
      *                     type="string",
@@ -340,7 +346,7 @@ class ProductoController extends Controller
 
     /**
      * Obtener un producto por su ID
-     * 
+     *
      * @OA\Get(
      *     path="/api/v1/productos/{id}",
      *     summary="Muestra un producto por su ID",
@@ -413,7 +419,7 @@ class ProductoController extends Controller
     public function show(string $id)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados', 'etiqueta'])->find($id);
+            $producto = Producto::with(['imagenes', 'productosRelacionados', 'etiqueta', 'dimensiones'])->find($id);
 
             if ($producto === null) {
                 return response()->json([
@@ -421,7 +427,7 @@ class ProductoController extends Controller
                 ], 404);
             }
 
-            $imagenes = $producto->imagenes->map(function ($imagen) {
+            /* $imagenes = $producto->imagenes->map(function ($imagen) {
                 return [
                     'url_imagen' => $imagen->url_imagen,
                     'texto_alt_SEO' => $imagen->texto_alt_SEO,
@@ -445,11 +451,17 @@ class ProductoController extends Controller
                     'meta_titulo' => $producto->etiqueta->meta_titulo,
                     'meta_descripcion' => $producto->etiqueta->meta_descripcion,
                 ] : null,
-            ];
-
+                'dimensiones' => $producto->dimensiones ? [
+                    'alto' => $producto->dimensiones->alto,
+                    'largo' => $producto->dimensiones->largo,
+                    'ancho' => $producto->dimensiones->ancho,
+                ] : null,
+            ]; */
+            //Con el argumento false indicamos que no use el ProductoRelacionadoResource de esta manera no mapea datos innecesarios
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                'data' => $formattedProducto
+                //'data' => $formattedProducto
+                'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -460,7 +472,7 @@ class ProductoController extends Controller
 
     /**
      * Obtener un producto por su enlace único
-     * 
+     *
      * @OA\Get(
      *     path="/api/v1/productos/link/{link}",
      *     summary="Muestra un producto usando su enlace único",
@@ -530,7 +542,7 @@ class ProductoController extends Controller
     public function showByLink($link)
     {
         try {
-            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes', 'etiqueta'])
+            $producto = Producto::with(['imagenes', 'productosRelacionados.imagenes', 'etiqueta', 'dimensiones'])
                 ->where('link', $link)
                 ->first();
 
@@ -538,7 +550,7 @@ class ProductoController extends Controller
                 return response()->json(["message" => "Producto no encontrado"], 404);
             }
 
-            $imagenes = $producto->imagenes->map(function ($imagen) {
+            /* $imagenes = $producto->imagenes->map(function ($imagen) {
                 return [
                     'url_imagen' => $imagen->url_imagen,
                     'texto_alt_SEO' => $imagen->texto_alt_SEO,
@@ -562,11 +574,17 @@ class ProductoController extends Controller
                     'meta_titulo' => $producto->etiqueta->meta_titulo,
                     'meta_descripcion' => $producto->etiqueta->meta_descripcion,
                 ] : null,
-            ];
+                'dimensiones' => $producto->dimensiones ? [
+                    'alto' => $producto->dimensiones->alto,
+                    'largo' => $producto->dimensiones->largo,
+                    'ancho' => $producto->dimensiones->ancho,
+                ] : null,
+            ]; */
 
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                'data' => $formattedProducto
+                //'data' => $formattedProducto
+                'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
             return response()->json(["message" => "Hubo un error en el servidor"], 500);
@@ -586,7 +604,7 @@ class ProductoController extends Controller
      */
     /**
      * Actualizar un producto específico
-     * 
+     *
      * @OA\Post(
      *     path="/api/v1/productos/{id}",
      *     summary="Actualiza un producto específico (no funciona en Swagger)",
@@ -606,7 +624,7 @@ class ProductoController extends Controller
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={
-     *                     "nombre", "titulo", "subtitulo", "stock", "precio", 
+     *                     "nombre", "titulo", "subtitulo", "stock", "precio",
      *                     "seccion", "descripcion", "especificaciones",
      *                      "imagenes", "textos_alt", "mensaje_correo", "_method"
      *                 },
@@ -618,21 +636,21 @@ class ProductoController extends Controller
      *                 @OA\Property(property="seccion", type="string", example="Decoración"),
      *                 @OA\Property(property="descripcion", type="string", example="Descripción increíble"),
      *                 @OA\Property(property="especificaciones", type="string", example="Especificaciones increíbles"),
-     *                 
+     *
      *                 @OA\Property(
      *                     property="imagenes",
      *                     type="array",
      *                     @OA\Items(type="string", format="binary"),
      *                     description="Array de imágenes a subir"
      *                 ),
-     *                 
+     *
      *                 @OA\Property(
      *                     property="textos_alt",
      *                     type="array",
      *                     @OA\Items(type="string", example="Texto ALT para la imagen"),
      *                     description="Array de textos alternativos para las imágenes"
      *                 ),
-     *                 
+     *
      *                 @OA\Property(property="mensaje_correo", type="string", example="Mensaje increíble"),
      *                 @OA\Property(property="_method", type="string", example="PUT"),
      *                 @OA\Property(property="meta_titulo", type="string", example="Meta título del producto"),
@@ -777,7 +795,7 @@ class ProductoController extends Controller
      */
     /**
      * Eliminar un producto específico
-     * 
+     *
      * @OA\Delete(
      *     path="/api/v1/productos/{id}",
      *     summary="Elimina un producto específico",

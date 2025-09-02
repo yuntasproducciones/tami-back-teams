@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
@@ -147,21 +148,21 @@ class RoleController extends Controller
 
     public function getUserRoles($userId)
     {
-        $user = User::with('roles')->findOrFail($userId); 
+        $user = User::with('roles')->findOrFail($userId);
 
-        $roles = $user->roles->map(function ($role) {
+        /* $roles = $user->roles->map(function ($role) {
             return [
                 'id' => $role->id,
                 'name' => $role->name,
                 'guard_name' => $role->guard_name,
             ];
-        });
-
+        });*/
         return response()->json([
             'success' => true,
             'user_id' => $user->id,
-            'user_name' => $user->name, 
-            'roles' => $roles,
+            'user_name' => $user->name,
+            //'roles' => $roles,
+            'roles' => RoleResource::collection($user->roles),
             'message' => 'Roles del usuario obtenidos exitosamente'
         ]);
     }

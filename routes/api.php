@@ -23,6 +23,10 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users', UserController::class);
     });
 
+    Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
+        Route::get('/paginate', 'paginate');
+    });
+    
     Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {

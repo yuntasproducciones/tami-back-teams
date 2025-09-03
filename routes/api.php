@@ -24,6 +24,10 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users', UserController::class);
     });
 
+    Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
+        Route::get('/paginate', 'paginate');
+    });
+    
     Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -44,7 +48,10 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){
         Route::get('/', 'index');
+        Route::get('/paginate', 'paginate');
         Route::get('/{id}', 'show');
+
+        Route::get('/{id}/related', 'related');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {});
 

@@ -10,6 +10,7 @@ use App\Services\ApiResponseService;
 use Illuminate\Http\Response;
 use App\Http\Contains\HttpStatusCode;
 use App\Mail\ClientRegistrationMail;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -484,5 +485,17 @@ class ClienteController extends Controller
         catch(\Exception $e){
             return response()->json(['error' => 'Error al eliminar el cliente: ' . $e->getMessage()], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
         }
+    }
+
+    public function paginate(Request $request)
+    {
+        $perPage = $request->get('perPage', 10);
+        $page = $request->get('page', 1);
+
+        $clientes = Cliente::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data'=> $clientes->items()
+        ]);
     }
 }

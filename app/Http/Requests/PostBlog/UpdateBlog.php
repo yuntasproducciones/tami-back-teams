@@ -22,18 +22,25 @@ class UpdateBlog extends FormRequest
      */
     public function rules(): array
     {
-        $isPut = $this->isMethod('put');
-        $required = $isPut ? 'required' : 'sometimes';
+        /* $isPut = $this->isMethod('put');
+        $required = $isPut ? 'required' : 'sometimes'; */
         $blogId = $this->route('blog');
 
         return [
-            'titulo' => [$required, 'string', 'max:255'],
+            /* 'titulo' => [$required, 'string', 'max:255'],
             'producto_id' => [$required, 'integer', 'exists:productos,id'],
             'link' => [$required, 'string', 'max:255', Rule::unique('blogs', 'link')->ignore($blogId)],
             'subtitulo1' => [$required, 'string', 'max:255'],
             'subtitulo2' => [$required, 'string', 'max:255'],
             'video_url' => [$required, 'url'],
-            'video_titulo' => [$required, 'string', 'max:255'],
+            'video_titulo' => [$required, 'string', 'max:255'], */
+            'titulo' => ['required', 'string', 'max:255'],
+            'producto_id' => ['required', 'integer', 'exists:productos,id'],
+            'link' => ['required', 'string', 'max:255', Rule::unique('blogs', 'link')->ignore($blogId)],
+            'subtitulo1' => ['required', 'string', 'max:255'],
+            'subtitulo2' => ['required', 'string', 'max:255'],
+            'video_url' => ['required', 'url'],
+            'video_titulo' => ['required', 'string', 'max:255'],
 
             'meta_titulo' => 'nullable|string|min:10|max:60',
             'meta_descripcion' => 'nullable|string|min:40|max:160',
@@ -42,11 +49,17 @@ class UpdateBlog extends FormRequest
             'imagenes' => ['sometimes', 'array'],
             'imagenes.*' => ['sometimes', 'image', 'max:2048'],
 
-            'text_alt' => [$isPut ? 'required' : 'sometimes', 'array'],
+            /* 'text_alt' => [$isPut ? 'required' : 'sometimes', 'array'],
             'text_alt.*' => [$isPut ? 'required' : 'sometimes', 'string', 'max:255'],
 
             'parrafos' => [$isPut ? 'required' : 'sometimes', 'array'],
-            'parrafos.*' => [$isPut ? 'required' : 'sometimes', 'string', 'max:2047'],
+            'parrafos.*' => [$isPut ? 'required' : 'sometimes', 'string', 'max:2047'], */
+
+            'text_alt' => ['required', 'array'],
+            'text_alt.*' => ['required', 'string', 'max:255'],
+
+            'parrafos' => ['required', 'array'],
+            'parrafos.*' => ['required', 'string', 'max:2047'],
         ];
     }
 

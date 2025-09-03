@@ -37,8 +37,8 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});
         Route::post('/', 'store');
-        Route::put('/{blog}', 'update');
-        Route::patch('/{blog}', 'update');
+        Route::post('/{blog}', 'update');
+        //Route::patch('/{blog}', 'update');
         Route::delete('/{blog}', 'destroy');
     });
 

@@ -18,7 +18,7 @@ class UpdateClienteRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:100',
             'email' => 'sometimes|email|unique:clientes,email,' . $this->route('id') . '|max:100',
-            'celular' => 'sometimes|regex:/^[0-9]{9}$/'
+            'celular' => 'sometimes|regex:/^\+\d{1,3}\s?\d{1,15}(?:[-\s]?\d+)*$/'
         ];
     }
 
@@ -29,7 +29,8 @@ class UpdateClienteRequest extends FormRequest
             'email.email' => 'Ingrese un correo electrónico válido.',
             'email.unique' => 'Este correo ya está registrado.',
             'email.max' => 'El correo no debe exceder los 100 caracteres.',
-            'celular.regex' => 'El celular debe tener exactamente 9 dígitos numéricos.'
+            // 'celular.regex' => 'El celular debe tener exactamente 9 dígitos numéricos.'
+            'celular.regex' => 'El formato del teléfono no es válido. Ejemplo: +51 999-999-999',
         ];
     }
 

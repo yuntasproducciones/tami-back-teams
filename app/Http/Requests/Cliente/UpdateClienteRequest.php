@@ -21,7 +21,7 @@ class UpdateClienteRequest extends FormRequest
 
         return [
             'name' => [$required,'string','max:100'],
-            'email' => [$required, 'email', 'unique:clientes,email,' . $clienteId . 'max:100'],
+            'email' => [$required, 'email', 'unique:clientes,email,' . $clienteId, 'max:100'],
             'celular' => [$required, 'regex:/^[0-9]{9}$/']
         ];
     }

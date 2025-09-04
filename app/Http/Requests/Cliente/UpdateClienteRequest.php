@@ -15,10 +15,14 @@ class UpdateClienteRequest extends FormRequest
 
     public function rules(): array
     {
+        $isPut = $this->isMethod('put');
+        $required = $isPut ? 'required' : 'sometimes';
+        $clienteId = $this->route('id');
+
         return [
-            'name' => 'sometimes|string|max:100',
-            'email' => 'sometimes|email|unique:clientes,email,' . $this->route('id') . '|max:100',
-            'celular' => 'sometimes|regex:/^[0-9]{9}$/'
+            'name' => [$required,'string','max:100'],
+            'email' => [$required, 'email', 'unique:clientes,email,' . $clienteId . 'max:100'],
+            'celular' => [$required, 'regex:/^[0-9]{9}$/']
         ];
     }
 

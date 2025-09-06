@@ -401,11 +401,23 @@ class ClienteController extends Controller
                 return response()->json(['error' => 'Cliente no encontrado'], HttpStatusCode::NOT_FOUND->value);
             }
 
-            $cliente->update([
+            $camposActualizar = [];
+            
+            foreach (['name', 'email', 'celular'] as $campo) {
+                if (array_key_exists($campo, $datosValidados)) {
+                    $camposActualizar[$campo] = $datosValidados[$campo];
+                }
+            }
+
+            if (!empty($camposActualizar)) {
+                $cliente->update($camposActualizar);
+            }
+
+            /*$cliente->update([
                 'name' => $datosValidados['name'],
                 'email' => $datosValidados['email'],
                 'celular' => $datosValidados['celular']
-            ]);
+            ]);*/
 
             DB::commit();
             return $this->apiResponse->successResponse($cliente->fresh(), 'Cliente actualizado con éxito.', HttpStatusCode::OK);

@@ -19,7 +19,7 @@ class ClienteFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
-            'celular' => $this->faker->numerify('9########'),
+            'celular' => '+51 '. $this->faker->numerify('9##-###-###'),
         ];
     }
 }

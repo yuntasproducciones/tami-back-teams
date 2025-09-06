@@ -200,7 +200,7 @@ class ProductoController extends Controller
      */
     public function paginate(Request $request)
     {
-        $perPage = $request->get('perPage', 10);
+        $perPage = $request->get('perPage', 5);
         $page = $request->get('page', 1);
 
         $productos = Producto::paginate($perPage, ['*'], 'page', $page);

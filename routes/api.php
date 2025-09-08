@@ -27,7 +27,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
         Route::get('/paginate', 'paginate');
     });
-    
+
     Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
@@ -45,6 +45,7 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(EmailController::class)->prefix('/emails')->group(function () {
         Route::post('/', 'sendEmail');
+        Route::post('/product-link', 'sendEmailByProductLink');
     });
 
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){

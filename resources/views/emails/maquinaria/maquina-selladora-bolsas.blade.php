@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sillas Cuadradas o de Cubo LED</title>
+    <title>Máquina Selladora de Bolsas de Líquido</title>
 </head>
 
 <body style="margin:0; padding:0; font-family:Arial,sans-serif; background:#f5f5f5;">
 
     <div style="max-width:400px; margin:20px auto; background:#ffffff; border-radius:8px; overflow:hidden; text-align:center; position:relative;">
 
-        <img src="https://i.postimg.cc/BnJgNc0K/cubos-led.png"
-            alt="Sillas Cubo LED" width="100%" style="display:block;">
+        <img src="https://i.postimg.cc/zDHVv0BF/maquina-selladora-bolsas.png"
+            alt="Máquina Selladora de Bolsas de Líquido" width="100%" style="display:block;">
 
         <div style="position:absolute; bottom:20px; left:0; right:0; text-align:center; margin-top:10px; margin-bottom:10px;">
 
-            <a href="https://www.tiktok.com/@tami_maquinarias/video/7541826952538213638?is_from_webapp=1"
+            <a href="https://www.tiktok.com/@tami_maquinarias/video/7541178694304369926"
                 style="display:inline-flex; align-items:center; justify-content:center; background:#D93535; color:#fff; padding:12px 24px; text-decoration:underline; border-radius:14px; font-weight:bold; position:relative; border:2px solid #880000;">
                 <img src="https://cdn-icons-png.flaticon.com/128/3172/3172486.png"
                     alt="video" width="20" height="20"

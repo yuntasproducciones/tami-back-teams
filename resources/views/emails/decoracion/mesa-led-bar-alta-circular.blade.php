@@ -10,7 +10,7 @@
 
     <div style="max-width:400px; margin:20px auto; background:#ffffff; border-radius:8px; overflow:hidden; text-align:center; position:relative;">
 
-        <img src="https://i.postimg.cc/P5KBM5Bd/mesa-led-bar-circular.png"
+        <img src="{{asset('email/decoracion/mesa-led-bar-circular.webp')}}"
             alt="Mesa LED Bar Alta Cicular" width="100%" style="display:block;">
 
         <div style="position:absolute; bottom:20px; left:0; right:0; text-align:center; margin-top:10px; margin-bottom:10px;">

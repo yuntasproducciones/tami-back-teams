@@ -10,7 +10,7 @@
 
     <div style="max-width:400px; margin:20px auto; background:#ffffff; border-radius:8px; overflow:hidden; text-align:center; position:relative;">
 
-        <img src="https://i.postimg.cc/j54wqjvn/maquina-embalaje-te.png"
+        <img src="{{asset('email/maquinaria/maquina-embalaje-te.webp')}}"
             alt="Máquina de Embalaje de Té" width="100%" style="display:block;">
 
         <div style="position:absolute; bottom:20px; left:0; right:0; text-align:center; margin-top:10px; margin-bottom:10px;">

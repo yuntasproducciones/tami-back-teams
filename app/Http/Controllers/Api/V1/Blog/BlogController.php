@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
 use App\Http\Contains\HttpStatusCode;
 use App\Http\Resources\BlogResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
@@ -780,4 +781,16 @@ class BlogController extends Controller
         }
         return null;
     } */
+
+    public function paginate(Request $request)
+    {
+        $perPage = $request->get('perPage', 5);
+        $page = $request->get('page', 1);
+
+        $blogs = Blog::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data'=> $blogs->items()
+        ]);
+    }
 }

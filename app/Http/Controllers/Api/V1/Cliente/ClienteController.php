@@ -10,6 +10,7 @@ use App\Services\ApiResponseService;
 use Illuminate\Http\Response;
 use App\Http\Contains\HttpStatusCode;
 use App\Mail\ClientRegistrationMail;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -400,11 +401,23 @@ class ClienteController extends Controller
                 return response()->json(['error' => 'Cliente no encontrado'], HttpStatusCode::NOT_FOUND->value);
             }
 
-            $cliente->update([
+            $camposActualizar = [];
+            
+            foreach (['name', 'email', 'celular'] as $campo) {
+                if (array_key_exists($campo, $datosValidados)) {
+                    $camposActualizar[$campo] = $datosValidados[$campo];
+                }
+            }
+
+            if (!empty($camposActualizar)) {
+                $cliente->update($camposActualizar);
+            }
+
+            /*$cliente->update([
                 'name' => $datosValidados['name'],
                 'email' => $datosValidados['email'],
                 'celular' => $datosValidados['celular']
-            ]);
+            ]);*/
 
             DB::commit();
             return $this->apiResponse->successResponse($cliente->fresh(), 'Cliente actualizado con éxito.', HttpStatusCode::OK);
@@ -484,5 +497,17 @@ class ClienteController extends Controller
         catch(\Exception $e){
             return response()->json(['error' => 'Error al eliminar el cliente: ' . $e->getMessage()], HttpStatusCode::INTERNAL_SERVER_ERROR->value);
         }
+    }
+
+    public function paginate(Request $request)
+    {
+        $perPage = $request->get('perPage', 10);
+        $page = $request->get('page', 1);
+
+        $clientes = Cliente::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data'=> $clientes->items()
+        ]);
     }
 }

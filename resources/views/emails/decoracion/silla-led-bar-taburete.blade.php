@@ -10,7 +10,7 @@
 
     <div style="max-width:400px; margin:20px auto; background:#ffffff; border-radius:8px; overflow:hidden; text-align:center; position:relative;">
 
-        <img src="https://i.postimg.cc/LsXGQMpL/silla-led-bar.png"
+        <img src="{{asset('email/decoracion/silla-led-bar.webp')}}"
             alt="Silla LED Bar Taburete" width="100%" style="display:block;">
 
         <div style="position:absolute; bottom:20px; left:0; right:0; text-align:center; margin-top:10px; margin-bottom:10px;">

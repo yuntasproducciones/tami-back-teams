@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('video_blogs', function (Blueprint $table) {
             $table->id();
             $table->string('url_video');
-            $table->string('titulo_video', 40);
+            $table->text('titulo_video');
             $table->unsignedBigInteger('id_blog');
 
             $table->foreign('id_blog')->references('id')->on('blogs')->onDelete('cascade');

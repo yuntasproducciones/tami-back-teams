@@ -597,7 +597,7 @@ class BlogController extends Controller
             }
 
             DB::commit();
-            return $this->apiResponse->successResponse($blog->fresh(), 'Blog actualizado exitosamente', HttpStatusCode::OK);
+            return $this->apiResponse->successResponse(new BlogResource($blog->fresh()), 'Blog actualizado exitosamente', HttpStatusCode::OK);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);

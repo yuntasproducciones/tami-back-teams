@@ -24,27 +24,36 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users', UserController::class);
     });
 
+    Route::controller(ClienteController::class)->prefix('clientes')->group(function () {
+        Route::get('/paginate', 'paginate');
+    });
+
     Route::apiResource('clientes', ClienteController::class);
 
     Route::controller(BlogController::class)->prefix('blogs')->group(function () {
         Route::get('/', 'index');
+        Route::get('/paginate', 'paginate');
         Route::get('/link/{link}', 'showLink');
         Route::get('/{id}', 'show');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {});
         Route::post('/', 'store');
-        Route::put('/{blog}', 'update');
-        Route::patch('/{blog}', 'update');
+        Route::post('/{blog}', 'update');
+        //Route::patch('/{blog}', 'update');
         Route::delete('/{blog}', 'destroy');
     });
 
     Route::controller(EmailController::class)->prefix('/emails')->group(function () {
         Route::post('/', 'sendEmail');
+        Route::post('/product-link', 'sendEmailByProductLink');
     });
 
     Route::controller(ProductoController::class)->prefix('productos')->group(function(){
         Route::get('/', 'index');
+        Route::get('/paginate', 'paginate');
         Route::get('/{id}', 'show');
+
+        Route::get('/{id}/related', 'related');
 
         Route::middleware(['auth:sanctum', 'role:ADMIN|USER', 'permission:ENVIAR'])->group(function () {});
 

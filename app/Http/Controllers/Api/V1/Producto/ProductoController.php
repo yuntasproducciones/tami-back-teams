@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Contains\HttpStatusCode;
 use App\Http\Resources\ProductoResource;
+use Illuminate\Http\Request;
+
 class ProductoController extends Controller
 {
     /**
@@ -170,17 +172,42 @@ class ProductoController extends Controller
         }
     }
 
-    public function paginate()
+    /**
+     * Get all related products by id
+     */
+    public function related($id)
     {
-        //
-        $productos = Producto::with('imagenes', 'productosRelacionados')->get();
-        // Para decodificar especificaciones
-        $productos->transform(function ($producto) {
-            $producto->especificaciones = json_decode($producto->especificaciones, true) ?? [];
-            return $producto;
-        });
+        try {
+            $producto = Producto::with(['productosRelacionados'])->findOrFail($id);
 
-        return response()->json($productos);
+            return response()->json([
+                'producto' => $producto->nombre,
+                'relacionados' => $producto->productosRelacionados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener productos relacionados: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 
+     * Permit only two params: `perPage` and `page`:
+     * 
+     * - `perPage`: It is a range of products.
+     * - `page`: The initial position of a specific group of products.
+     */
+    public function paginate(Request $request)
+    {
+        $perPage = $request->get('perPage', 5);
+        $page = $request->get('page', 1);
+
+        $productos = Producto::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data'=> $productos->items()
+        ]);
     }
 
     /**

@@ -39,7 +39,7 @@ class V2StoreProductoRequest extends FormRequest
             'link' => 'required|string|unique:productos,link|max:255',
             'subtitulo' => "nullable|string|max:255",
             'stock' => "nullable|integer|max:1000|min:0",
-            'precio' => "nullable|string|max:100000|min:0",
+            'precio' => "nullable|numeric|max:100000|min:0",
             'seccion' => "nullable|string|max:255",
             'descripcion' => "nullable|string|max:65535",
 

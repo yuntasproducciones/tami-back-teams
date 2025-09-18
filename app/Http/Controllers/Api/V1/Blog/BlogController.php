@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
 use App\Http\Contains\HttpStatusCode;
 use App\Http\Resources\BlogResource;
+use App\Models\BlogEtiqueta;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
@@ -96,41 +98,7 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])->get();
-
-            /* $showBlog = $blog->map(function ($blog) {
-                return [
-                    'id' => $blog->id,
-                    'titulo' => $blog->titulo,
-                    'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
-                    'link' => $blog->link,
-                    'subtitulo1' => $blog->subtitulo1,
-                    'subtitulo2' => $blog->subtitulo2,
-                    'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
-                    'video_url' => $blog->video_url,
-                    'video_titulo' => $blog->video_titulo,
-                    'miniatura' => $blog->miniatura,
-                    'imagenes' => $blog->imagenes->map(function ($imagen) {
-                        return [
-                            'ruta_imagen' => $imagen->ruta_imagen,
-                            'text_alt' => $imagen->text_alt,
-                        ];
-                    }),
-                    'parrafos' => $blog->parrafos->map(function ($parrafo) {
-                        return [
-                            'parrafo' => $parrafo->parrafo,
-                        ];
-                    }),
-                    'etiqueta' => $blog->etiqueta ? [
-                        'meta_titulo' => $blog->etiqueta->meta_titulo,
-                        'meta_descripcion' => $blog->etiqueta->meta_descripcion,
-                    ] : null,
-                    'created_at' => $blog->created_at,
-                    'updated_at' => $blog->updated_at
-                ];
-            }); */
-
             return $this->apiResponse->successResponse(
-                //$showBlog,
                 BlogResource::collection($blog),
                 'Blogs obtenidos exitosamente',
                 HttpStatusCode::OK
@@ -303,7 +271,7 @@ class BlogController extends Controller
             }
 
             DB::commit();
-            return $this->apiResponse->successResponse($blog->fresh(), 'Blog creado con éxito.', HttpStatusCode::CREATED);
+            return $this->apiResponse->successResponse(new BlogResource($blog->fresh()), 'Blog creado con éxito.', HttpStatusCode::CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse(
@@ -377,38 +345,7 @@ class BlogController extends Controller
             $blog = Blog::with(['imagenes', 'parrafos', 'producto', 'etiqueta'])
                 ->findOrFail($id);
 
-            /* $showBlog = [
-                'id' => $blog->id,
-                'titulo' => $blog->titulo,
-                'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
-                'link' => $blog->link,
-                'subtitulo1' => $blog->subtitulo1,
-                'subtitulo2' => $blog->subtitulo2,
-                'video_id' => $this->obtenerIdVideoYoutube($blog->video_url),
-                'video_url' => $blog->video_url,
-                'video_titulo' => $blog->video_titulo,
-                'miniatura' => $blog->miniatura,
-                'imagenes' => $blog->imagenes->map(function ($imagen) {
-                    return [
-                        'ruta_imagen' => $imagen->ruta_imagen,
-                        'texto_alt' => $imagen->text_alt,
-                    ];
-                }),
-                'parrafos' => $blog->parrafos->map(function ($parrafo) {
-                    return [
-                        'parrafo' => $parrafo->parrafo,
-                    ];
-                }),
-                'etiqueta' => $blog->etiqueta ? [
-                    'meta_titulo' => $blog->etiqueta->meta_titulo,
-                    'meta_descripcion' => $blog->etiqueta->meta_descripcion,
-                ] : null,
-                'created_at' => $blog->created_at,
-                'updated_at' => $blog->updated_at
-            ]; */
-
             return $this->apiResponse->successResponse(
-                //$showBlog,
                 new BlogResource($blog),
                 'Blog obtenido exitosamente',
                 HttpStatusCode::OK
@@ -488,38 +425,7 @@ class BlogController extends Controller
                 ->where('link', $link)
                 ->firstOrFail();
 
-            /* $showBlog = [
-                'id' => $blog->id,
-                'titulo' => $blog->titulo,
-                'nombre_producto' => $blog->producto ? $blog->producto->nombre : null,
-                'link' => $blog->link,
-                'subtitulo1' => $blog->subtitulo1,
-                'subtitulo2' => $blog->subtitulo2,
-                'video_id   ' => $this->obtenerIdVideoYoutube($blog->video_url),
-                'video_url' => $blog->video_url,
-                'video_titulo' => $blog->video_titulo,
-                'miniatura' => $blog->miniatura,
-                'imagenes' => $blog->imagenes->map(function ($imagen) {
-                    return [
-                        'ruta_imagen' => $imagen->ruta_imagen,
-                        'texto_alt' => $imagen->texto_alt,
-                    ];
-                }),
-                'parrafos' => $blog->parrafos->map(function ($parrafo) {
-                    return [
-                        'parrafo' => $parrafo->parrafo,
-                    ];
-                }),
-                'etiqueta' => $blog->etiqueta ? [
-                    'meta_titulo' => $blog->etiqueta->meta_titulo,
-                    'meta_descripcion' => $blog->etiqueta->meta_descripcion,
-                ] : null,
-                'created_at' => $blog->created_at,
-                'updated_at' => $blog->updated_at
-            ]; */
-
             return $this->apiResponse->successResponse(
-                //$showBlog,
                 new BlogResource($blog),
                 'Blog obtenido exitosamente',
                 HttpStatusCode::OK
@@ -693,7 +599,7 @@ class BlogController extends Controller
             }
 
             DB::commit();
-            return $this->apiResponse->successResponse($blog->fresh(), 'Blog actualizado exitosamente', HttpStatusCode::OK);
+            return $this->apiResponse->successResponse(new BlogResource($blog->fresh()), 'Blog actualizado exitosamente', HttpStatusCode::OK);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->apiResponse->errorResponse('Error al actualizar el blog: ' . $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
@@ -774,12 +680,15 @@ class BlogController extends Controller
         }
     }
 
-    /* private function obtenerIdVideoYoutube($url)
+    public function paginate(Request $request)
     {
-        $pattern = '%(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([^\s&?]+)%';
-        if (preg_match($pattern, $url, $matches)) {
-            return $matches[1];
-        }
-        return null;
-    } */
+        $perPage = $request->get('perPage', 5);
+        $page = $request->get('page', 1);
+
+        $blogs = Blog::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data'=> $blogs->items()
+        ]);
+    }
 }

@@ -628,12 +628,24 @@ class ProductoController extends Controller
             //     $producto->etiqueta()->delete();
             // }
             // traer desde etiqueta
+
+            if (isset($datosValidados['keywords'])) {
+                $keywords = json_decode($datosValidados['keywords'] ?? '[]', true);
+
+                if (is_array($keywords)) {
+                    $keywordsConcatenados = !empty($keywords) ? implode(', ', $keywords) : null;
+                } else {
+                    $keywordsConcatenados = null;
+                }
+            }
+
             if ($request->has('etiqueta')) {
                 $producto->etiqueta()->updateOrCreate(
                     ['producto_id' => $producto->id],
                     [
                         'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
                         'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
+                        'keywords' => $keywordsConcatenados ?? null,
                     ]
                 );
             }

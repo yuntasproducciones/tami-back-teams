@@ -104,66 +104,6 @@ class ProductoController extends Controller
             $productos = Producto::with(['imagenes', 'especificaciones', 'productosRelacionados.imagenes', 'etiqueta', 'dimensiones'])
                 ->orderBy('created_at')
                 ->get();
-
-            /* $showProductos = $productos->map(function ($producto) {
-                // $especificacionesFormateadas = [];
-                // foreach ($producto->especificaciones as $especificacion) {
-                //     $especificacionesFormateadas[$especificacion->clave] = $especificacion->valor;
-                // }
-
-                Log::info('Producto ID: ' . $producto->id . ' - Etiqueta antes del mapeo: ', ['etiqueta' => $producto->etiqueta]);
-                return [
-                    'id' => $producto->id,
-                    'titulo' => $producto->titulo,
-                    'nombre' => $producto->nombre,
-                    'link' => $producto->link,
-                    'subtitulo' => $producto->subtitulo,
-                    'stock' => $producto->stock,
-                    'precio' => $producto->precio,
-                    'seccion' => $producto->seccion,
-                    'descripcion' => $producto->descripcion,
-                    'especificaciones' => $producto->especificaciones,
-                    'dimensiones' => $producto->dimensiones ? [
-                        'alto' => $producto->dimensiones->alto,
-                        'largo' => $producto->dimensiones->largo,
-                        'ancho' => $producto->dimensiones->ancho,
-                    ] : null,
-                    'imagenes' => $producto->imagenes->map(function ($imagen) {
-                        return [
-                            'url_imagen' => $imagen->url_imagen,
-                            'texto_alt_SEO' => $imagen->texto_alt_SEO,
-                        ];
-                    }),
-                    'productos_relacionados' => $producto->productosRelacionados->map(function ($relacionado) {
-                        return [
-                            'id' => $relacionado->id,
-                            'nombre' => $relacionado->nombre,
-                            'link' => $relacionado->link,
-                            'titulo' => $relacionado->titulo,
-                            'subtitulo' => $relacionado->subtitulo,
-                            'stock' => $relacionado->stock,
-                            'precio' => $relacionado->precio,
-                            'seccion' => $relacionado->seccion,
-                            'descripcion' => $relacionado->descripcion,
-                            'imagenes' => $relacionado->imagenes->map(function ($imagen) {
-                                return [
-                                    'url_imagen' => $imagen->url_imagen,
-                                    'texto_alt_SEO' => $imagen->texto_alt_SEO,
-                                ];
-                            }),
-                        ];
-                    }),
-                    'etiqueta' => $producto->etiqueta ? [
-                        'meta_titulo' => $producto->etiqueta->meta_titulo,
-                        'meta_descripcion' => $producto->etiqueta->meta_descripcion,
-                    ] : null,
-                    'created_at' => $producto->created_at,
-                    'updated_at' => $producto->updated_at
-                ];
-            });
-
-            return response()->json($showProductos); */
-
             return ProductoResource::collection($productos)->resolve();
         } catch (\Exception $e) {
             return response()->json([
@@ -192,9 +132,9 @@ class ProductoController extends Controller
     }
 
     /**
-     * 
+     *
      * Permit only two params: `perPage` and `page`:
-     * 
+     *
      * - `perPage`: It is a range of products.
      * - `page`: The initial position of a specific group of products.
      */
@@ -330,16 +270,16 @@ class ProductoController extends Controller
             "descripcion" => $datosValidados["descripcion"] ?? null,
         ]);
 
-        // if (isset($datosValidados['meta_titulo']) || isset($datosValidados['meta_descripcion'])) {
-        //     $producto->etiqueta()->create([
-        //         'meta_titulo' => $datosValidados['meta_titulo'] ?? null,
-        //         'meta_descripcion' => $datosValidados['meta_descripcion'] ?? null,
-        //     ]);
-        // }
+        $keywords = json_decode($datosValidados['keywords'] ?? null, true);
+        if(is_array($keywords)){
+            $keywordsConcatenados = implode(', ', $keywords);
+        }
+
         if ($request->has('etiqueta')) {
             $producto->etiqueta()->create([
                 'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
                 'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
+                'keywords' => $keywordsConcatenados ?? null,
             ]);
         }
 
@@ -454,40 +394,9 @@ class ProductoController extends Controller
                 ], 404);
             }
 
-            /* $imagenes = $producto->imagenes->map(function ($imagen) {
-                return [
-                    'url_imagen' => $imagen->url_imagen,
-                    'texto_alt_SEO' => $imagen->texto_alt_SEO,
-                ];
-            });
-
-            $formattedProducto = [
-                'id' => $producto->id,
-                'nombre' => $producto->nombre,
-                'link' => $producto->link,
-                'titulo' => $producto->titulo,
-                'subtitulo' => $producto->subtitulo,
-                'descripcion' => $producto->descripcion,
-                'especificaciones' => $producto->especificaciones ?? [],
-                'productos_relacionados' => $producto->productosRelacionados,
-                'imagenes' => $imagenes->toArray(),
-                'stock' => $producto->stock,
-                'precio' => $producto->precio,
-                'seccion' => $producto->seccion,
-                'etiqueta' => $producto->etiqueta ? [
-                    'meta_titulo' => $producto->etiqueta->meta_titulo,
-                    'meta_descripcion' => $producto->etiqueta->meta_descripcion,
-                ] : null,
-                'dimensiones' => $producto->dimensiones ? [
-                    'alto' => $producto->dimensiones->alto,
-                    'largo' => $producto->dimensiones->largo,
-                    'ancho' => $producto->dimensiones->ancho,
-                ] : null,
-            ]; */
             //Con el argumento false indicamos que no use el ProductoRelacionadoResource de esta manera no mapea datos innecesarios
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                //'data' => $formattedProducto
                 'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
@@ -577,40 +486,8 @@ class ProductoController extends Controller
                 return response()->json(["message" => "Producto no encontrado"], 404);
             }
 
-            /* $imagenes = $producto->imagenes->map(function ($imagen) {
-                return [
-                    'url_imagen' => $imagen->url_imagen,
-                    'texto_alt_SEO' => $imagen->texto_alt_SEO,
-                ];
-            });
-
-            $formattedProducto = [
-                'id' => $producto->id,
-                'nombre' => $producto->nombre,
-                'link' => $producto->link,
-                'titulo' => $producto->titulo,
-                'subtitulo' => $producto->subtitulo,
-                'descripcion' => $producto->descripcion,
-                'especificaciones' => $producto->especificaciones ?? [],
-                'productos_relacionados' => $producto->productosRelacionados,
-                'imagenes' => $imagenes->toArray(),
-                'stock' => $producto->stock,
-                'precio' => $producto->precio,
-                'seccion' => $producto->seccion,
-                'etiqueta' => $producto->etiqueta ? [
-                    'meta_titulo' => $producto->etiqueta->meta_titulo,
-                    'meta_descripcion' => $producto->etiqueta->meta_descripcion,
-                ] : null,
-                'dimensiones' => $producto->dimensiones ? [
-                    'alto' => $producto->dimensiones->alto,
-                    'largo' => $producto->dimensiones->largo,
-                    'ancho' => $producto->dimensiones->ancho,
-                ] : null,
-            ]; */
-
             return response()->json([
                 'message' => 'Producto encontrado exitosamente',
-                //'data' => $formattedProducto
                 'data' => new ProductoResource($producto, false)
             ], 200);
         } catch (\Exception $e) {
@@ -751,12 +628,24 @@ class ProductoController extends Controller
             //     $producto->etiqueta()->delete();
             // }
             // traer desde etiqueta
+
+            if (isset($datosValidados['keywords'])) {
+                $keywords = json_decode($datosValidados['keywords'] ?? '[]', true);
+
+                if (is_array($keywords)) {
+                    $keywordsConcatenados = !empty($keywords) ? implode(', ', $keywords) : null;
+                } else {
+                    $keywordsConcatenados = null;
+                }
+            }
+
             if ($request->has('etiqueta')) {
                 $producto->etiqueta()->updateOrCreate(
                     ['producto_id' => $producto->id],
                     [
                         'meta_titulo'      => $request->etiqueta['meta_titulo'] ?? null,
                         'meta_descripcion' => $request->etiqueta['meta_descripcion'] ?? null,
+                        'keywords' => $keywordsConcatenados ?? null,
                     ]
                 );
             }
